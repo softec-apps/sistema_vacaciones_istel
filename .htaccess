@@ -1,0 +1,111 @@
+Options All -Indexes
+
+# Definir errores a capturar y la ruta de redireccionamiento
+
+ErrorDocument 403 http://localhost/facturadorcliente/403
+ErrorDocument 404 http://localhost/facturadorcliente/404
+
+RewriteEngine On
+
+# Bloquear el acceso directo a archivos .html
+RewriteCond %{THE_REQUEST} .html
+RewriteRule ^ - [F,L]
+
+# Bloquear el acceso directo a archivos .php
+RewriteCond %{THE_REQUEST} .php
+RewriteRule ^ - [F,L]
+
+# Mapeo de rutas de error
+RewriteRule ^403$ errors/404.html [L]
+RewriteRule ^404$ errors/404.html [L]
+
+# Mapeo de rutas válidas
+#Rutas de inicio sesion y cerrar sesion
+RewriteRule ^inicio$ index.php [L]
+RewriteRule ^login$ procesar_login.php [L]
+RewriteRule ^logout$ logout.php [L]
+
+#Rutas de administradores
+RewriteRule ^admin/dashboard$ admin/principal.php [L]
+RewriteRule ^registrar_users$ registrar_users.php [L]
+RewriteRule ^actualizar_users$ actualizar_users.php [L]
+RewriteRule ^eliminar_users$ eliminar_users.php [L]
+RewriteRule ^calcular$ calcular.php [L]
+
+RewriteRule ^admin/admin$ admin/admin.php [L]
+RewriteRule ^admin/permisos_pendientes$ admin/permisos_pendientes.php [L]
+RewriteRule ^admin/permisos_registrados$  admin/permisos_registrados.php [L]
+RewriteRule ^admin/register$  admin/register.php [L]
+RewriteRule ^admin/permisos$  admin/permisos.php [L]
+RewriteRule ^admin/trabajo$ admin/trabajo.php [L]
+RewriteRule ^admin/vacaciones$ admin/vacaciones.php [L]
+RewriteRule ^admin/funcionarios$ admin/funcionarios.php [L]
+
+#Rutas de Jefes
+RewriteRule ^jefe/dashboard$ jefe/principal.php [L]
+
+#Rutas de Talento humanos
+RewriteRule ^talento_h/dashboard$ talentoHumano/principal.php [L]
+
+#Rutas de Fencionarios
+RewriteRule ^funcionario/dashboard$ funcionario/principal.php [L]
+RewriteRule ^funcionario/solicitud$ funcionario/solicitud.php [L]
+
+#Ruta logs
+RewriteRule ^admin/log$ funcionario/solicitud.php [L]
+
+
+# Redirigir a Recuperar-Contraseña.php dentro de la carpeta ForgotPassword
+# RewriteRule ^ForgotPassword/Recuperar-Contraseña$ ForgotPassword/recuperar_contraseña.php [L]
+# RewriteRule ^ForgotPassword/Codigo$ ForgotPassword/codigo.php [L]
+# RewriteRule ^ForgotPassword/Nueva-Contraseña$ ForgotPassword/nueva_password.php [L]
+
+# RewriteRule ^admin/funcionarios$ Admins/obtener_funcionarios.php [L]
+# RewriteRule ^admin/registrar$ Admins/registrar_admins.php [L]
+# RewriteRule ^admin/editar_datos$ Admins/editar_datos.php [L]
+# RewriteRule ^admin/actualizar_permisos$ Admins/actualizar_permisos.php [L]
+# RewriteRule ^admin/eliminar_admin$ Admins/eliminar_admin.php [L]
+
+# RewriteRule ^admin/obtener_encuestas$ Admins/obtener_encuestas.php [L]
+# RewriteRule ^admin/registrar_encuestas$ Admins/registrar_encuestas.php [L]
+# RewriteRule ^admin/actualizar_encuestas$ Admins/actualizar_encuestas.php [L]
+# RewriteRule ^admin/eliminar_encuestas$ Admins/eliminar_encuestas.php [L]
+# RewriteRule ^admin/obtener_lista_encuesta$ Admins/obtener_lista_encuesta.php [L]
+# RewriteRule ^admin/ver_encuestas$ Admins/ver_encuestas.php [L]
+# RewriteRule ^admin/enviar_encuesta$ Admins/enviar_encuesta.php [L]
+# RewriteRule ^admin/enviar_recordatorio$ Admins/enviar_recordatorio.php [L]
+# RewriteRule ^admin/completar$ Admins/completar.php [L]
+# RewriteRule ^admin/actualizar_filtrado$ Admins/actualizar_filtrado.php [L]
+
+
+# RewriteRule ^admin/eventos$ Admins/eventos.php [L]
+# RewriteRule ^admin/registrar_evento$ Admins/registrar_evento.php [L]
+# RewriteRule ^admin/actualizar_evento$ Admins/actualizar_evento.php [L]
+# RewriteRule ^admin/eliminar_evento$ Admins/eliminar_evento.php [L]
+# RewriteRule ^admin/ver_eventos$ Admins/ver_eventos.php [L]
+# RewriteRule ^admin/enviar_evento$ Admins/enviar_evento.php [L]
+# RewriteRule ^admin/actualizar_filtrado_evento$ Admins/actualizar_filtrado_evento.php [L]
+
+# RewriteRule ^admin/graduacion$ Admins/graduacion.php [L]
+# RewriteRule ^admin/empleo$ Admins/empleo.php [L]
+
+# RewriteRule ^admin/bolsa_empleo$ Admins/bolsa_empleo.php [L]
+
+# RewriteRule ^admin/carrera$ Admins/carrera.php [L]
+# RewriteRule ^admin/carrera2$ Admins/carrera2.php [L]
+# RewriteRule ^admin/registrar_carrera$ Admins/registrar_carrera.php [L]
+# RewriteRule ^admin/actualizar_carrera$ Admins/actualizar_carrera.php [L]
+# RewriteRule ^admin/eliminar_carrera$ Admins/eliminar_carrera.php [L]
+
+
+# RewriteRule ^graduado/vista$ graduado/vista.php [L]
+
+# RewriteRule ^admin/registrar_graduados$ Admins/registrar_graduados.php [L]
+# RewriteRule ^admin/obtener_graduados$ Admis/obtener_graduados.php [L]
+# RewriteRule ^admin/actualizar_graduados$ Admins/actualizar_graduados.php [L]
+# RewriteRule ^admin/eliminar_graduado$ Admins/eliminar_graduado.php [L]
+# RewriteRule ^admin/obtener_portafolio$ Admins/obtener_portafolio.php [L]
+# RewriteRule ^admin/aprobar$ Admins/aprobar.php [L]
+# RewriteRule ^vista/vista_portafolio$ vista/vista_portafolio.php [L]
+# RewriteRule ^graduado/estudiante_portafolio$ graduado/estudiante_portafolio.php [L]
+# RewriteRule ^graduado/cargar_formulario_G$ graduado/cargar_formulario_G.php [L]

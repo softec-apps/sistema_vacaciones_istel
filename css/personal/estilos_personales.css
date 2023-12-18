@@ -1,0 +1,72 @@
+.superior{
+    background-color: #001F3F;
+}
+.izquierda{
+    background-color:#F2F2F2  ;
+}
+.texto{
+    color: #2ECC71;
+}
+#inicio_sesion{
+    background-color: rgba(255, 255, 255, 0.6); /* Color blanco con 70% de opacidad */
+}
+.fucion{
+    background: linear-gradient(to left, #03A721 25%, #003785 75%);
+}
+
+.sb-sidenav-menu .nav .nav-link:hover {
+    color: #fff;
+    /* Color del texto al pasar el cursor */
+    background-color: rgba(188, 185, 190, 0.2);
+    /* Color del fondo al pasar el cursor */
+}
+
+.sb-sidenav-menu .nav .nav-link:focus {
+    color: #fff;
+}
+
+table.dataTable.dtr-inline.collapsed>tbody>tr>td.dtr-control:before, table.dataTable.dtr-inline.collapsed>tbody>tr>th.dtr-control:before {
+    margin-right: 0.5em;
+    display: inline-block;
+    color: #001F3F;
+    font-family: 'Font Awesome 5 Free';
+}
+table.dataTable.dtr-inline.collapsed>tbody>tr.parent>td.dtr-control:before, table.dataTable.dtr-inline.collapsed>tbody>tr.parent>th.dtr-control:before {
+    color: #e74a3b;
+    font-family: 'Font Awesome 5 Free';
+}
+.sb-nav-fixed .superior .toggle:hover {
+    color: black;
+    background-color: rgba(188, 185, 190, 0.3);
+}
+
+.sb-nav-fixed .superior .toggle .icono {
+    color: #fff;
+}
+
+#usuario {
+    background-color: #eef2f8;
+}
+#clave{
+    background-color: #eef2f8;
+}
+.izquierda2{
+    background-color: #1465bb;
+}
+.izquierda3{
+    background-color: #014ba0;
+}
+/* Estilo para botones deshabilitados */
+.btn[disabled] {
+    opacity: 1; /* Mantén la opacidad al 100% */
+}
+
+.borde_derecho {
+border-right: 2px solid #fff; /* Estilo de borde derecho */
+padding-right: 15px; /* Espacio entre el contenido y el borde derecho */
+}
+
+.borde_izquierdo {
+border-left: 2px solid #fff; /* Estilo de borde izquierdo */
+padding-left: 15px; /* Espacio entre el contenido y el borde izquierdo */
+}
