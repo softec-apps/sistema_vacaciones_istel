@@ -22,179 +22,136 @@ include_once("../plantilla/header.php")
 <div class="container-fluid mt-5">
 <?php
 
+include_once  "funcionesCalcular.php";
+foreach ($nuevosDatos2 as $valor) {
+    $nombres_usuario =  $valor['nombres'];
+    $apellidos_usuario = $valor['apellidos'];
+    $cedula_usuario = $valor['cedula'];
+    $horasOcupadasMultiplicadas = $valor['horas_ocupadas'];
+    $permiso_aceptado = $valor['permiso_aceptado'];
+    $tiempo_trabajo = $valor['tiempo_trabajo'];
+    $motivo_rechazo = $valor['motivo_rechazo'];
+
+}
+// Obtener el mensaje de días de vacaciones y permisos
+if (!empty($nuevosDatos2)) {
+    // Obtener el mensaje de días de vacaciones y permisos
+    $mensaje = obtenerMensajeDiasVacaciones($id, $nombreFuncionario, $apellidosFuncionario, $limiteVacaciones, $diasPorAnoTrabajado, $diasPorAno, $pdo, $tiempo_trabajo);
+} else {
+    // En caso de que $nuevosDatos esté vacía, asignar un valor por defecto o tomar alguna otra acción si es necesario
+    $mensaje = "No Existen solicitudes Rechazadas";
+}
+    $nombreUser = $nombreFuncionario . " " . $apellidosFuncionario;
 ?>
-<?php
 
-include_once  "../resta_solicitud.php";
-$nombreUser = $nombreFuncionario . " " . $apellidosFuncionario;
-?>
-<!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Funcionario <?= $nombreUser?></h1>
-
-<!-- <h1 class="h3 mb-2 text-gray-800">Debe existir una parte que carge par realizar solicitudes por el id de la sesion del funcionario</h1>
-<p>donde debe verifica si su solicitud fue aprobada o no Va a cargar todas las solicitudes realizadas</p> -->
-<div class="row">
-
-<?php
-    $resultados_usuario = obtenerDiasTrabajadosParaUsuario($pdo,$id);
-
-    $usuario = $resultados_usuario[0];
-
-    $id_usuario = $usuario['id_usuario'];
-    $cedulaIterada = $usuario['cedula'];
-    $nombresIterado = $usuario['nombre'];
-    $apellidosIterado = $usuario['apellido'];
-    $diasTrabajados = $usuario['dias_trabajados'];
-    $horasDePermisoSolicitadas = $usuario['horas_permiso'];
-    $fechaIngreso = $usuario['fecha_ingreso'];
-    $tiempoTrabajo = $usuario['tiempo_trabajo'];
-
-    $diasDeVacaciones = calcularDiasVacaciones(
-        $diasTrabajados,
-        $horasDePermisoSolicitadas,
-        $limiteVacaciones,
-        $diasPorAnoTrabajado,
-        $diasPorAno,
-        $tiempoTrabajo
-    );
-
-    $diasDePermisoSolicitados = $horasDePermisoSolicitadas / $tiempoTrabajo;
-    $dias_totales = $diasDeVacaciones + $diasDePermisoSolicitados;
-    if ($tiempoTrabajo == 8) {
-        $tiempoTrabajo = "Tiempo Completo";
-    }elseif ($tiempoTrabajo == 4) {
-        $tiempoTrabajo = "Medio Tiempo";
-    }else {
-        $tiempoTrabajo = 0;
-    }
-?>
-<!-- Earnings (Monthly) Card Example -->
-<div class="col-xl-3 col-md-6 mb-4">
-    <div class="card border-left-primary shadow h-100 py-2">
-        <div class="card-body">
-            <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                        Dias de vacaciones</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $diasDeVacaciones  ?></div>
-                </div>
-                <div class="col-auto">
-                    <i class="fas fa-umbrella-beach fa-2x text-gray-300"></i>
-                    <!-- <i class="fas fa-calendar fa-2x text-gray-300"></i> -->
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Earnings (Monthly) Card Example -->
-<div class="col-xl-3 col-md-6 mb-4">
-    <div class="card border-left-success shadow h-100 py-2">
-        <div class="card-body">
-            <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                        Dias de vacaciones Utilizados</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $diasDePermisoSolicitados  ?></div>
-                </div>
-                <div class="col-auto">
-                    <!-- <i class="fas fa-dollar-sign "></i> -->
-                    <i class="far fa-calendar-check fa-2x text-gray-300"></i>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Earnings (Monthly) Card Example -->
-<div class="col-xl-3 col-md-6 mb-4">
-    <div class="card border-left-info shadow h-100 py-2">
-        <div class="card-body">
-            <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Porcentaje de dias Utilizados</div>
-                    <div class="row no-gutters align-items-center">
-                        <div class="col-auto">
-                            <?php
-                                // Calcular el porcentaje de días de permiso en relación con los días limite
-                                $porcentaje = round(($diasDePermisoSolicitados / $limiteVacaciones) * 100);
-                            ?>
-                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php echo $porcentaje ?>%</div>
+                    <h5 class="text-gray-800"> <?php echo$mensaje; ?> </h5>
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header d-flex py-3">
+                            <p class="m-2 col-10 pl-0 font-weight-bold text-primary">
+                                Todas las solicitudes Rechazadas
+                            </p>
                         </div>
-                        <div class="col">
-                            <div class="progress progress-sm mr-2">
-                                <div class="progress-bar bg-info" role="progressbar" style="width: <?php echo $porcentaje ?>%" aria-valuenow="<?php echo $porcentaje ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="card-body">
+                            <div class="table-responsive crud-table">
+                                <table class="table table-bordered" id="tablaPermisosRechazados">
+                                    <thead>
+                                        <tr>
+                                            <th>Tipo de permiso solicitado</th>
+                                            <th>Dias Solicitadas</th>
+                                            <th>Horas Solicitadas</th>
+                                            <th>Cargo a vacaciones</th>
+                                            <th>Motivo del Rechazo</th>
+                                            <th>Solicitud</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        foreach ($nuevosDatos2 as $valor) {
+                                            $id_permisos =  $valor['id_permisos'];
+                                            $nombres_usuario =  $valor['nombres'];
+                                            $apellidos_usuario = $valor['apellidos'];
+                                            $cedula_usuario = $valor['cedula'];
+                                            $horasOcupadasMultiplicadas = $valor['horas_ocupadas'] ;
+                                            $dias_solicitados = $valor['dias_solicitados'];
+                                            $horas_solicitadas = $valor['horas_solicitadas'];
+                                            $tiempo_trabajo = $valor['tiempo_trabajo'];
+                                            $horas_formateadas = date('H', strtotime($horas_solicitadas));
+                                            $motivo_rechazo = $valor['motivo_rechazo'];
+                                            $motivo_permiso = $valor['motivo_permiso'];
+                                            $motivo_permiso = str_replace('_', ' ', $motivo_permiso);
+
+
+                                            if ($horasOcupadasMultiplicadas >= 8) {
+                                                $diasSolicitados = $horasOcupadasMultiplicadas / $tiempo_trabajo;
+                                                $horasOcupadasMultiplicadas = 0;
+                                                $tipo_solicitud = "Si";
+                                            }elseif ($horasOcupadasMultiplicadas == 0) {
+                                                $diasSolicitados = $dias_solicitados;
+                                                $horasOcupadasMultiplicadas = $horas_formateadas;
+                                                $tipo_solicitud = "No";
+                                            }elseif($horasOcupadasMultiplicadas < 8) {
+                                                $diasSolicitados = 0;
+                                                $horasOcupadasMultiplicadas = $horasOcupadasMultiplicadas;
+                                                $tipo_solicitud = "Si";
+                                            }
+                                            $permiso_aceptado = $valor['permiso_aceptado'];
+                                            if ($permiso_aceptado == 2) {
+                                                $permiso_aceptado = '<button class=" btn-danger" disabled title="Solicitud Rechazada" ><i class="fa-solid fa-xmark"></i></button>';
+                                                $ver = null;
+                                            }elseif ($permiso_aceptado == 1 || $permiso_aceptado == 3) {
+                                                $permiso_aceptado = '<button class=" btn-success" disabled title="Aceptado" ><i class="fa-solid fa-check"></i></button>';
+                                                $ver ='<form action="../datos_individuales" method="POST" class="d-inline-block m-1">
+                                                            <input type="hidden" name="id_permisos" value="' . $id_permisos .'">
+                                                            <button class="btn btn-info m-1" title="Ver solicitud aprobada">
+                                                                <i class="bi bi-eye"></i>
+                                                            </button>
+                                                        </form>';
+                                            }elseif ($permiso_aceptado == 0) {
+                                                $permiso_aceptado = '<button class=" btn-primary" disabled title="Solicitud en proceso"><i class="fa-solid fa-sync fa-spin"></i></button>';
+                                                $ver = null;
+                                            }
+
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                <?= $motivo_permiso?>
+                                            </td>
+
+                                            <td>
+                                            <?= $diasSolicitados?>
+                                            </td>
+
+                                            <td>
+                                            <?= $horasOcupadasMultiplicadas?>
+                                            </td>
+
+                                            <td>
+                                            <?= $tipo_solicitud?>
+                                            </td>
+
+                                            <td>
+                                            <?= $motivo_rechazo?>
+                                            </td>
+
+                                            <td>
+                                            <?= $permiso_aceptado?>
+                                            <?= $ver?>
+                                            </td>
+
+
+                                        </tr>
+                                        <?php
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-auto">
-                    <!-- <i class="fas fa-clipboard-list fa-2x text-gray-300"></i> -->
-                    <i class="bi bi-percent fa-2x text-gray-300"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- Pending Requests Card Example -->
-<div class="col-xl-3 col-md-6 mb-4">
-    <div class="card border-left-warning shadow h-100 py-2">
-        <div class="card-body">
-            <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                        Dias Trabajados</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $diasTrabajados?></div>
                 </div>
-                <div class="col-auto">
-                    <!-- <i class="fas fa-comments fa-2x text-gray-300"></i> -->
-                    <i class="fas fa-briefcase fa-2x text-gray-300"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Earnings (Monthly) Card Example -->
-<div class="col-xl-3 col-md-6 mb-4">
-    <div class="card border-left-success shadow h-100 py-2">
-        <div class="card-body">
-            <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                    Historal de dias totales acumulados</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $dias_totales  ?></div>
-                </div>
-                <div class="col-auto">
-                    <i class="fas fa-history fa-2x text-gray-300"></i>
-                    <!-- <i class="fas fa-dollar-sign fa-2x text-gray-300"></i> -->
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="col-xl-3 col-md-6 mb-4">
-    <div class="card border-left-success shadow h-100 py-2">
-        <div class="card-body">
-            <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                    Trabajo</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $tiempoTrabajo  ?></div>
-                </div>
-                <div class="col-auto">
-                    <!-- <i class="fas fa-dollar-sign "></i> -->
-                    <i class="fas fa-clock fa-2x text-gray-300"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
+                <!-- /.container-fluid -->
 
 <!-- Modal para solicitar permisos -->
 <div class="modal fade" id="registrar_vacaciones" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"

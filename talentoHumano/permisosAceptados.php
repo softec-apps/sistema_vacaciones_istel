@@ -5,15 +5,16 @@ session_start();
 if (!isset($_SESSION['id_usuarios'])) {
     redirect(RUTA_ABSOLUTA . 'logout');
 }
-$cedula = $_SESSION['cedula'];
-$nombre = $_SESSION['nombres'];
+$cedulaTalentoHumano = $_SESSION['cedula'];
+$nombreTalentoHumano = $_SESSION['nombres'];
+$apellidoTalentoHumano = $_SESSION['apellidos'];
 $rol = $_SESSION['rol'];
 
-if ($rol != ROL_ADMIN) {
+if ($rol != ROL_TALENTO_HUMANO) {
    redirect(RUTA_ABSOLUTA . "logout");
 }
 
-$titulo = "Permisos";
+$titulo = "Permisos Aprobados J.S";
 include_once("../plantilla/header.php")
 ?>
 <?php
@@ -39,7 +40,7 @@ $respuesta = permisosAprobados($pdo);
                                             <th>Funcionario</th>
                                             <th>Fecha emitida</th>
                                             <th>Tipo permiso</th>
-                                            <th>Usuario Solicita</th>
+                                            <th>Datos Solicitud</th>
                                             <th>Registrar Solicitud</th>
                                         </tr>
                                     </thead>
@@ -95,7 +96,14 @@ $respuesta = permisosAprobados($pdo);
                                             <td><?=  $nombres . " " . $apellidos ;?></td>
                                             <td><?=  $fecha_permiso ;?></td>
                                             <td><?=  $motivo_permiso ;?></td>
-                                            <td><?=  $usuario_solicita ;?></td>
+                                            <td>
+                                                <form action="../datos_individuales" method="POST" class="d-inline-block m-1">
+                                                    <input type="hidden" name="id_permisos" value=" <?= $id_permiso ?>">
+                                                    <button class="btn btn-info m-1" title="Ver los datos de esta solicitud">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
 
                                             <td>
                                                 <button class="btn btn-success m-1" data-toggle="modal" data-target="#registrar_solicitud" data-registrar="<?= $id_permiso ?>" onclick="aprobar(this)">Registrar</button>
@@ -200,7 +208,7 @@ $respuesta = permisosAprobados($pdo);
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalAdminLabel">Registrar Solicitudes de Permisos </h5>
+                <h5 class="modal-title" id="modalAdminLabel">Registrar Solicitud de Permiso </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -213,52 +221,13 @@ $respuesta = permisosAprobados($pdo);
                     <input class="form-control" type="hidden" name="registrar" value ="3" />
                     <div class="form-floating mb-3">
                         <div>
-                            <label>Ingrese su nombre T.H</label>
-                            <input class="form-control" name="user" type="text" required />
+                            <!-- <label>Ingrese su nombre T.H</label> -->
+                            <input class="form-control" name="user" type="hidden" value="<?= $nombreTalentoHumano . " " . $apellidoTalentoHumano?>" />
                         </div>
                     </div>
-                    <!-- <div class="form-floating mb-3 mt-3">
-                        <p>Cedula : 00000000000  </p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Provincia : X </p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Regimen : X</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Dirrecion o Unidad : X</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Fecha inicio del permisos : X</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Fecha fin del permisos : X</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Desde (hh:mm) : xx:xx</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Hasta (hh:mm) : xx:xx</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Con el motivo : x</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Con las observaciones o justificativos del permisos(opcional) : XXXXXXX</p>
-                    </div> -->
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger cerrarModal" data-dismiss="modal">No registrar</button>
+                        <button type="button" class="btn btn-secondary cerrarModal" data-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-success">Registrar Solicitud de permiso</button>
                     </div>
                 </form>

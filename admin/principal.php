@@ -1,5 +1,6 @@
 <?php
 include_once "../redirection.php";
+include_once "../flash_messages.php";
 session_start();
 
 if (!isset($_SESSION['id_usuarios'])) {
@@ -13,40 +14,101 @@ if ($rol != ROL_ADMIN) {
    redirect(RUTA_ABSOLUTA . "logout");
 }
 
+$message = '';
+$type = '';
+$flash_message = display_flash_message();
+
+if (isset($flash_message)) {
+    $message = $flash_message['message'];
+    $type = $flash_message['type'];
+}
+
 $titulo = "Panel";
 include_once("../plantilla/header.php")
 ?>
 
-    <h1 class="mt-5">Carpeta de Administradores </h1>
-    <h4>El nombre del Admin es : <?php echo $nombre ?></h4>
-    <h4>La Cedula del Admin es : <?php echo $cedula ?></h4>
-    <h4>El Rol del usuario es : <?php echo $rol ?></h4>
-
-<div class="container-fluid">
-    <div class="col-12 px-5">
-        <div class="d-flex">
-            <p class="m-2 col-10 pl-0 font-weight-bold text-primary">Estadisticas de Trabajo</p>
-        </div>
-
-        <div class="canvas shadow m-2">
-            <div class=" canvas ">
-                <canvas id="myChart"></canvas>
+<div class="row mx-5 pt-5">
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <a class="btn" href="<?php echo RUTA_ABSOLUTA; ?>admin/admin">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Administradores
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
-    <div class="col-12 px-5">
-        <div class="d-flex">
-            <p class="m-2 col-10 pl-0 font-weight-bold text-primary">Estadisticas de Vacaciones</p>
-        </div>
-        <div class="canvas shadow m-2 ">
-            <div class="canvas">
-                <canvas id="Newchart"></canvas>
+
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <a class="btn" href="<?php echo RUTA_ABSOLUTA; ?>admin/trabajo">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Dias de Trabajo de los Funcionarios
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </a>
+    </div>
+
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <a class="btn" href="<?php echo RUTA_ABSOLUTA; ?>admin/solicitud_general">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Generar Solicitud
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Pending Requests Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <a class="btn" href="<?php echo RUTA_ABSOLUTA; ?>admin/permisos_pendientes">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Recepcion de solicitudes
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
     </div>
 </div>
 
-<script>
+<!-- <script>
 var labels = [];
 
 const data = {
@@ -156,7 +218,7 @@ var myChart = new Chart(ctx, config);
 var newChart = document.getElementById("Newchart").getContext("2d");
 var NewChart = new Chart(newChart, Newconfig);
 
-</script>
+</script> -->
 
 
 <?php

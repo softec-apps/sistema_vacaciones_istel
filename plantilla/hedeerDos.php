@@ -15,7 +15,6 @@
     ?>
     </title>
 <?php
-include_once "../redirection.php";
 if (!isset($_SESSION['id_usuarios'])) {
     redirect(RUTA_ABSOLUTA . 'logout');
 }
@@ -27,7 +26,7 @@ $rol = $_SESSION['rol'];
     <!-- Script Js -->
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Script de flash_messages -->
-    <script src="../js/flash_messages.js"></script>
+    <script src="<?php echo RUTA_ABSOLUTA; ?>js/flash_messages.js"></script>
     <!-- CDN de bootstrap 5  -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">

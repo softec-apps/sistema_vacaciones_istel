@@ -5,42 +5,40 @@ session_start();
 if (!isset($_SESSION['id_usuarios'])) {
     redirect(RUTA_ABSOLUTA . 'logout');
 }
-$cedula = $_SESSION['cedula'];
-$nombre = $_SESSION['nombres'];
+$cedulaJefe = $_SESSION['cedula'];
+$nombreJefe = $_SESSION['nombres'];
+$apellidosJefe = $_SESSION['apellidos'];
 $rol = $_SESSION['rol'];
 
-if ($rol != ROL_ADMIN) {
+if ($rol != ROL_JEFE) {
    redirect(RUTA_ABSOLUTA . "logout");
 }
 
-$titulo = "Permisos";
-include_once("../plantilla/header.php")
+$titulo = "Permisos Rechazados";
+include_once("../plantilla/hedeerDos.php");
 ?>
 <?php
 include_once  "../conexion.php";
 include_once  "../funciones.php";
-$respuesta = permisosAprobados($pdo);
+$respuesta = soli_rechazadas($pdo);
 ?>
                 <div class="container-fluid mt-5">
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Permisos Aprobados por el supervisor</h1>
-
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Permisos Aprobados</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Permisos Rechazados</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive crud-table">
-                                <table class="table table-bordered" id="tabla_permisos">
+                                <table class="table table-bordered" id="tabla_permisos_aceptados">
                                     <thead>
                                         <tr>
                                             <th>Cedula</th>
-                                            <th>Funcionario</th>
+                                            <th>Nombres</th>
                                             <th>Fecha emitida</th>
-                                            <th>Tipo permiso</th>
                                             <th>Usuario Solicita</th>
-                                            <th>Registrar Solicitud</th>
+                                            <th>Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -94,12 +92,13 @@ $respuesta = permisosAprobados($pdo);
                                             <td><?=  $cedula_user ;?></td>
                                             <td><?=  $nombres . " " . $apellidos ;?></td>
                                             <td><?=  $fecha_permiso ;?></td>
-                                            <td><?=  $motivo_permiso ;?></td>
                                             <td><?=  $usuario_solicita ;?></td>
-
                                             <td>
-                                                <button class="btn btn-success m-1" data-toggle="modal" data-target="#registrar_solicitud" data-registrar="<?= $id_permiso ?>" onclick="aprobar(this)">Registrar</button>
+                                                <?php if ($permiso_aceptado == 2): ?>
+                                                    <button class="btn btn-danger" title="Permiso Rechazado" data-toggle="modal" data-target="#aceptarSolicitud" data-id="<?= $id_permiso ?>" onclick="aceptar(this)"><i class="fa-solid fa-xmark"></i></button>
+                                                <?php endif; ?>
                                             </td>
+
                                         </tr>
                                     <?php
                                         };
@@ -193,107 +192,37 @@ $respuesta = permisosAprobados($pdo);
         </div>
     </div>
 
-
-<!-- Modal de aprobar la solicitud-->
-<div class="modal fade" id="registrar_solicitud" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
+<!-- Modal aceptar Solicitud -->
+<div class="modal fade" id="aceptarSolicitud" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalAdminLabel">Registrar Solicitudes de Permisos </h5>
+                <h5 class="modal-title" id="modalAdminLabel">Aprobar Solicitud</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="aprobarForm" action="<?php echo RUTA_ABSOLUTA ?>procesar" method="post">
-                    <p>Estás a punto de registrar una solicitud de permiso</p>
-
-                    <input type="hidden" name="id_registrar" id="id_registrar" value ="" />
-                    <input class="form-control" type="hidden" name="registrar" value ="3" />
+                <p>¿Está seguro de que desea Aceptar esta solicitud ?</p>
+                <form id="AceptarS" action="<?php echo RUTA_ABSOLUTA ?>procesar" method="POST">
+                    <input type="hidden" name="id_aprueba" id="id_aprueba" value ="" />
+                    <input class="form-control" type="hidden" name="aprobarRechazo" value ="1" />
+                    <input class="form-control" type="hidden" name="aprobar_rechazo" value ="" />
                     <div class="form-floating mb-3">
                         <div>
-                            <label>Ingrese su nombre T.H</label>
-                            <input class="form-control" name="user" type="text" required />
+                            <input class="form-control" name="user" type="hidden" value="<?= $nombreJefe . " " . $apellidosJefe ?>" />
                         </div>
                     </div>
-                    <!-- <div class="form-floating mb-3 mt-3">
-                        <p>Cedula : 00000000000  </p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Provincia : X </p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Regimen : X</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Dirrecion o Unidad : X</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Fecha inicio del permisos : X</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Fecha fin del permisos : X</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Desde (hh:mm) : xx:xx</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Hasta (hh:mm) : xx:xx</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Con el motivo : x</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Con las observaciones o justificativos del permisos(opcional) : XXXXXXX</p>
-                    </div> -->
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger cerrarModal" data-dismiss="modal">No registrar</button>
-                        <button type="submit" class="btn btn-success">Registrar Solicitud de permiso</button>
-                    </div>
                 </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" form="AceptarS" class="btn btn-primary">Aprobar</button>
             </div>
         </div>
     </div>
 </div>
-
-
-
-    <!-- Modal para registrar nuevos permisos -->
-    <div class="modal fade" id="registrar_permisos" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalAdminLabel">Registrar solicitudes de permisos</h5>
-                    <button type="button" class="close cerrarModal" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Selecciona "Registrar" si deseeas registrar todas las solicitudes de todos los funcionarios</p>
-                    <form id="eliminarForm" action="eliminar_admin" method="post">
-                        <input type="hidden" name="cliente_id" id="cliente_id" value="">
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary cerrarModal" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" form="eliminarForm" class="btn btn-primary">Registrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 <script>
     $(".cerrarModal").click(function(){
         $("#registrar_permisos").modal('hide')
@@ -302,6 +231,11 @@ $respuesta = permisosAprobados($pdo);
         var userId = button.getAttribute('data-registrar');
         // Rellenar el campo oculto con el ID del cliente
         document.getElementById('id_registrar').value = userId;
+    }
+    function aceptar(button) {
+        var userId = button.getAttribute('data-id');
+        // Rellenar el campo oculto con el ID del cliente
+        document.getElementById('id_aprueba').value = userId;
     }
 </script>
 <?php include_once("../plantilla/footer.php")?>

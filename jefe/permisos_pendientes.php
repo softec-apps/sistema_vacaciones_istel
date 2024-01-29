@@ -5,11 +5,12 @@ session_start();
 if (!isset($_SESSION['id_usuarios'])) {
     redirect(RUTA_ABSOLUTA . 'logout');
 }
-$cedula = $_SESSION['cedula'];
-$nombre = $_SESSION['nombres'];
+$cedulaJefe = $_SESSION['cedula'];
+$nombreJefe = $_SESSION['nombres'];
+$apellidosJefe = $_SESSION['apellidos'];
 $rol = $_SESSION['rol'];
 
-if ($rol != ROL_ADMIN) {
+if ($rol != ROL_JEFE) {
    redirect(RUTA_ABSOLUTA . "logout");
 }
 
@@ -24,12 +25,12 @@ include_once  "../funciones.php";
 $respuesta = soli_no_aceptadas($pdo);
 ?>
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Permisos Pendientes</h1>
+    <h1 class="h3 mb-2 text-gray-800">Permisos Solicitados<?php ?></h1>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Permisos Pendientes</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Permisos Solicitados</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -166,10 +167,10 @@ $respuesta = soli_no_aceptadas($pdo);
 
                     <input type="hidden" name="id_aprueba" id="id_aprueba" value ="" />
                     <input class="form-control" type="hidden" name="aprobar" value ="1" />
+
                     <div class="form-floating mb-3">
                         <div>
-                            <label>Ingrese su nombre como Jefe</label>
-                            <input class="form-control" name="user" type="text" required />
+                            <input class="form-control" name="user" type="hidden" value="<?= $nombreJefe . " " . $apellidosJefe ?>" />
                         </div>
                     </div>
                     <!--

@@ -14,7 +14,8 @@ include_once("redirection.php");
 
     <!-- Jquery cdn -->
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+    <!-- Script de flash_messages -->
+    <script src="js/flash_messages.js"></script>
     <!--CDN Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
@@ -30,13 +31,26 @@ include_once("redirection.php");
     <link href="<?php echo $ruta_absoluta; ?>css/personal/estilos_personales.css" rel="stylesheet">
 
     <link rel="stylesheet" href="<?php echo $ruta_absoluta; ?>css/personal/styles.css">
-
+    <!-- CDN Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 
 <body class="fucion">
 
     <div class="container mx-auto">
-        <!-- Outer Row -->
+
+<?php
+include_once "flash_messages.php";
+$message = '';
+$type = '';
+$flash_message = display_flash_message();
+if (isset($flash_message)) {
+    $message = $flash_message['message'];
+    $type = $flash_message['type'];
+}
+
+?>
         <div class="row justify-content-center mx-auto">
             <div class="col-xl-6 col-md-9">
                 <div class="card o-hidden border-0 shadow-lg my-5 rounded-5" id="inicio_sesion">
@@ -99,6 +113,9 @@ include_once("redirection.php");
             claveInput.type = "password";
             }
         });
+        });
+        $(document).ready(function() {
+            showFlashMessages('<?php echo $message; ?>', '<?php echo $type; ?>');
         });
     </script>
 

@@ -42,7 +42,11 @@
 
 
 <script src="<?php echo $ruta_absoluta; ?>js/datatables.js"></script>
-
+<script>
+    $(document).ready(function() {
+        showFlashMessages('<?php echo $message; ?>', '<?php echo $type; ?>');
+    });
+</script>
 
 </body>
 

@@ -27,10 +27,10 @@ RewriteRule ^logout$ logout.php [L]
 
 #Rutas de administradores
 RewriteRule ^admin/dashboard$ admin/principal.php [L]
-RewriteRule ^registrar_users$ registrar_users.php [L]
-RewriteRule ^actualizar_users$ actualizar_users.php [L]
-RewriteRule ^eliminar_users$ eliminar_users.php [L]
-RewriteRule ^calcular$ calcular.php [L]
+RewriteRule ^admin/registrar_users$ admin/registrar_users.php [L]
+RewriteRule ^admin/actualizar_users$ admin/actualizar_users.php [L]
+RewriteRule ^admin/eliminar_users$ admin/eliminar_users.php [L]
+RewriteRule ^admin/calcular$ admin/calcular.php [L]
 
 RewriteRule ^admin/admin$ admin/admin.php [L]
 RewriteRule ^admin/permisos_pendientes$ admin/permisos_pendientes.php [L]
@@ -47,65 +47,37 @@ RewriteRule ^jefe/dashboard$ jefe/principal.php [L]
 #Rutas de Talento humanos
 RewriteRule ^talento_h/dashboard$ talentoHumano/principal.php [L]
 
-#Rutas de Fencionarios
+#Rutas de Funcionarios
 RewriteRule ^funcionario/dashboard$ funcionario/principal.php [L]
-RewriteRule ^funcionario/solicitud$ funcionario/solicitud.php [L]
+RewriteRule ^admin/solicitud$ admin/solicitud.php [L]
 
 #Ruta logs
 RewriteRule ^admin/log$ funcionario/solicitud.php [L]
+RewriteRule ^solicitar_permiso$ solicitar_permiso.php [L]
+RewriteRule ^admin/solicitud_general$ admin/solicitud_general.php [L]
+RewriteRule ^datos_individuales$ datos_individuales.php [L]
 
 
-# Redirigir a Recuperar-Contraseña.php dentro de la carpeta ForgotPassword
-# RewriteRule ^ForgotPassword/Recuperar-Contraseña$ ForgotPassword/recuperar_contraseña.php [L]
-# RewriteRule ^ForgotPassword/Codigo$ ForgotPassword/codigo.php [L]
-# RewriteRule ^ForgotPassword/Nueva-Contraseña$ ForgotPassword/nueva_password.php [L]
-
-# RewriteRule ^admin/funcionarios$ Admins/obtener_funcionarios.php [L]
-# RewriteRule ^admin/registrar$ Admins/registrar_admins.php [L]
-# RewriteRule ^admin/editar_datos$ Admins/editar_datos.php [L]
-# RewriteRule ^admin/actualizar_permisos$ Admins/actualizar_permisos.php [L]
-# RewriteRule ^admin/eliminar_admin$ Admins/eliminar_admin.php [L]
-
-# RewriteRule ^admin/obtener_encuestas$ Admins/obtener_encuestas.php [L]
-# RewriteRule ^admin/registrar_encuestas$ Admins/registrar_encuestas.php [L]
-# RewriteRule ^admin/actualizar_encuestas$ Admins/actualizar_encuestas.php [L]
-# RewriteRule ^admin/eliminar_encuestas$ Admins/eliminar_encuestas.php [L]
-# RewriteRule ^admin/obtener_lista_encuesta$ Admins/obtener_lista_encuesta.php [L]
-# RewriteRule ^admin/ver_encuestas$ Admins/ver_encuestas.php [L]
-# RewriteRule ^admin/enviar_encuesta$ Admins/enviar_encuesta.php [L]
-# RewriteRule ^admin/enviar_recordatorio$ Admins/enviar_recordatorio.php [L]
-# RewriteRule ^admin/completar$ Admins/completar.php [L]
-# RewriteRule ^admin/actualizar_filtrado$ Admins/actualizar_filtrado.php [L]
+RewriteRule ^configuracion/configuracionAcumulados$ configuracion/config_acu.php [L]
 
 
-# RewriteRule ^admin/eventos$ Admins/eventos.php [L]
-# RewriteRule ^admin/registrar_evento$ Admins/registrar_evento.php [L]
-# RewriteRule ^admin/actualizar_evento$ Admins/actualizar_evento.php [L]
-# RewriteRule ^admin/eliminar_evento$ Admins/eliminar_evento.php [L]
-# RewriteRule ^admin/ver_eventos$ Admins/ver_eventos.php [L]
-# RewriteRule ^admin/enviar_evento$ Admins/enviar_evento.php [L]
-# RewriteRule ^admin/actualizar_filtrado_evento$ Admins/actualizar_filtrado_evento.php [L]
+RewriteRule ^admin/eliminar$ admin/eliminar_permiso.php [L]
 
-# RewriteRule ^admin/graduacion$ Admins/graduacion.php [L]
-# RewriteRule ^admin/empleo$ Admins/empleo.php [L]
+RewriteRule ^procesar$ procesar_solicitudes.php [L]
+RewriteRule ^permisos/aceptados$ permisos_aceptados.php [L]
+RewriteRule ^resta$ resta_individual_solicitud.php [L]
+RewriteRule ^resta2$ resta2.php [L]
+RewriteRule ^configuracion/procesar$ configuracion/config_vac.php [L]
+RewriteRule ^funcionario/solicitudUser$ funcionario/solicitudUser.php [L]
+RewriteRule ^permisos/rechazados$ permisos_rechazados.php [L]
+RewriteRule ^funcionario/rechazados$ funcionario/solicitudRechazada.php [L]
 
-# RewriteRule ^admin/bolsa_empleo$ Admins/bolsa_empleo.php [L]
-
-# RewriteRule ^admin/carrera$ Admins/carrera.php [L]
-# RewriteRule ^admin/carrera2$ Admins/carrera2.php [L]
-# RewriteRule ^admin/registrar_carrera$ Admins/registrar_carrera.php [L]
-# RewriteRule ^admin/actualizar_carrera$ Admins/actualizar_carrera.php [L]
-# RewriteRule ^admin/eliminar_carrera$ Admins/eliminar_carrera.php [L]
+RewriteRule ^jefe/trabajoFuncionarios$ jefe/dias_funcionarios.php [L]
+RewriteRule ^jefe/permisosSolicitados$ jefe/permisos_pendientes.php [L]
+RewriteRule ^jefe/permisosAprobados$ jefe/permisos_aprobados.php [L]
+RewriteRule ^jefe/permisosRechazados$ jefe/permisos_rechazados.php [L]
 
 
-# RewriteRule ^graduado/vista$ graduado/vista.php [L]
-
-# RewriteRule ^admin/registrar_graduados$ Admins/registrar_graduados.php [L]
-# RewriteRule ^admin/obtener_graduados$ Admis/obtener_graduados.php [L]
-# RewriteRule ^admin/actualizar_graduados$ Admins/actualizar_graduados.php [L]
-# RewriteRule ^admin/eliminar_graduado$ Admins/eliminar_graduado.php [L]
-# RewriteRule ^admin/obtener_portafolio$ Admins/obtener_portafolio.php [L]
-# RewriteRule ^admin/aprobar$ Admins/aprobar.php [L]
-# RewriteRule ^vista/vista_portafolio$ vista/vista_portafolio.php [L]
-# RewriteRule ^graduado/estudiante_portafolio$ graduado/estudiante_portafolio.php [L]
-# RewriteRule ^graduado/cargar_formulario_G$ graduado/cargar_formulario_G.php [L]
+RewriteRule ^talentoHumano/registrarFuncionario$ talentoHumano/registrarFuncionario.php [L]
+RewriteRule ^talentoHumano/permisosAprobados$ talentoHumano/permisosAceptados.php [L]
+RewriteRule ^talentoHumano/permisosRegistrados$ talentoHumano/permisosRegistrados.php [L]

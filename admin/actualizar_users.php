@@ -1,6 +1,6 @@
 <?php
-include_once "funciones.php";
-include_once "conexion.php";
+include_once "../funciones.php";
+include_once "../conexion.php";
 
 
 if ($_POST) {
@@ -11,9 +11,10 @@ if ($_POST) {
     $email =$_POST["email_A"];
     $rol =$_POST["roles"];
     $fecha_ingreso = $_POST["fecha_ingreso"];
+    $tiempo_trabajo = isset($_POST["tiempo_trabajo"]) ? $_POST["tiempo_trabajo"] : 0;
 
 
-    actualizar_usuario($pdo,$id_usuarios,$cedula,$nombres,$apellidos,$email,$rol,$fecha_ingreso);
+    actualizar_usuario($pdo,$id_usuarios,$cedula,$nombres,$apellidos,$email,$rol,$fecha_ingreso,$tiempo_trabajo);
 }
 
 ?>

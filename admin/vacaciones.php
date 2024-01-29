@@ -14,73 +14,109 @@ if ($rol != ROL_ADMIN) {
 }
 
 $titulo = "Vacaciones";
-include_once("../plantilla/header.php")
+include_once("../plantilla/header.php");
+
+include_once("../resta_solicitud.php");
 ?>
 
                 <div class="container-fluid mt-5">
 
-                    <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Dias de Vacaciones y dias trbajados de los funcionarios</h1>
-
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Dias de Vacaciones y dias trbajados de los funcionarios</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Dias de Vacaciones y dias trabajados de los funcionarios</h6>
                         </div>
                         <div class="card-body">
-                            <div class="table-responsive crud-table">
-                                <table class="table table-bordered" id="tabla_vacaciones">
+                            <div class="table-responsive">
+                                <table class="table table-bordered crud-table" id="tabla_vacaciones">
                                     <thead>
                                         <tr>
                                             <th>Id</th>
                                             <th>Cedula</th>
                                             <th>Nombres</th>
                                             <th>Apellidos</th>
-                                            <th>Dias limite vaciones</th>
-                                            <th>Dias totales vacaciones</th>
-                                            <th>Dias limite acumulados</th>
-                                            <th>Dias totales acumulados</th>
-                                            <th>Dias laborados</th>
-                                            <th>Fecha Inicio</th>
-                                            <th>Fecha Fin</th>
+                                            <th>D.T</th>
+                                            <th>D.D.VAC</th>
+                                            <th>D.OCP</th>
+                                            <th>H.T.A</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                    <?php
+                                        // Ejemplo de uso
+                                        $resultadosTodosUsuarios = obtenerDiasTrabajadosParaTodos($pdo);
+
+                                        foreach ($resultadosTodosUsuarios as $key => $resultado) {
+                                            $id_usuario = $resultado['id_usuario'];
+                                            $cedulaIterada = $resultado['cedula'];
+                                            $nombresIterado = $resultado['nombre'];
+                                            $apellidosIterado = $resultado['apellido'];
+                                            $diasTrabajados = $resultado['dias_trabajados'];
+                                            $horasDePermisoSolicitadas = $resultado['horas_permiso'];
+                                            $fechaIngreso = $resultado['fecha_ingreso'];
+                                            $tiempoTrabajo = $resultado['tiempo_trabajo'];
+
+                                            $diasDeVacaciones = calcularDiasVacaciones(
+                                                $diasTrabajados,
+                                                $horasDePermisoSolicitadas,
+                                                $limiteVacaciones,
+                                                $diasPorAnoTrabajado,
+                                                $diasPorAno,
+                                                $tiempoTrabajo
+                                            );
+                                            // if ($diasDeVacaciones > $limiteVacaciones) {
+                                            //     echo "Error: El total de días de vacaciones supera el límite permitido de $limiteVacaciones días.";
+                                            // } else {
+                                                $diasDePermisoSolicitados = $horasDePermisoSolicitadas / $tiempoTrabajo;
+                                                /* echo "El empleado tiene derecho a $diasDeVacaciones días de vacaciones. Se han utilizado $diasDePermisoSolicitados días de permiso.";
+                                                echo"<br/>"; */
+                                            // }
+                                            $dias_totales = $diasDeVacaciones + $diasDePermisoSolicitados;
+                                            $limiteVerde = 45;
+                                            $limiteAmarillo = 50;
+                                            $limiteRojo = 60;
+                                    ?>
                                         <tr>
                                             <td>
+                                            <?= $key + 1 ?>
                                             </td>
 
                                             <td>
+                                            <?= $cedulaIterada ?>
                                             </td>
 
                                             <td>
+                                            <?= $nombresIterado ?>
                                             </td>
 
                                             <td>
+                                            <?= $apellidosIterado ?>
                                             </td>
 
                                             <td>
+                                            <?= $diasTrabajados ?>
                                             </td>
 
                                             <td>
+                                            <?php if ($diasDeVacaciones == $limiteVerde || $diasDeVacaciones < $limiteAmarillo) {
+                                                echo '<button class="btn-success" title="Dias disponibles en orden">'. $diasDeVacaciones .'</button>';
+                                            }elseif ($diasDeVacaciones == $limiteAmarillo || $diasDeVacaciones < $limiteRojo) {
+                                                echo '<button class="btn-warning" title="Se acerca al limite">' . $diasDeVacaciones .'</button>';
+                                            }elseif ($diasDeVacaciones >= $limiteRojo) {
+                                                echo '<button class="btn-danger" title="El limite es 60">' . $diasDeVacaciones .'</button>';
+                                            }?>
                                             </td>
 
                                             <td>
+                                            <?= $diasDePermisoSolicitados ?>
                                             </td>
 
                                             <td>
+                                            <?= $dias_totales ?>
                                             </td>
 
-                                            <td>
-                                            </td>
-
-                                            <td>
-                                            </td>
-
-                                            <td>
-                                            </td>
                                         </tr>
-
+                                        <?php } ?>
                                     </tbody>
                                 </table>
                             </div>

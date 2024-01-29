@@ -9,7 +9,7 @@ $cedula = $_SESSION['cedula'];
 $nombre = $_SESSION['nombres'];
 $rol = $_SESSION['rol'];
 
-if ($rol != ROL_ADMIN) {
+if ($rol != ROL_TALENTO_HUMANO) {
    redirect(RUTA_ABSOLUTA . "logout");
 }
 
