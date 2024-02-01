@@ -1,5 +1,6 @@
 <?php
 include_once "../redirection.php";
+include_once "../flash_messages.php";
 session_start();
 
 if (!isset($_SESSION['id_usuarios'])) {
@@ -11,6 +12,15 @@ $rol = $_SESSION['rol'];
 
 if ($rol != ROL_TALENTO_HUMANO) {
    redirect(RUTA_ABSOLUTA . "logout");
+}
+
+$message = '';
+$type = '';
+$flash_message = display_flash_message();
+
+if (isset($flash_message)) {
+    $message = $flash_message['message'];
+    $type = $flash_message['type'];
 }
 
 $titulo = "Permisos Registrados";
@@ -132,7 +142,7 @@ $respuesta = soli_registradas($pdo);
             </div>
             <div class="modal-body">
                 <p>¿Está seguro de que desea Cancelar el registro de esta solicitud ?</p>
-                <form id="cancelarS" action="<?php echo RUTA_ABSOLUTA ?>procesar" method="POST">
+                <form id="cancelarS" action="<?php echo RUTA_ABSOLUTA ?>talentoH/procesarSolicitud" method="POST">
                     <input type="hidden" name="id_cancelar" id="id_cancelar" value ="<?= $id_permiso ?>" />
                     <input class="form-control" type="hidden" name="cancelar_registro" value ="1" />
                     <input class="form-control" type="hidden" name="user" value="" />

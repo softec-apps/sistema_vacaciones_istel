@@ -1,5 +1,6 @@
 <?php
 include_once "../redirection.php";
+include_once "../flash_messages.php";
 session_start();
 
 if (!isset($_SESSION['id_usuarios'])) {
@@ -11,6 +12,15 @@ $rol = $_SESSION['rol'];
 
 if ($rol != ROL_ADMIN) {
    redirect(RUTA_ABSOLUTA . "logout");
+}
+
+$message = '';
+$type = '';
+$flash_message = display_flash_message();
+
+if (isset($flash_message)) {
+    $message = $flash_message['message'];
+    $type = $flash_message['type'];
 }
 
 $titulo = "Permisos";
@@ -62,6 +72,7 @@ $respuesta = permisosAprobados($pdo);
                                                 $direccion_unidad = $valor ["direccion_unidad"];
                                                 $fecha_permiso = $valor ["fecha_permiso"];
                                                 $motivo_permiso = $valor ["motivo_permiso"];
+                                                $motivo_permiso = str_replace('_', ' ', $motivo_permiso);
                                                 $tiempoLimite_motivo = $valor ["tiempo_motivo"];
                                                 $desc_motivo = $valor['desc_motivo'];
                                                 $dias_solicitados = $valor['dias_solicitados'];

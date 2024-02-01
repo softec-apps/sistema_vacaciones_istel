@@ -22,7 +22,7 @@ if ($_POST) {
             'success'
         );
 
-        redirect(RUTA_ABSOLUTA . "admin/admin");
+        redirect(RUTA_ABSOLUTA . "talentoHumano/registrarFuncionario");
     }
 }
 

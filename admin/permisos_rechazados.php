@@ -1,5 +1,6 @@
 <?php
-include_once "redirection.php";
+include_once "../redirection.php";
+include_once "../flash_messages.php";
 session_start();
 
 if (!isset($_SESSION['id_usuarios'])) {
@@ -12,13 +13,20 @@ $rol = $_SESSION['rol'];
 if ($rol != ROL_ADMIN) {
    redirect(RUTA_ABSOLUTA . "logout");
 }
+$message = '';
+$type = '';
+$flash_message = display_flash_message();
 
+if (isset($flash_message)) {
+    $message = $flash_message['message'];
+    $type = $flash_message['type'];
+}
 $titulo = "Permisos";
-include_once("plantilla/hedeerDos.php");
+include_once("../plantilla/hedeerDos.php");
 ?>
 <?php
-include_once  "conexion.php";
-include_once  "funciones.php";
+include_once  "../conexion.php";
+include_once  "../funciones.php";
 $respuesta = soli_rechazadas($pdo);
 ?>
                 <div class="container-fluid mt-5">
@@ -303,8 +311,7 @@ $respuesta = soli_rechazadas($pdo);
                 </button>
             </div>
             <div class="modal-body">
-                <!-- <p>¿Está seguro de que desea Aceptar esta solicitud ?</p> -->
-                <form id="AceptarS" action="<?php echo RUTA_ABSOLUTA ?>procesar" method="POST">
+                <form id="AceptarS" action="<?php echo RUTA_ABSOLUTA ?>admin/soliAceptadas" method="POST">
                     <input type="hidden" name="id_aprueba" id="id_aprueba" value ="" />
                     <input class="form-control" type="hidden" name="aprobarRechazo" value ="1" />
                     <input class="form-control" type="hidden" name="aprobar_rechazo" value ="" />
@@ -338,4 +345,4 @@ $respuesta = soli_rechazadas($pdo);
         document.getElementById('id_aprueba').value = userId;
     }
 </script>
-<?php include_once("plantilla/footer.php")?>
+<?php include_once("../plantilla/footer.php")?>

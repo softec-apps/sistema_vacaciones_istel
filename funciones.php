@@ -210,14 +210,9 @@ function actualizar_usuario($pdo,$id_usuarios,$cedula,$nombres,$apellidos,$email
 
         //Ejecutamos la consulta con los parametros
         $stmt->execute();
-        create_flash_message(
-            'Datos Actualizados Correctamente ',
-            'success'
-        );
-
-        redirect(RUTA_ABSOLUTA . "admin/admin");
+        return "Datos Actualizados";
     } catch (PDOException $e) {
-        echo "Error de exepcion" .$e->getMessage();
+        return "Error de exepcion" .$e->getMessage();
     }
 
 }
@@ -234,12 +229,8 @@ function eliminar_user($pdo,$id_usuario){
 
         //Ejecutamos la consulta con los parametros
         $stmt->execute();
-        create_flash_message(
-            'Usuario Eliminado Correctamente ',
-            'success'
-        );
 
-        redirect(RUTA_ABSOLUTA . "admin/admin");
+        return "Usuario Eliminado";
 
     } catch (PDOException $e) {
         echo "Error de exepcion" .$e->getMessage();
@@ -299,9 +290,20 @@ function calculo_unico_insert($id_usuario_insertado, $tiempo_trabajo, $pdo)
         $dias_totales_acu_user = $cantidad_de_incrementos * $incremento_por_365_dias;
         $dias_totales_vac_user = $cantidad_de_incrementos * $incremento_por_365_dias;
 
+        $consulta = "SELECT limiteVacaciones, diasPorAñoTrabajado, diasPorAño FROM dias_trabajo";
+        $stmt = $pdo->prepare($consulta);
+        $stmt->execute();
+
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Asignar los valores a las variables
+        $limiteVacaciones = $resultado["limiteVacaciones"];
+        $diasPorAñoTrabajado = $resultado["diasPorAñoTrabajado"];
+        $diasPorAño = $resultado["diasPorAño"];
+
 
         // Insertar el registro en la tabla dias_trabajados
-        $queryInsert = "INSERT INTO dias_trabajo (id_usuarios, dias_laborados,horas_trabajadas, fecha_inicio, fecha_actual, dias_totales_acu_user, dias_totales_vac_user ) VALUES (:id_usuarios, :dias_laborados,:horas_trabajadas,:fecha_inicio, :fecha_actual, :dias_totales_acu_user, :dias_totales_vac_user)";
+        $queryInsert = "INSERT INTO dias_trabajo (id_usuarios, dias_laborados,horas_trabajadas, fecha_inicio, fecha_actual, dias_totales_acu_user, dias_totales_vac_user,limiteVacaciones,diasPorAñoTrabajado,diasPorAño ) VALUES (:id_usuarios, :dias_laborados,:horas_trabajadas,:fecha_inicio, :fecha_actual, :dias_totales_acu_user, :dias_totales_vac_user,:limiteVacaciones,:diasPorAnoTrabajado,:diasPorAno)";
         $statementInsert = $pdo->prepare($queryInsert);
         $statementInsert->bindParam(':id_usuarios', $id_usuario_insertado, PDO::PARAM_INT);
         $statementInsert->bindParam(':dias_laborados', $dias_laborados, PDO::PARAM_INT);
@@ -310,6 +312,9 @@ function calculo_unico_insert($id_usuario_insertado, $tiempo_trabajo, $pdo)
         $statementInsert->bindValue(':fecha_actual', $fecha_actual_obj->format('Y-m-d H:i:s'), PDO::PARAM_STR);
         $statementInsert->bindParam(':dias_totales_acu_user', $dias_totales_acu_user, PDO::PARAM_STR);
         $statementInsert->bindParam(':dias_totales_vac_user', $dias_totales_vac_user, PDO::PARAM_STR);
+        $statementInsert->bindParam(':limiteVacaciones', $limiteVacaciones, PDO::PARAM_STR);
+        $statementInsert->bindParam(':diasPorAnoTrabajado', $diasPorAñoTrabajado, PDO::PARAM_STR);
+        $statementInsert->bindParam(':diasPorAno', $diasPorAño, PDO::PARAM_STR);
         $statementInsert->execute();
 
         // Obtener el ID del último registro insertado
@@ -393,12 +398,6 @@ function calcular_actualizar($pdo)
     }
 }
 
-
-//Funcion para insertar permisos en la DB
-/* function insert_permisos($id_usuarios,$provincia,$regimen,$coordinacion_zonal,$direccion_unidad,$fecha_permiso,$observaciones,$motivo_permiso,$desc_motivo,$desc_tipo_permiso,$dias_solicitados,$horas_solicitadas,$fecha_permisos_desde,$fecha_permiso_hasta,$horas_permiso_desde,$horas_permiso_hasta,$usuario_solicita,$usuario_aprueba,$usuario_registra,$permiso_aceptado,$pdo){
-descontar
-} */
-//Funcion para ver los funcionaruos que han solicitado un permiso
 function cons_table($pdo){
     try {
         $cons_table="SELECT usuarios.id_usuarios,registros_permisos.id_permisos,usuarios.nombres,usuarios.cedula,usuarios.apellidos,dias_trabajo.dias_laborados,dias_trabajo.horas_trabajadas,dias_trabajo.dias_totales_vac_user,dias_trabajo.dias_totales_acu_user,registros_permisos.permiso_aceptado,registros_permisos.dias_solicitados,registros_permisos.horas_solicitadas FROM usuarios,dias_trabajo,registros_permisos  WHERE usuarios.id_usuarios = dias_trabajo.id_usuarios AND usuarios.id_usuarios = registros_permisos.id_usuarios AND usuarios.rol = 'Funcionario'";

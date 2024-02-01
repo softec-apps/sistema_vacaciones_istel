@@ -228,15 +228,15 @@ $rol = $_SESSION['rol'];
                         if ($rol == 'Talento_Humano') {
                         ?>
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>talentoHumano/registrarFuncionario">
-                            <div class="sb-nav-link-icon"><i class="fa-solid fa-user-plus"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-user-plus"></i></div>
                             Registrar Nuevos Funcionarios
                         </a>
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>talentoHumano/permisosAprobados">
-                            <div class="sb-nav-link-icon"><i class="fas fa-inbox"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-envelope-open-text"></i></div>
                             Permisos Aceptados por el Jefe Supervisor
                         </a>
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>talentoHumano/permisosRegistrados">
-                            <div class="sb-nav-link-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa-lg fas fa-check-circle"></i></div>
                             Permisos registrados
                         </a>
 
@@ -265,7 +265,7 @@ $rol = $_SESSION['rol'];
                         <a class="nav-link collapsed texto rounded-5" href="#" data-bs-toggle="collapse"
                             data-bs-target="#collapseTalentosH" aria-expanded="false" aria-controls="collapseLayouts">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-person-burst"></i></div>
-                            Talentos Humanos
+                            Talento Humano
                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                         </a>
                         <div class="collapse" id="collapseTalentosH" aria-labelledby="headingOne"

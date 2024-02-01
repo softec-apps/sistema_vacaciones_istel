@@ -8,7 +8,7 @@ if ($_POST) {
     try {
         $cedula = $_POST["cedula"];
         $nombres = ucwords($_POST["nombres"]);
-        $apellidos = ucwords($_POST["apellidos"]);
+        $apellidos = ucwords($_POST["apellidos"];)
         $email = $_POST["email_A"];
         $usuario = $_POST["user_A"];
         $clave = $_POST["password_A"];
@@ -21,11 +21,11 @@ if ($_POST) {
         if (is_numeric($id_insertado)) {
 
             create_flash_message(
-                'Usuario Registrado ',
+                'Funcionario Registrado ',
                 'success'
             );
 
-            redirect(RUTA_ABSOLUTA . "admin/admin");
+            redirect(RUTA_ABSOLUTA . "admin/register");
 
             // echo"DATOS Insertados";
         } elseif (strpos($id_insertado, "Error de repetición de cédula") !== false) {
@@ -35,7 +35,7 @@ if ($_POST) {
                 'error'
             );
 
-            redirect(RUTA_ABSOLUTA . "admin/admin");
+            redirect(RUTA_ABSOLUTA . "admin/register");
 
             // echo "<script>alert('La cédula ya existe o el Usuario Ya existe en la base de datos.')</script>";
         }elseif (strpos($id_insertado, "Error de repetición de email") !== false) {
@@ -45,7 +45,7 @@ if ($_POST) {
                 'error'
             );
 
-            redirect(RUTA_ABSOLUTA . "admin/admin");
+            redirect(RUTA_ABSOLUTA . "admin/register");
             // echo "<script>alert('El email ya existe en la base de datos.')</script>";
 
         }else {

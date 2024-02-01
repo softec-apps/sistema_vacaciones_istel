@@ -3,7 +3,7 @@ include_once "../conexion.php";
 
 function seleccionar($pdo){
     try {
-        $consulta = "SELECT limiteVacaciones, diasPorAñoTrabajado, diasPorAño FROM dias_trabajo";
+        $consulta = "SELECT limiteVacaciones, diasPorAño, diasAnuales FROM configuracion";
         $stmt = $pdo->prepare($consulta);
         $stmt->execute();
 
@@ -11,8 +11,8 @@ function seleccionar($pdo){
 
         // Asignar los valores a las variables
         $limiteVacaciones = $resultado["limiteVacaciones"];
-        $diasPorAnoTrabajado = $resultado["diasPorAñoTrabajado"];
-        $diasPorAno = $resultado["diasPorAño"];
+        $diasPorAnoTrabajado = $resultado["diasPorAño"];
+        $diasPorAno = $resultado["diasAnuales"];
 
         // Puedes devolver las variables si es necesario
         return [

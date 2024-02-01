@@ -61,7 +61,7 @@ if (isset($flash_message)) {
                                 <div class=" px-4 py-5 pb-4">
                                     <div class="text-center">
                                     <img src="./imagenes_defecto/logo_instituto.png" class="img-fluid w-25 mb-2">
-                                        <h1 class="h4 text-gray-800 mb-4">Gestion de permisos y vaciones</h1>
+                                        <h1 class="h4 text-gray-800 mb-4">Gestion de permisos y vacaciones</h1>
                                     </div>
                                     <hr class="bg-dark m-4">
                                     <form class="user m-4" action="login" method="post">
@@ -86,7 +86,7 @@ if (isset($flash_message)) {
                                         </button>
                                         <hr class="bg-dark mb-4 mt-4">
                                         <div class="text-center p-1 pb-0">
-                                            <a class="small text-decoration-none" href="ForgotPassword/Recuperar-Contraseña">Olvido Su Contraseña?</a>
+                                            <!-- <a class="small text-decoration-none" href="ForgotPassword/Recuperar-Contraseña">Olvido Su Contraseña?</a> -->
                                         </div>
                                     </form>
                                 </div>

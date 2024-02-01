@@ -72,8 +72,8 @@ include_once("../resta_solicitud.php");
                                                 echo"<br/>"; */
                                             // }
                                             $dias_totales = $diasDeVacaciones + $diasDePermisoSolicitados;
-                                            $limiteVerde = 45;
-                                            $limiteAmarillo = 50;
+                                            $limiteVerde = 30;
+                                            $limiteAmarillo = 45;
                                             $limiteRojo = 60;
                                     ?>
                                         <tr>
@@ -97,14 +97,16 @@ include_once("../resta_solicitud.php");
                                             <?= $diasTrabajados ?>
                                             </td>
 
-                                            <td>
-                                            <?php if ($diasDeVacaciones == $limiteVerde || $diasDeVacaciones < $limiteAmarillo) {
-                                                echo '<button class="btn-success" title="Dias disponibles en orden">'. $diasDeVacaciones .'</button>';
-                                            }elseif ($diasDeVacaciones == $limiteAmarillo || $diasDeVacaciones < $limiteRojo) {
-                                                echo '<button class="btn-warning" title="Se acerca al limite">' . $diasDeVacaciones .'</button>';
-                                            }elseif ($diasDeVacaciones >= $limiteRojo) {
-                                                echo '<button class="btn-danger" title="El limite es 60">' . $diasDeVacaciones .'</button>';
-                                            }?>
+                                            <td <?php
+                                                if ($diasDeVacaciones == $limiteVerde || $diasDeVacaciones < $limiteAmarillo) {
+                                                    echo 'class="bg-success text-white" title="Dias disponibles en orden"';
+                                                } elseif ($diasDeVacaciones == $limiteAmarillo || $diasDeVacaciones < $limiteRojo) {
+                                                    echo 'class="bg-warning" title="Se acerca al limite"';
+                                                } elseif ($diasDeVacaciones >= $limiteRojo) {
+                                                    echo 'class="bg-danger text-white" title="El limite es 60 dias"';
+                                                }
+                                            ?>>
+                                                <?php echo $diasDeVacaciones; ?>
                                             </td>
 
                                             <td>

@@ -1,5 +1,6 @@
 <?php
-include_once "redirection.php";
+include_once "../redirection.php";
+include_once "../flash_messages.php";
 session_start();
 
 if (!isset($_SESSION['id_usuarios'])) {
@@ -13,12 +14,20 @@ if ($rol != ROL_ADMIN) {
    redirect(RUTA_ABSOLUTA . "logout");
 }
 
+$message = '';
+$type = '';
+$flash_message = display_flash_message();
+
+if (isset($flash_message)) {
+    $message = $flash_message['message'];
+    $type = $flash_message['type'];
+}
 $titulo = "Permisos";
-include_once("plantilla/hedeerDos.php");
+include_once("../plantilla/hedeerDos.php");
 ?>
 <?php
-include_once  "conexion.php";
-include_once  "funciones.php";
+include_once  "../conexion.php";
+include_once  "../funciones.php";
 $respuesta = soli_aceptadas($pdo);
 ?>
                 <div class="container-fluid mt-5">
@@ -225,45 +234,6 @@ $respuesta = soli_aceptadas($pdo);
                             <input class="form-control" name="user" type="text" required />
                         </div>
                     </div>
-                    <!-- <div class="form-floating mb-3 mt-3">
-                        <p>Cedula : 00000000000  </p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Provincia : X </p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Regimen : X</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Dirrecion o Unidad : X</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Fecha inicio del permisos : X</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Fecha fin del permisos : X</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Desde (hh:mm) : xx:xx</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Hasta (hh:mm) : xx:xx</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Con el motivo : x</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Con las observaciones o justificativos del permisos(opcional) : XXXXXXX</p>
-                    </div> -->
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger cerrarModal" data-dismiss="modal">No registrar</button>
@@ -276,31 +246,6 @@ $respuesta = soli_aceptadas($pdo);
 </div>
 
 
-
-<!-- Modal para registrar nuevos permisos -->
-<div class="modal fade" id="registrar_permisos" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalAdminLabel">Registrar solicitudes de permisos</h5>
-                <button type="button" class="close cerrarModal" data-dismiss="modal" aria-label="Cerrar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Selecciona "Registrar" si deseeas registrar todas las solicitudes de todos los funcionarios</p>
-                <form id="eliminarForm" action="eliminar_admin" method="post">
-                    <input type="hidden" name="cliente_id" id="cliente_id" value="">
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary cerrarModal" data-dismiss="modal">Cancelar</button>
-                <button type="submit" form="eliminarForm" class="btn btn-primary">Registrar</button>
-            </div>
-        </div>
-    </div>
-</div>
 <!-- Modal para cancelar una solicitud -->
 <div class="modal fade" id="cancelarSolicitud" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
     aria-hidden="true">
@@ -314,8 +259,8 @@ $respuesta = soli_aceptadas($pdo);
             </div>
             <div class="modal-body">
                 <p>¿Está seguro de que desea Cancelar esta solicitud ?</p>
-                <p>Recuerde que si cancela la solicitud este permiso se movera a la seccion de "Permisos Pendientes"</p>
-                <form id="cancelarS" action="<?php echo RUTA_ABSOLUTA ?>procesar" method="POST">
+                <p>Recuerde que si cancela la solicitud este permiso se movera a la seccion de "Recepcion de Solicitudes"</p>
+                <form id="cancelarS" action="<?php echo RUTA_ABSOLUTA ?>admin/procesarSolicitudes" method="POST">
                     <input type="hidden" name="id_cancelar" id="id_cancelar" value ="<?= $id_permiso ?>" />
                     <input class="form-control" type="hidden" name="cancelar" value ="0" />
                     <input class="form-control" type="hidden" name="user" value="" />
@@ -343,4 +288,4 @@ $respuesta = soli_aceptadas($pdo);
         document.getElementById('id_cancelar').value = userId;
     }
 </script>
-<?php include_once("plantilla/footer.php")?>
+<?php include_once("../plantilla/footer.php")?>

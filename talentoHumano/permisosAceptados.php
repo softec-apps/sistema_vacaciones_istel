@@ -1,5 +1,6 @@
 <?php
 include_once "../redirection.php";
+include_once "../flash_messages.php";
 session_start();
 
 if (!isset($_SESSION['id_usuarios'])) {
@@ -12,6 +13,15 @@ $rol = $_SESSION['rol'];
 
 if ($rol != ROL_TALENTO_HUMANO) {
    redirect(RUTA_ABSOLUTA . "logout");
+}
+
+$message = '';
+$type = '';
+$flash_message = display_flash_message();
+
+if (isset($flash_message)) {
+    $message = $flash_message['message'];
+    $type = $flash_message['type'];
 }
 
 $titulo = "Permisos Aprobados J.S";
@@ -63,6 +73,7 @@ $respuesta = permisosAprobados($pdo);
                                                 $direccion_unidad = $valor ["direccion_unidad"];
                                                 $fecha_permiso = $valor ["fecha_permiso"];
                                                 $motivo_permiso = $valor ["motivo_permiso"];
+                                                $motivo_permiso = str_replace('_', ' ', $motivo_permiso);
                                                 $tiempoLimite_motivo = $valor ["tiempo_motivo"];
                                                 $desc_motivo = $valor['desc_motivo'];
                                                 $dias_solicitados = $valor['dias_solicitados'];
@@ -150,58 +161,6 @@ $respuesta = permisosAprobados($pdo);
         </div>
     </div>
 
-
-
-
-    <!-- Modal Editar Pemisos-->
-    <div class="modal fade" id="Editar_permisos" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalAdminLabel">Editar Permisos</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="actualizar_permisos" method="POST">
-                        <input type="hidden" name="id_administrador" id="id_administrador" value="">
-
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="permisos[]" value="Administracion"
-                                id="permiso_administracion">
-                            <label class="form-check-label" for="permiso_administracion">Administración</label>
-                        </div>
-
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="permisos[]" value="Bolsa de empleo"
-                                id="permiso_bolsa">
-                            <label class="form-check-label" for="permiso_bolsa">Bolsa de Empleo</label>
-                        </div>
-
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="permisos[]"
-                                value="Seguimiento graduados" id="permiso_seguimiento">
-                            <label class="form-check-label" for="permiso_seguimiento">Seguimiento Graduados</label>
-                        </div>
-
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="permisos[]"
-                                value="Eventos y Encuestas" id="eventos_encuestas">
-                            <label class="form-check-label">Eventos y Encuestas</label>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            <button type="submit" class="btn btn-primary">Actualizar los Permisos</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
 <!-- Modal de aprobar la solicitud-->
 <div class="modal fade" id="registrar_solicitud" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
     aria-hidden="true">
@@ -214,14 +173,13 @@ $respuesta = permisosAprobados($pdo);
                 </button>
             </div>
             <div class="modal-body">
-                <form id="aprobarForm" action="<?php echo RUTA_ABSOLUTA ?>procesar" method="post">
+                <form id="aprobarForm" action="<?php echo RUTA_ABSOLUTA ?>talentoH/procesarSolicitud" method="post">
                     <p>Estás a punto de registrar una solicitud de permiso</p>
 
                     <input type="hidden" name="id_registrar" id="id_registrar" value ="" />
                     <input class="form-control" type="hidden" name="registrar" value ="3" />
                     <div class="form-floating mb-3">
                         <div>
-                            <!-- <label>Ingrese su nombre T.H</label> -->
                             <input class="form-control" name="user" type="hidden" value="<?= $nombreTalentoHumano . " " . $apellidoTalentoHumano?>" />
                         </div>
                     </div>

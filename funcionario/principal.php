@@ -1,5 +1,6 @@
 <?php
 include_once "../redirection.php";
+include_once "../flash_messages.php";
  session_start();
 
  if (!isset($_SESSION['id_usuarios'])) {
@@ -15,24 +16,28 @@ $fecha_ingreso = $_SESSION['fecha_ingreso'];
 if ($rol != 'Funcionario') {
     redirect("inicio");
 }
+
+$message = '';
+$type = '';
+$flash_message = display_flash_message();
+
+if (isset($flash_message)) {
+    $message = $flash_message['message'];
+    $type = $flash_message['type'];
+}
+
 $titulo = "Usuarios o funcionarios";
 include_once("../plantilla/header.php")
 ?>
 
 <div class="container-fluid mt-5">
 <?php
-
-?>
-<?php
-
 include_once  "../resta_solicitud.php";
 $nombreUser = $nombreFuncionario . " " . $apellidosFuncionario;
 ?>
 <!-- Page Heading -->
 <h1 class="h3 mb-2 text-gray-800">Funcionario <?= $nombreUser?></h1>
 
-<!-- <h1 class="h3 mb-2 text-gray-800">Debe existir una parte que carge par realizar solicitudes por el id de la sesion del funcionario</h1>
-<p>donde debe verifica si su solicitud fue aprobada o no Va a cargar todas las solicitudes realizadas</p> -->
 <div class="row">
 
 <?php
@@ -130,7 +135,6 @@ $nombreUser = $nombreFuncionario . " " . $apellidosFuncionario;
                     </div>
                 </div>
                 <div class="col-auto">
-                    <!-- <i class="fas fa-clipboard-list fa-2x text-gray-300"></i> -->
                     <i class="bi bi-percent fa-2x text-gray-300"></i>
                 </div>
             </div>
@@ -149,7 +153,6 @@ $nombreUser = $nombreFuncionario . " " . $apellidosFuncionario;
                     <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $diasTrabajados?></div>
                 </div>
                 <div class="col-auto">
-                    <!-- <i class="fas fa-comments fa-2x text-gray-300"></i> -->
                     <i class="fas fa-briefcase fa-2x text-gray-300"></i>
                 </div>
             </div>
@@ -170,7 +173,6 @@ $nombreUser = $nombreFuncionario . " " . $apellidosFuncionario;
                 </div>
                 <div class="col-auto">
                     <i class="fas fa-history fa-2x text-gray-300"></i>
-                    <!-- <i class="fas fa-dollar-sign fa-2x text-gray-300"></i> -->
                 </div>
             </div>
         </div>
@@ -187,7 +189,6 @@ $nombreUser = $nombreFuncionario . " " . $apellidosFuncionario;
                     <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $tiempoTrabajo  ?></div>
                 </div>
                 <div class="col-auto">
-                    <!-- <i class="fas fa-dollar-sign "></i> -->
                     <i class="fas fa-clock fa-2x text-gray-300"></i>
                 </div>
             </div>
@@ -308,18 +309,11 @@ $nombreUser = $nombreFuncionario . " " . $apellidosFuncionario;
     $(".cerrarModal").click(function(){
         $("#registrar_vacaciones").modal('hide');
     });
-    $(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip();
-    });
 
 </script>
 <?php include_once("../plantilla/footer.php")?>
 
-    <!-- <h1>Carpeta Usuarios o Funcionarios </h1>
-    <h4>El nombre del usuario es : <?php echo $nombre ?></h4>
-    <h4>La Cedula del usuario es : <?php echo $cedula ?></h4>
-    <h4>El Rol del usuario es : <?php echo $rol ?></h4>
-    <h4>La fecha de ingreso es  : <?php echo $fecha_ingreso ?></h4>
+    <!-- <h1>Carpeta Usuarios o Funcionarios
 
     <div class="container-fluid">
     <div class="col-12 px-5">

@@ -3,7 +3,7 @@ include_once "conexion.php";
 
 function seleccionar($pdo){
     try {
-        $consulta = "SELECT limiteVacaciones, diasPorAñoTrabajado, diasPorAño FROM dias_trabajo";
+        $consulta = "SELECT limiteVacaciones, diasPorAño, diasAnuales FROM configuracion";
         $stmt = $pdo->prepare($consulta);
         $stmt->execute();
 
@@ -11,8 +11,8 @@ function seleccionar($pdo){
 
         // Asignar los valores a las variables
         $limiteVacaciones = $resultado["limiteVacaciones"];
-        $diasPorAnoTrabajado = $resultado["diasPorAñoTrabajado"];
-        $diasPorAno = $resultado["diasPorAño"];
+        $diasPorAnoTrabajado = $resultado["diasPorAño"];
+        $diasPorAno = $resultado["diasAnuales"];
 
         // Puedes devolver las variables si es necesario
         return [
@@ -161,12 +161,8 @@ function obtenerMensajeDiasVacaciones($id_usuario,$nombre_usuario,$apellidos_u,$
             $tiempo_trabajo
         );
 
-        if ($diasDeVacaciones > $limiteVacaciones) {
-            return "Error: El total de días de vacaciones supera el límite permitido de $limiteVacaciones días.";
-        } else {
             $diasDePermisoSolicitados = $horasDePermisoSolicitadas / $tiempo_trabajo;
             return "El usuario  $nombre_usuario   $apellidos_u tiene $diasDeVacaciones días de vacaciones Y se han ocupado en total $diasDePermisoSolicitados días de permiso.";
-        }
     } else {
         return "Error: El usuario no fue encontrado.";
     }

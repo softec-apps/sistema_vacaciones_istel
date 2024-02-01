@@ -144,6 +144,7 @@ if ($_POST) {
 
                                 $usuario_registra = $valor['usuario_registra'];
                                 $permiso_aceptado = $valor['permiso_aceptado'];
+                                $observaciones = $valor['observaciones'];
 
                                 function imprimirX($motivo, $texto){
                                     echo (str_replace(' ', '_', strtoupper($motivo)) == str_replace(' ', '_', strtoupper($texto))) ? "X" : "";
@@ -292,7 +293,7 @@ if ($_POST) {
                         </td>
                         </tr>
                         <tr class="row13">
-                        <td class="column1 style190 null style198" colspan="9"rowspan="3"></td>
+                        <td class="column1 style190 null style198 px-1" colspan="9"rowspan="3"><?= $observaciones ?></td>
                         <td class="column10 style15 f text-center"><?= $dias_solicitados ?></td>
                         <td class="column11 style14 f text-center"><?= $horas_solicitadas ?></td>
                         </tr>

@@ -1,5 +1,6 @@
 <?php
 include_once "../redirection.php";
+include_once "../flash_messages.php";
 session_start();
 
 if (!isset($_SESSION['id_usuarios'])) {
@@ -11,6 +12,15 @@ $rol = $_SESSION['rol'];
 
 if ($rol != ROL_ADMIN) {
    redirect(RUTA_ABSOLUTA . "logout");
+}
+
+$message = '';
+$type = '';
+$flash_message = display_flash_message();
+
+if (isset($flash_message)) {
+    $message = $flash_message['message'];
+    $type = $flash_message['type'];
 }
 
 $titulo = "Panel";
@@ -69,7 +79,7 @@ $resultados = mostrarUsuarios($pdo);
                     ?>
                     <tr>
                         <td>
-                            <?= $id_usuarios ?>
+                            <?= 0 +1 ?>
                         </td>
 
                         <td>
@@ -106,16 +116,6 @@ $resultados = mostrarUsuarios($pdo);
                                 data-target="#Eliminar" data-id="<?= $id_usuarios ?>" onclick="eliminar(this)">
                                 <i class="fas fa-trash"></i>
                             </button>
-                            <!-- <form action="<?php
-                            // echo RUTA_ABSOLUTA
-                             ?>calcular" method="post">
-                                <input type="hidden" name="id_usuario" value="<?php
-                                //  echo $id_usuarios;
-                                 ?>">
-                                <button class="btn btn-info m-1" title="Ver dias de trabajo">
-                                <i class="bi bi-eyeglasses"></i>
-                                </button>
-                            </form> -->
                         </td>
                     </tr>
 
@@ -123,7 +123,7 @@ $resultados = mostrarUsuarios($pdo);
                             }
                         };
                         if (!isset($funcionariosEncontrados)) {
-                            echo "No existen datos de funcionarios";
+                            echo "";
                         }
                     }
                     ?>
@@ -152,8 +152,8 @@ aria-hidden="true">
             </div>
             <div class="modal-body">
                 <p>¿Está seguro de que desea eliminar este usuario?</p>
-                <form id="eliminarForm" action="<?php echo RUTA_ABSOLUTA ?>admin/eliminar_users" method="post">
-                    <input type="text" name="cliente_id" id="cliente_id" value="">
+                <form id="eliminarForm" action="<?php echo RUTA_ABSOLUTA ?>admin/eliminarFuncionarios" method="post">
+                    <input type="hidden" name="cliente_id" id="cliente_id" value="">
                 </form>
             </div>
             <div class="modal-footer">
@@ -176,52 +176,42 @@ aria-hidden="true">
                 </button>
             </div>
             <div class="modal-body">
-                <form action="<?php echo RUTA_ABSOLUTA ?>admin/actualizar_users" method="post">
+                <form action="<?php echo RUTA_ABSOLUTA ?>admin/actualizarFuncionarios" method="post" onsubmit="return validarFormulario();">
                     <input type="hidden" name="cliente_id" value="">
                     <input type="hidden" name="roles" value="Funcionario">
 
-                    <div class="form-floating mb-3">
-                        <div>
-                            <label>Ingrese la cedula del nuevo usuario</label>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label>Ingrese la cedula </label>
                             <input class="form-control" name="cedula" type="text"/>
                         </div>
-                    </div>
-
-
-                    <div class="form-floating mb-3">
-                        <div>
-                            <label>Ingrese los nombre del nuevo usuario</label>
-                            <input class="form-control" name="nombres" type="text"/>
-                        </div>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <div>
-                            <label>Ingrese los apellidos del nuevo usuario</label>
-                            <input class="form-control" name="apellidos" type="text"/>
-                        </div>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <div>
+                        <div class="col">
                             <label>Ingrese el Email del Usuario</label>
                             <input class="form-control" type="email" name="email_A"/>
                         </div>
                     </div>
 
-                    <div class="form-floating mb-3" id="optionTiempo">
-                        <div>
-                            <label>Seleccione el Tiempo de Trabajo del Funcionario</label>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label>Ingrese los nombres</label>
+                            <input class="form-control" name="nombres" type="text"/>
+                        </div>
+                        <div class="col">
+                            <label>Ingrese los apellidos</label>
+                            <input class="form-control" name="apellidos" type="text"/>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col" id="optionTiempo">
+                            <label>Modalidad de Trabajo </label>
                             <select class="form-control" name="tiempo_trabajo">
                                 <option value="8">Tiempo Completo</option>
                                 <option value="4">Medio Tiempo</option>
                             </select>
                         </div>
-                    </div>
-
-                    <div class="form-floating mb-3" id="opcionesFuncionario">
-                        <div>
-                            <label>Fecha Ingreso</label>
+                        <div class="col">
+                            <label> Seleccione la Fecha de Ingreso</label>
                             <input class="form-control" type="date" name="fecha_ingreso" required/>
                         </div>
                     </div>
@@ -250,67 +240,57 @@ aria-hidden="true">
                 </button>
             </div>
             <div class="modal-body">
-                <form action="<?php echo RUTA_ABSOLUTA ?>admin/registrar_users" method="post">
+                <form action="<?php echo RUTA_ABSOLUTA ?>admin/registerFuncionarios" method="post" onsubmit="return validarFormularioRegistrar();">
                     <input type="hidden" name="cliente_id" value="">
                     <input type="hidden" name="roles1" value="Funcionario">
-                    <div class="form-floating mb-3">
-                        <div>
-                            <label>Ingrese la cedula del nuevo Funcionario</label>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label>Ingrese la cedula </label>
                             <input class="form-control" name="cedula" type="text" required />
                         </div>
-                    </div>
-
-
-                    <div class="form-floating mb-3">
-                        <div>
-                            <label>Ingrese los nombre del nuevo Funcionario</label>
+                        <div class="col">
+                            <label>Ingrese los nombre </label>
                             <input class="form-control" name="nombres" type="text" required />
                         </div>
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <div>
-                            <label>Ingrese los apellidos del nuevo Funcionario</label>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label>Ingrese los apellidos </label>
                             <input class="form-control" name="apellidos" type="text" required />
                         </div>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <div>
-                            <label>Ingrese un usuario para el Funcionario</label>
-                            <input class="form-control" name="user_A" type="text" required />
-                        </div>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <div>
-                            <label>Ingrese la contraseña para el Funcionario</label>
-                            <input class="form-control" type="text" name="password_A" required />
-                        </div>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <div>
-                            <label>Ingrese el Email del Funcionario</label>
+                        <div class="col">
+                            <label>Email del Funcionario</label>
                             <input class="form-control" type="email" name="email_A" required />
                         </div>
                     </div>
 
-                    <div class="form-floating mb-3" id="optionTiempo2">
-                        <div>
-                            <label>Seleccione el Tiempo de Trabajo del Funcionario</label>
-                            <select class="form-control" name="tiempo_trabajo">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label>Ingrese un usuario </label>
+                            <input class="form-control" name="user_A" type="text" required />
+                        </div>
+                        <div class="col">
+                            <label>Contraseña del Funcionario</label>
+                            <input class="form-control" type="text" name="password_A" required />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3" >
+                        <div class="col" id="optionTiempo2">
+                            <label>Modalidad de Trabajo</label>
+                            <select class="form-control" name="tiempo_trabajo" required>
                                 <option value="8">Tiempo Completo</option>
                                 <option value="4">Medio Tiempo</option>
                             </select>
                         </div>
-                    </div>
-
-                    <div class="form-floating mb-3" id="opcionesFuncionario">
-                        <div>
-                            <label>Fecha Ingreso</label>
-                            <input class="form-control" type="date" name="fecha_ingreso" require/>
+                        <div class="col" id="opcionesFuncionario">
+                            <label>Seleccione la Fecha de Ingreso</label>
+                            <input class="form-control" type="date" name="fecha_ingreso" id="fecha_ingreso" required/>
                         </div>
                     </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary cerrarModal" data-dismiss="modal">Cerrar</button>
                         <button type="submit" class="btn btn-primary">Registrar Funcionario Nuevo</button>
@@ -362,6 +342,61 @@ aria-hidden="true">
         document.getElementById('cliente_id').value = userId;
     }
 
+    function validarFormulario() {
+        var rolInput = document.querySelector('[name="roles"]');
+        var fechaIngresoInput = document.querySelector('[name="fecha_ingreso"]');
+
+        // Obtener el valor del rol seleccionado
+        var rolSeleccionado = rolInput.value;
+
+        // Si el rol es "Funcionario"
+        if (rolSeleccionado === 'Funcionario') {
+            // Obtener la fecha ingresada por el usuario
+            var fechaIngreso = new Date(fechaIngresoInput.value);
+
+            // Obtener la fecha actual
+            var fechaActual = new Date();
+
+            // Verificar si la fecha está vacía o es superior al año actual
+            if (!fechaIngresoInput.value.trim() || fechaIngreso.getFullYear() > fechaActual.getFullYear()) {
+                alert('Por favor, ingrese una fecha de ingreso válida para el Funcionario.');
+                return false; // Evita que el formulario se envíe
+            }
+        }
+
+        // Si todo está bien, permitir el envío del formulario
+        return true;
+    }
+
+    function validarFormularioRegistrar() {
+        var rolInput = document.querySelector('[name="roles1"]');
+        var fechaIngresoInput = document.querySelector('#fecha_ingreso');
+
+        // Obtener el valor del rol seleccionado
+        var rolSeleccionado = rolInput.value;
+        var fechaSeleccionada = fechaIngresoInput.value;
+
+        // Si el rol es "Funcionario"
+        if (rolSeleccionado === 'Funcionario') {
+            // Obtener la fecha ingresada por el usuario
+            var fechaIngreso = new Date(Date.parse(fechaIngresoInput.value));
+
+            // Obtener la fecha actual
+            var fechaActual = new Date();
+
+            // Verificar si la fecha está vacía o es superior al año actual
+            if (fechaIngreso.getFullYear() > fechaActual.getFullYear()) {
+                alert('Por favor, ingrese una fecha de ingreso válida para el Usuario');
+                return false;
+            }else if(!fechaIngresoInput.value.trim()){
+                alert('Fecha vacia ');
+                return false;
+            }
+        }
+
+        // Si todo está bien, permitir el envío del formulario
+        return true;
+    }
 </script>
 
 <?php

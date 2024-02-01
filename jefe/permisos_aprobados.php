@@ -1,5 +1,6 @@
 <?php
 include_once "../redirection.php";
+include_once "../flash_messages.php";
 session_start();
 
 if (!isset($_SESSION['id_usuarios'])) {
@@ -12,6 +13,15 @@ $rol = $_SESSION['rol'];
 
 if ($rol != ROL_JEFE) {
    redirect(RUTA_ABSOLUTA . "logout");
+}
+
+$message = '';
+$type = '';
+$flash_message = display_flash_message();
+
+if (isset($flash_message)) {
+    $message = $flash_message['message'];
+    $type = $flash_message['type'];
 }
 
 $titulo = "Permisos";
@@ -123,185 +133,6 @@ $respuesta = soli_aceptadas($pdo);
                 </div>
                 <!-- /.container-fluid -->
 
-
-
-
-    <!-- Modal Eliminar -->
-    <div class="modal fade" id="Eliminar" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalAdminLabel">Confirmar eliminación</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>¿Está seguro de que desea eliminar este usuario?</p>
-                    <form id="eliminarForm" action="eliminar_admin" method="post">
-                        <input type="hidden" name="cliente_id" id="cliente_id" value="">
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" form="eliminarForm" class="btn btn-danger">Eliminar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-
-    <!-- Modal Editar Pemisos-->
-    <div class="modal fade" id="Editar_permisos" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalAdminLabel">Editar Permisos</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="actualizar_permisos" method="POST">
-                        <input type="hidden" name="id_administrador" id="id_administrador" value="">
-
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="permisos[]" value="Administracion"
-                                id="permiso_administracion">
-                            <label class="form-check-label" for="permiso_administracion">Administración</label>
-                        </div>
-
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="permisos[]" value="Bolsa de empleo"
-                                id="permiso_bolsa">
-                            <label class="form-check-label" for="permiso_bolsa">Bolsa de Empleo</label>
-                        </div>
-
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="permisos[]"
-                                value="Seguimiento graduados" id="permiso_seguimiento">
-                            <label class="form-check-label" for="permiso_seguimiento">Seguimiento Graduados</label>
-                        </div>
-
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="permisos[]"
-                                value="Eventos y Encuestas" id="eventos_encuestas">
-                            <label class="form-check-label">Eventos y Encuestas</label>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            <button type="submit" class="btn btn-primary">Actualizar los Permisos</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-<!-- Modal de registrar la solicitud-->
-<div class="modal fade" id="registrar_solicitud" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalAdminLabel">Registrar Solicitudes de Permisos </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="aprobarForm" action="<?php echo RUTA_ABSOLUTA ?>procesar" method="post">
-                    <p>Estás a punto de registrar una solicitud de permiso del usuario con los siguientes datos:</p>
-
-                    <input type="hidden" name="id_registrar" id="id_registrar" value ="" />
-                    <input class="form-control" type="hidden" name="registrar" value ="3" />
-                    <div class="form-floating mb-3">
-                        <div>
-                            <label>Ingrese su nombre como Jefe</label>
-                            <input class="form-control" name="user" type="text" required />
-                        </div>
-                    </div>
-                    <!-- <div class="form-floating mb-3 mt-3">
-                        <p>Cedula : 00000000000  </p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Provincia : X </p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Regimen : X</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Dirrecion o Unidad : X</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Fecha inicio del permisos : X</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Fecha fin del permisos : X</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Desde (hh:mm) : xx:xx</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Hasta (hh:mm) : xx:xx</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Con el motivo : x</p>
-                    </div>
-
-                    <div class="form-floating mb-3 mt-3">
-                        <p>Con las observaciones o justificativos del permisos(opcional) : XXXXXXX</p>
-                    </div> -->
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger cerrarModal" data-dismiss="modal">No registrar</button>
-                        <button type="submit" class="btn btn-success">Registrar Solicitud de permiso</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<!-- Modal para registrar nuevos permisos -->
-<div class="modal fade" id="registrar_permisos" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalAdminLabel">Registrar solicitudes de permisos</h5>
-                <button type="button" class="close cerrarModal" data-dismiss="modal" aria-label="Cerrar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Selecciona "Registrar" si deseeas registrar todas las solicitudes de todos los funcionarios</p>
-                <form id="eliminarForm" action="eliminar_admin" method="post">
-                    <input type="hidden" name="cliente_id" id="cliente_id" value="">
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary cerrarModal" data-dismiss="modal">Cancelar</button>
-                <button type="submit" form="eliminarForm" class="btn btn-primary">Registrar</button>
-            </div>
-        </div>
-    </div>
-</div>
 <!-- Modal para cancelar una solicitud -->
 <div class="modal fade" id="cancelarSolicitud" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
     aria-hidden="true">
@@ -316,7 +147,7 @@ $respuesta = soli_aceptadas($pdo);
             <div class="modal-body">
                 <p>¿Está seguro de que desea Cancelar esta solicitud ?</p>
                 <p>Recuerde que si cancela la solicitud este permiso se movera a la seccion de "Recepcion de Solicitudes"</p>
-                <form id="cancelarS" action="<?php echo RUTA_ABSOLUTA ?>procesar" method="POST">
+                <form id="cancelarS" action="<?php echo RUTA_ABSOLUTA ?>jefe/procesarSolicitud" method="POST">
                     <input type="hidden" name="id_cancelar" id="id_cancelar" value ="<?= $id_permiso ?>" />
                     <input class="form-control" type="hidden" name="cancelar" value ="0" />
                     <input class="form-control" type="hidden" name="user" value="" />

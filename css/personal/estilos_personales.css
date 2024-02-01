@@ -7,6 +7,7 @@
 .texto {
   color: #2ecc71;
 }
+/* #2ecc71 */
 #inicio_sesion {
   background-color: rgba(
     255,
@@ -16,14 +17,12 @@
   ); /* Color blanco con 70% de opacidad */
 }
 .fucion {
-  background: linear-gradient(to left, #03a721 25%, #003785 75%);
+  background: linear-gradient(to left, #003785 25%, #03a721 75%);
 }
 
 .sb-sidenav-menu .nav .nav-link:hover {
   color: #fff;
-  /* Color del texto al pasar el cursor */
   background-color: rgba(188, 185, 190, 0.2);
-  /* Color del fondo al pasar el cursor */
 }
 
 .sb-sidenav-menu .nav .nav-link:focus {

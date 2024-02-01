@@ -116,7 +116,7 @@ $rol = $_SESSION['rol'];
             <nav class="sb-sidenav accordion superior " id="sidenavAccordion">
                 <div class="sb-sidenav-menu ">
                     <div class="nav">
-                        <div class="sb-sidenav-menu-heading">Core</div>
+                        <div class="sb-sidenav-menu-heading">Panel</div>
 
                         <a class="nav-link texto rounded-5" href="
                         <?php
@@ -148,13 +148,13 @@ $rol = $_SESSION['rol'];
                         }
                         ?>">
                             <div class="sb-nav-link-icon"><i class="fa-lg fas fa-tachometer-alt"></i></div>
-                            Panel
+                            Inicio
                         </a>
                         <?php
                          if($rol == 'admin') { ?>
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>admin/admin">
                             <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-user-secret"></i></div>
-                            Administradores
+                            Agg Usuarios
                         </a>
                         <!-- <form action="admin/calcular" method="post" > -->
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>admin/trabajo">
@@ -217,7 +217,7 @@ $rol = $_SESSION['rol'];
                             Permisos Aprobados
                         </a>
                         <a class="nav-link texto rounded-4" href="<?php echo RUTA_ABSOLUTA; ?>jefe/permisosRechazados">
-                            <div class="sb-nav-link-icon"><i class="fa-lg fa-regular fa-circle-xmark"></i></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa-lg fa-regular fa-circle-xmark"></i></div>
                             Permisos Rechazados
                         </a>
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>jefe/trabajoFuncionarios">
@@ -229,22 +229,22 @@ $rol = $_SESSION['rol'];
                         if ($rol == 'Talento_Humano') {
                         ?>
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>talentoHumano/registrarFuncionario">
-                            <div class="sb-nav-link-icon"><i class="fa-solid fa-user-plus"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-user-plus"></i></div>
                             Registrar Nuevos Funcionarios
                         </a>
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>talentoHumano/permisosAprobados">
-                            <div class="sb-nav-link-icon"><i class="fas fa-inbox"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-envelope-open-text"></i></div>
                             Permisos Aceptados por el Jefe Supervisor
                         </a>
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>talentoHumano/permisosRegistrados">
-                            <div class="sb-nav-link-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa-lg fas fa-check-circle"></i></div>
                             Permisos registrados
                         </a>
 
                         <?php
                         }
                          if($rol == 'admin') { ?>
-                        <div class="sb-sidenav-menu-heading">Interface</div>
+                        <div class="sb-sidenav-menu-heading">Prueba</div>
                         <a class="nav-link collapsed texto rounded-5" href="#" data-bs-toggle="collapse"
                             data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-user-tie"></i></div>
@@ -266,7 +266,7 @@ $rol = $_SESSION['rol'];
                         <a class="nav-link collapsed texto rounded-5" href="#" data-bs-toggle="collapse"
                             data-bs-target="#collapseTalentosH" aria-expanded="false" aria-controls="collapseLayouts">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-person-burst"></i></div>
-                            Talentos Humanos
+                            Talento Humano
                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                         </a>
                         <div class="collapse" id="collapseTalentosH" aria-labelledby="headingOne"

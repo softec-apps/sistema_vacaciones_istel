@@ -1,7 +1,7 @@
 <?php
-include_once "conexion.php";
-include_once "funciones.php";
-include_once "flash_messages.php";
+include_once "../conexion.php";
+include_once "../funciones.php";
+include_once "../flash_messages.php";
 
 if ($_POST) {
     // Verificar si el formulario de rechazo fue enviado
@@ -22,8 +22,13 @@ if ($_POST) {
             //Ejecutamos la consulta con los parametros
             $stmt->execute();
 
+            create_flash_message(
+                'Permiso Rechazado Correctamente',
+                'success'
+            );
 
-            echo "Se Registro el rechazo";
+            redirect(RUTA_ABSOLUTA . "admin/permisos_pendientes");
+            // echo "Se Registro el rechazo";
         } catch (PDOException $e) {
             echo "Error de exepcion" . $e->getMessage();
         }
@@ -47,11 +52,11 @@ if ($_POST) {
             //Ejecutamos la consulta con los parametros
             $stmt->execute();
             create_flash_message(
-                'Se Ejecuto la Aprobacion',
+                'Aprobado Exitosamente',
                 'success'
             );
 
-            redirect(RUTA_ABSOLUTA . "admin/solicitud_general");
+            redirect(RUTA_ABSOLUTA . "admin/permisos_pendientes");
 
         } catch (PDOException $e) {
             echo "Error de exepcion" . $e->getMessage();
@@ -101,13 +106,8 @@ if ($_POST) {
 
             //Ejecutamos la consulta con los parametros
             $stmt->execute();
-            create_flash_message(
-                'Permiso Registrado Correctamente',
-                'success'
-            );
 
-            redirect(RUTA_ABSOLUTA . "admin/permisos");
-
+            echo "Se actualizo la Aprobacion del registro ";
         } catch (PDOException $e) {
             echo "Error de exepcion" . $e->getMessage();
         }
@@ -134,7 +134,7 @@ if ($_POST) {
                 'success'
             );
 
-            redirect(RUTA_ABSOLUTA . "admin/solicitud_general");
+            redirect(RUTA_ABSOLUTA . "permisos/aceptados");
             // echo "Se Cancelo la aprobacion de la solicitud ";
         } catch (PDOException $e) {
             echo "Error de exepcion" . $e->getMessage();
@@ -156,13 +156,8 @@ if ($_POST) {
 
             //Ejecutamos la consulta con los parametros
             $stmt->execute();
-            create_flash_message(
-                'Registrado Cancelado Correctamente',
-                'success'
-            );
 
-            redirect(RUTA_ABSOLUTA . "admin/permisos_registrados");
-
+            echo "Se Cancelo el registro de la solicitud ";
         } catch (PDOException $e) {
             echo "Error de exepcion" . $e->getMessage();
         }

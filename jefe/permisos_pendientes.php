@@ -1,5 +1,6 @@
 <?php
 include_once "../redirection.php";
+include_once "../flash_messages.php";
 session_start();
 
 if (!isset($_SESSION['id_usuarios'])) {
@@ -12,6 +13,15 @@ $rol = $_SESSION['rol'];
 
 if ($rol != ROL_JEFE) {
    redirect(RUTA_ABSOLUTA . "logout");
+}
+
+$message = '';
+$type = '';
+$flash_message = display_flash_message();
+
+if (isset($flash_message)) {
+    $message = $flash_message['message'];
+    $type = $flash_message['type'];
 }
 
 $titulo = "Permisos";
@@ -131,7 +141,7 @@ $respuesta = soli_no_aceptadas($pdo);
                 </button>
             </div>
             <div class="modal-body">
-                <form id="eliminarForm" action="<?php echo RUTA_ABSOLUTA ?>procesar" method="post">
+                <form id="eliminarForm" action="<?php echo RUTA_ABSOLUTA ?>jefe/procesarSolicitud" method="post">
                     <div class="form-floating mb-3">
                         <div>
                             <label>Por favor Ingrese el motivo del rechazo de la Solicitud</label>
@@ -162,7 +172,7 @@ $respuesta = soli_no_aceptadas($pdo);
                 </button>
             </div>
             <div class="modal-body">
-                <form id="aprobarForm" action="<?php echo RUTA_ABSOLUTA ?>procesar" method="post">
+                <form id="aprobarForm" action="<?php echo RUTA_ABSOLUTA ?>jefe/procesarSolicitud" method="post">
                     <p>Estás a punto de registrar una solicitud de permiso ¿Estas Seguro de Continuar?</p>
 
                     <input type="hidden" name="id_aprueba" id="id_aprueba" value ="" />

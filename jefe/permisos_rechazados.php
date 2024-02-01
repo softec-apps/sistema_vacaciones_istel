@@ -1,5 +1,6 @@
 <?php
 include_once "../redirection.php";
+include_once "../flash_messages.php";
 session_start();
 
 if (!isset($_SESSION['id_usuarios'])) {
@@ -12,6 +13,15 @@ $rol = $_SESSION['rol'];
 
 if ($rol != ROL_JEFE) {
    redirect(RUTA_ABSOLUTA . "logout");
+}
+
+$message = '';
+$type = '';
+$flash_message = display_flash_message();
+
+if (isset($flash_message)) {
+    $message = $flash_message['message'];
+    $type = $flash_message['type'];
 }
 
 $titulo = "Permisos Rechazados";
@@ -205,7 +215,7 @@ $respuesta = soli_rechazadas($pdo);
             </div>
             <div class="modal-body">
                 <p>¿Está seguro de que desea Aceptar esta solicitud ?</p>
-                <form id="AceptarS" action="<?php echo RUTA_ABSOLUTA ?>procesar" method="POST">
+                <form id="AceptarS" action="<?php echo RUTA_ABSOLUTA ?>jefe/procesarSolicitud" method="POST">
                     <input type="hidden" name="id_aprueba" id="id_aprueba" value ="" />
                     <input class="form-control" type="hidden" name="aprobarRechazo" value ="1" />
                     <input class="form-control" type="hidden" name="aprobar_rechazo" value ="" />

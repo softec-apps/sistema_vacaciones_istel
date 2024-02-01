@@ -1,5 +1,6 @@
 <?php
 include_once "../redirection.php";
+include_once "../flash_messages.php";
 session_start();
 
 if (!isset($_SESSION['id_usuarios'])) {
@@ -13,6 +14,15 @@ if ($rol != ROL_ADMIN) {
    redirect(RUTA_ABSOLUTA . "logout");
 }
 
+$message = '';
+$type = '';
+$flash_message = display_flash_message();
+
+if (isset($flash_message)) {
+    $message = $flash_message['message'];
+    $type = $flash_message['type'];
+}
+
 $titulo = "Configuracion";
 include_once "../plantilla/header.php";
 include_once "../conexion.php";
@@ -20,7 +30,7 @@ include_once "../conexion.php";
 
 function seleccionar($pdo){
     try {
-        $consulta = "SELECT limiteVacaciones, diasPorAñoTrabajado, diasPorAño FROM dias_trabajo";
+        $consulta = "SELECT limiteVacaciones, diasPorAño, diasAnuales FROM configuracion";
         $stmt = $pdo->prepare($consulta);
         $stmt->execute();
 
@@ -28,8 +38,8 @@ function seleccionar($pdo){
 
         // Asignar los valores a las variables
         $limiteVacaciones = $resultado["limiteVacaciones"];
-        $diasPorAnoTrabajado = $resultado["diasPorAñoTrabajado"];
-        $diasPorAno = $resultado["diasPorAño"];
+        $diasPorAnoTrabajado = $resultado["diasPorAño"];
+        $diasPorAno = $resultado["diasAnuales"];
 
         // Puedes devolver las variables si es necesario
         return [

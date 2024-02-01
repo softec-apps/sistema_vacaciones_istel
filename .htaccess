@@ -64,12 +64,12 @@ RewriteRule ^configuracion/configuracionAcumulados$ configuracion/config_acu.php
 RewriteRule ^admin/eliminar$ admin/eliminar_permiso.php [L]
 
 RewriteRule ^procesar$ procesar_solicitudes.php [L]
-RewriteRule ^permisos/aceptados$ permisos_aceptados.php [L]
+RewriteRule ^permisos/aceptados$ admin/permisos_aceptados.php [L]
 RewriteRule ^resta$ resta_individual_solicitud.php [L]
 RewriteRule ^resta2$ resta2.php [L]
 RewriteRule ^configuracion/procesar$ configuracion/config_vac.php [L]
 RewriteRule ^funcionario/solicitudUser$ funcionario/solicitudUser.php [L]
-RewriteRule ^permisos/rechazados$ permisos_rechazados.php [L]
+RewriteRule ^permisos/rechazados$ admin/permisos_rechazados.php [L]
 RewriteRule ^funcionario/rechazados$ funcionario/solicitudRechazada.php [L]
 
 RewriteRule ^jefe/trabajoFuncionarios$ jefe/dias_funcionarios.php [L]
@@ -81,3 +81,28 @@ RewriteRule ^jefe/permisosRechazados$ jefe/permisos_rechazados.php [L]
 RewriteRule ^talentoHumano/registrarFuncionario$ talentoHumano/registrarFuncionario.php [L]
 RewriteRule ^talentoHumano/permisosAprobados$ talentoHumano/permisosAceptados.php [L]
 RewriteRule ^talentoHumano/permisosRegistrados$ talentoHumano/permisosRegistrados.php [L]
+
+
+RewriteRule ^admin/registerFuncionarios$ admin/registrarFuncionarios.php [L]
+RewriteRule ^admin/actualizarFuncionarios$ admin/actualizarFuncionario.php [L]
+RewriteRule ^admin/eliminarFuncionarios$ admin/eliminarFuncionario.php [L]
+
+
+RewriteRule ^solicitarPermiso$ solicitarPermiso.php [L]
+RewriteRule ^admin/procesarSolicitudes$ admin/procesarSolicitudes.php [L]
+RewriteRule ^admin/soliAceptadas$ admin/aceptarSoliRechazada.php [L]
+
+
+RewriteRule ^funcionario/solicitarPermiso$ funcionario/solicitarPermiso.php [L]
+
+
+RewriteRule ^jefe/procesarSolicitud$ jefe/procesarSolicitud.php [L]
+
+RewriteRule ^talentoH/procesarRegistro$ talentoHumano/procesarRegistro.php [L]
+RewriteRule ^talentoH/procesarEdicion$ talentoHumano/procesarEdicion.php [L]
+RewriteRule ^talentoH/procesarEliminacion$ talentoHumano/procesarEliminacion.php [L]
+
+
+RewriteRule ^talentoH/procesarSolicitud$ talentoHumano/procesarSolicitud.php [L]
+
+RewriteRule ^admin/funcionariosTotales$ admin/funcionariosTotales.php [L]

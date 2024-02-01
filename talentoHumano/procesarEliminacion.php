@@ -10,11 +10,11 @@ if ($_POST) {
 
     if (strpos($eliminar, "Usuario Eliminado") !== false) {
         create_flash_message(
-            'Usuario Eliminado Correctamente ',
+            'Funcionario Eliminado Exitosamente ',
             'success'
         );
 
-        redirect(RUTA_ABSOLUTA . "admin/admin");
+        redirect(RUTA_ABSOLUTA . "talentoHumano/registrarFuncionario");
     }
 }
 

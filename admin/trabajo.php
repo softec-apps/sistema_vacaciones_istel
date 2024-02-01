@@ -1,5 +1,6 @@
 <?php
 include_once "../redirection.php";
+include_once "../flash_messages.php";
 session_start();
 
 if (!isset($_SESSION['id_usuarios'])) {
@@ -11,6 +12,14 @@ $rol = $_SESSION['rol'];
 
 if ($rol != ROL_ADMIN) {
    redirect(RUTA_ABSOLUTA . "logout");
+}
+$message = '';
+$type = '';
+$flash_message = display_flash_message();
+
+if (isset($flash_message)) {
+    $message = $flash_message['message'];
+    $type = $flash_message['type'];
 }
 
 $titulo = "Trabajo  y Vacaciones";
@@ -26,7 +35,7 @@ include_once("../resta_solicitud.php");
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Dias de Vacaciones y dias trbajados de los funcionarios</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Dias de Vacaciones y dias trabajados de los funcionarios</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -40,7 +49,7 @@ include_once("../resta_solicitud.php");
                                             <th>D.D.VAC</th>
                                             <th>D.OCP</th>
                                             <th>H.T.A</th>
-                                            <th>Trabajo</th>
+                                            <th>Modalidad</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -77,8 +86,8 @@ include_once("../resta_solicitud.php");
                                                 echo"<br/>"; */
                                             // }
                                             $dias_totales = $diasDeVacaciones + $diasDePermisoSolicitados;
-                                            $limiteVerde = 45;
-                                            $limiteAmarillo = 50;
+                                            $limiteVerde = 30;
+                                            $limiteAmarillo = 45;
                                             $limiteRojo = 60;
                                     ?>
                                         <tr>
@@ -99,14 +108,16 @@ include_once("../resta_solicitud.php");
                                             <?= $diasTrabajados ?>
                                             </td>
 
-                                            <td>
-                                            <?php if ($diasDeVacaciones == $limiteVerde || $diasDeVacaciones < $limiteAmarillo) {
-                                                echo '<button class="btn-success" disabled title="Dias disponibles en orden">'. $diasDeVacaciones .'</button>';
-                                            }elseif ($diasDeVacaciones == $limiteAmarillo || $diasDeVacaciones < $limiteRojo) {
-                                                echo '<button class="btn-warning" disabled title="Se acerca al limite">' . $diasDeVacaciones .'</button>';
-                                            }elseif ($diasDeVacaciones >= $limiteRojo) {
-                                                echo '<button class="btn-danger" disabled title="El limite es 60 dias">' . $diasDeVacaciones .'</button>';
-                                            }?>
+                                            <td <?php
+                                                if ($diasDeVacaciones == $limiteVerde || $diasDeVacaciones < $limiteAmarillo) {
+                                                    echo 'class="bg-success text-white rounded-4" title="Dias disponibles en orden"';
+                                                } elseif ($diasDeVacaciones == $limiteAmarillo || $diasDeVacaciones < $limiteRojo) {
+                                                    echo 'class="bg-warning rounded-4" title="Se acerca al limite"';
+                                                } elseif ($diasDeVacaciones >= $limiteRojo) {
+                                                    echo 'class="bg-danger text-white rounded-4" title="El limite es 60 dias"';
+                                                }
+                                                ?>>
+                                                <?php echo $diasDeVacaciones; ?>
                                             </td>
 
                                             <td>

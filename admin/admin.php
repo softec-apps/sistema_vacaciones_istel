@@ -38,7 +38,7 @@ $resultados_users = mostrarUsuarios($pdo);
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Administradores</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Agregar Usuarios</h6>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -50,7 +50,6 @@ $resultados_users = mostrarUsuarios($pdo);
                                 <th>Apellidos</th>
                                 <th>Email</th>
                                 <th>Rol</th>
-                                <th>Fecha ingreso</th>
                                 <th class="exclude">Acciones</th>
                             </tr>
                         </thead>
@@ -65,6 +64,10 @@ $resultados_users = mostrarUsuarios($pdo);
                                 $clave = $valor['contraseña'];
                                 $email_usuarios = $valor['email'];
                                 $rol_usuarios = $valor['rol'];
+                                // Capitalizar la primera letra de cada palabra
+                                $rol_usuarios = ucwords($rol_usuarios);
+                                // Eliminar guiones bajos
+                                $rol_usuarios = str_replace('_', ' ', $rol_usuarios);
                                 $fecha_ingreso = $valor['fecha_ingreso'];
                                 $tiempo_trabajo = $valor['tiempo_trabajo'];
                             ?>
@@ -91,9 +94,6 @@ $resultados_users = mostrarUsuarios($pdo);
                                 </td>
 
 
-                                <td>
-                                    <?= $fecha_ingreso ?>
-                                </td>
 
                                 <td>
                                     <button class="btn btn-primary m-1" title="Editar datos del usuario"
@@ -159,53 +159,44 @@ $resultados_users = mostrarUsuarios($pdo);
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="<?php echo RUTA_ABSOLUTA ?>admin/actualizar_users" method="post">
+                    <form action="<?php echo RUTA_ABSOLUTA ?>admin/actualizar_users" method="post" onsubmit="return validarFormulario();">
                         <input type="hidden" name="cliente_id" value="">
 
-                        <div class="form-floating mb-3">
-                            <div>
+                        <div class="row mb-3">
+                            <div class="col">
                                 <label>Ingrese la nueva cedula</label>
                                 <input class="form-control" name="cedula" type="text"/>
                             </div>
-                        </div>
-
-
-                        <div class="form-floating mb-3">
-                            <div>
+                            <div class="col">
                                 <label>Ingrese los nombres</label>
                                 <input class="form-control" name="nombres" type="text"/>
                             </div>
                         </div>
 
-                        <div class="form-floating mb-3">
-                            <div>
+                        <div class="row mb-3">
+                            <div class="col">
                                 <label>Ingrese los apellidos</label>
                                 <input class="form-control" name="apellidos" type="text"/>
                             </div>
-                        </div>
-
-                        <div class="form-floating mb-3">
-                            <div>
+                            <div class="col">
                                 <label>Ingrese un usuario </label>
                                 <input class="form-control" name="user_A" type="text" required />
                             </div>
                         </div>
 
-                        <div class="form-floating mb-3">
-                            <div>
-                                <label>Ingrese la contraseña para el usuario</label>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label>Contraseña para el usuario</label>
                                 <input class="form-control" type="text" name="password_A" required />
                             </div>
-                        </div>
-
-                        <div class="form-floating mb-3">
-                            <div>
+                            <div class="col">
                                 <label>Ingrese el Email del Usuario</label>
                                 <input class="form-control" type="email" name="email_A"/>
                             </div>
                         </div>
-                        <div class="form-floating mb-3">
-                            <div>
+
+                        <div class="row mb-3">
+                            <div class="col">
                                 <label>Seleccione el rol del usuario</label>
                                 <select class="form-control" name="roles">
                                     <option value="admin">Administrador</option>
@@ -214,11 +205,8 @@ $resultados_users = mostrarUsuarios($pdo);
                                     <option value="Funcionario">Funcionario</option>
                                 </select>
                             </div>
-                        </div>
-
-                        <div class="form-floating mb-3" id="optionTiempo" style="display: none;">
-                            <div>
-                                <label>Seleccione el Tiempo de Trabajo del Funcionario</label>
+                            <div class="col" id="optionTiempo" style="display: none;">
+                                <label>Modalidad de Trabajo</label>
                                 <select class="form-control" name="tiempo_trabajo">
                                     <option value="8">Tiempo Completo</option>
                                     <option value="4">Medio Tiempo</option>
@@ -229,7 +217,7 @@ $resultados_users = mostrarUsuarios($pdo);
                         <div class="form-floating mb-3" id="opcionesFuncionario" style="display: none;">
                             <!-- Aquí coloca las opciones adicionales para el rol de Funcionario -->
                             <div>
-                                <label>fecha_ingreso</label>
+                                <label>Seleccione la fecha de Ingreso</label>
                                 <input class="form-control" type="date" name="fecha_ingreso" />
                             </div>
                         </div>
@@ -259,52 +247,43 @@ $resultados_users = mostrarUsuarios($pdo);
             </div>
             <div class="modal-body">
 
-                <form method="POST" action="<?php echo RUTA_ABSOLUTA ?>admin/registrar_users">
+                <form  method="POST" action="<?php echo RUTA_ABSOLUTA ?>admin/registrar_users"  onsubmit="return validarFormularioRegistrar();">
 
-
-                    <div class="form-floating mb-3">
-                        <div>
-                            <label>Ingrese la cedula del nuevo usuario</label>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label>Ingrese la cedula </label>
                             <input class="form-control" name="cedula" type="text" required />
                         </div>
-                    </div>
-
-
-                    <div class="form-floating mb-3">
-                        <div>
-                            <label>Ingrese los nombre del nuevo usuario</label>
+                        <div class="col">
+                            <label>Ingrese los nombres </label>
                             <input class="form-control" name="nombres" type="text" required />
                         </div>
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <div>
-                            <label>Ingrese los apellidos del nuevo usuario</label>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label>Ingrese los apellidos </label>
                             <input class="form-control" name="apellidos" type="text" required />
                         </div>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <div>
+                        <div class="col">
                             <label>Ingrese un usuario </label>
                             <input class="form-control" name="user_A" type="text" required />
                         </div>
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <div>
-                            <label>Ingrese la contraseña para el usuario</label>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label>Ingrese una contraseña </label>
                             <input class="form-control" type="text" name="password_A" required />
                         </div>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <div>
+                        <div class="col">
                             <label>Ingrese el Email del Usuario</label>
                             <input class="form-control" type="email" name="email_A" required />
                         </div>
                     </div>
-                    <div class="form-floating mb-3">
-                        <div>
+
+                    <div class="row mb-3">
+                        <div class="col">
                             <label>Seleccione el rol del usuario</label>
                             <select class="form-control" id="roles" name="roles1"required onchange="mostrarOpciones()">
                                 <option value="admin">Administrador</option>
@@ -313,11 +292,8 @@ $resultados_users = mostrarUsuarios($pdo);
                                 <option value="Funcionario">Funcionario</option>
                             </select>
                         </div>
-                    </div>
-
-                    <div class="form-floating mb-3" id="optionTiempo2" style="display: none;">
-                        <div>
-                            <label>Seleccione el Tiempo de Trabajo del Funcionario</label>
+                        <div class="col" id="optionTiempo2" style="display: none;">
+                            <label>Modalidad de Trabajo </label>
                             <select class="form-control" name="tiempo_trabajo">
                                 <option value="8">Tiempo Completo</option>
                                 <option value="4">Medio Tiempo</option>
@@ -328,8 +304,8 @@ $resultados_users = mostrarUsuarios($pdo);
                     <div class="form-floating mb-3" id="function_option" style="display: none;">
                         <!-- Aquí coloca las opciones adicionales para el rol de Funcionario -->
                         <div>
-                            <label>fecha_ingreso</label>
-                            <input class="form-control" type="date" name="fecha_ingreso" />
+                            <label>Seleccione la fecha de Ingreso</label>
+                            <input class="form-control" type="date" name="fecha_ingreso" id="fecha_ingreso" />
                         </div>
                     </div>
 
@@ -365,13 +341,18 @@ $resultados_users = mostrarUsuarios($pdo);
         var seleccion = document.getElementById("roles").value;
         var function_option = document.getElementById("function_option");
         var optionTiempo = document.getElementById("optionTiempo2");
+        var fecha_ingresoInput = document.getElementById("fecha_ingreso");
 
         if (seleccion === "Funcionario") {
             function_option.style.display = "block";
             optionTiempo.style.display = "block";
+            // Agregar el atributo required al input cuando el rol es Funcionario
+            fecha_ingresoInput.setAttribute("required", "required");
         } else {
             function_option.style.display = "none";
             optionTiempo.style.display = "none";
+            // Eliminar el atributo required del input cuando el rol no es Funcionario
+            fecha_ingresoInput.removeAttribute("required");
         }
     }
 
@@ -431,6 +412,60 @@ $resultados_users = mostrarUsuarios($pdo);
         // Rellenar el campo oculto con el ID del cliente
         document.getElementById('cliente_id').value = userId;
     }
+    function validarFormulario() {
+        var rolInput = document.querySelector('[name="roles"]');
+        var fechaIngresoInput = document.querySelector('[name="fecha_ingreso"]');
 
+        // Obtener el valor del rol seleccionado
+        var rolSeleccionado = rolInput.value;
+
+        // Si el rol es "Funcionario"
+        if (rolSeleccionado === 'Funcionario') {
+            // Obtener la fecha ingresada por el usuario
+            var fechaIngreso = new Date(fechaIngresoInput.value);
+
+            // Obtener la fecha actual
+            var fechaActual = new Date();
+
+            // Verificar si la fecha está vacía o es superior al año actual
+            if (!fechaIngresoInput.value.trim() || fechaIngreso.getFullYear() > fechaActual.getFullYear()) {
+                alert('Por favor, ingrese una fecha de ingreso válida para el Funcionario.');
+                return false; // Evita que el formulario se envíe
+            }
+        }
+
+        // Si todo está bien, permitir el envío del formulario
+        return true;
+    }
+
+    function validarFormularioRegistrar() {
+        var rolInput = document.querySelector('[name="roles1"]');
+        var fechaIngresoInput = document.querySelector('#fecha_ingreso');
+
+        // Obtener el valor del rol seleccionado
+        var rolSeleccionado = rolInput.value;
+        var fechaSeleccionada = fechaIngresoInput.value;
+
+        // Si el rol es "Funcionario"
+        if (rolSeleccionado === 'Funcionario') {
+            // Obtener la fecha ingresada por el usuario
+            var fechaIngreso = new Date(Date.parse(fechaIngresoInput.value));
+
+            // Obtener la fecha actual
+            var fechaActual = new Date();
+
+            // Verificar si la fecha está vacía o es superior al año actual
+            if (fechaIngreso.getFullYear() > fechaActual.getFullYear()) {
+                alert('Por favor, ingrese una fecha de ingreso válida para el Usuario');
+                return false;
+            }else if(!fechaIngresoInput.value.trim()){
+                alert('Fecha vacia ');
+                return false;
+            }
+        }
+
+        // Si todo está bien, permitir el envío del formulario
+        return true;
+    }
 </script>
 <?php include_once("../plantilla/footer.php")?>
