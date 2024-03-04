@@ -456,10 +456,10 @@ $resultados_users = mostrarUsuarios($pdo);
 
             // Verificar si la fecha está vacía o es superior al año actual
             if (fechaIngreso > fechaActual) {
-                alert('Por favor, ingrese una fecha de ingreso válida para el Usuario');
+                alert('Por favor, ingrese una fecha de ingreso válida para el usuario');
                 return false;
             }else if(!fechaIngresoInput.value.trim()){
-                alert('Fecha vacia ');
+                alert('Fecha vacía ');
                 return false;
             }
         }

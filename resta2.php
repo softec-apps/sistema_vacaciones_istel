@@ -21,7 +21,7 @@ function seleccionar($pdo){
             'diasPorAno' => $diasPorAno
         ];
     } catch (PDOException $e) {
-        echo "Error de exepcion en la funcion de limite" .$e->getMessage();
+        return "Error de excepción en la función de limite" .$e->getMessage();
     }
 
 }
@@ -77,7 +77,7 @@ function obtenerDiasTrabajadosParaUsuario($pdo, $id_usuario) {
         ];
 
     } catch (PDOException $e) {
-        echo "Error de exepcion" .$e->getMessage();
+        return "Error de excepción" .$e->getMessage();
     }
 }
 
@@ -92,7 +92,7 @@ function obtenerFechaIngreso($pdo, $id_usuario) {
         return $resultado['fecha_ingreso'];
 
     } catch (PDOException $e) {
-        echo "Error de exepcion" .$e->getMessage();
+        return "Error de excepción" .$e->getMessage();
     }
 }
 
@@ -116,10 +116,12 @@ function consulta_unica($pdo, $id_usuario_insertado) {
         $intervalo = $fecha_ingreso_obj->diff($fecha_actual_obj);
         $diasTrabajados = $intervalo->days;
 
+        // Obtener el resultado en días como un número entero
+        $diasTrabajados = (int)$intervalo->format('%r%a');
         return $diasTrabajados;
 
     } catch (PDOException $e) {
-        echo "Error de exepcion" .$e->getMessage();
+        return "Error de excepción" .$e->getMessage();
     }
 }
 
@@ -141,7 +143,7 @@ function horas_ocupadas($pdo, $id_usuario_insertado) {
         }
 
     } catch (PDOException $e) {
-        echo "Error de exepcion" .$e->getMessage();
+        return "Error de excepción" .$e->getMessage();
     }
 }
 // Ejemplo de uso para un solo usuario
@@ -181,7 +183,7 @@ function diasSelect($id,$pdo){
         return $res_vista_permisos;
 
     } catch (PDOException $e) {
-        return "Error de exepcion" . $e->getMessage();
+        return "Error de excepción" . $e->getMessage();
     }
 }
 

@@ -60,7 +60,7 @@ $resultados = mostrarUsuarios($pdo);
                 <tbody>
                     <?php
                     if (empty($resultados)) {
-                        echo "<script>alert('no hay datos registrados')</script>";
+                        echo "";
                     }else {
                         foreach ($resultados as $key => $valor){
                             $id_usuarios = $valor ["id_usuarios"];

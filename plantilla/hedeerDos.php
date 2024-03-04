@@ -218,11 +218,6 @@ $rol = $_SESSION['rol'];
                         Datos Funcionario
                         </a>
 
-                        <a class="dropdown-item bg-danger text-white rounded-5" href="#" data-toggle="modal" data-target="#logoutModal">
-                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-white"></i>
-                            Cerrar Sesión
-                        </a>
-
                         <?php }
 
                         if($rol == 'Funcionario') { ?>

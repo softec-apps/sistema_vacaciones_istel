@@ -82,7 +82,12 @@ include_once "../funciones.php";
                             $limiteAmarillo = $limiteVacaciones*($porcentajeAmarillo/100);
                             $limiteRojo = $limiteVacaciones;
                             $horasTrabajadas = $diasTrabajados * $tiempoTrabajo;
-                            $prueba = calcular_actualizar($pdo,$diasTrabajados,$horasTrabajadas,$dias_totales,$diasDeVacaciones,$id_usuario);
+                            try {
+                                $prueba = calcular_actualizar($pdo,$diasTrabajados,$horasTrabajadas,$dias_totales,$diasDeVacaciones,$id_usuario);
+                            } catch (PDOException $e) {
+                                echo "error en una función";
+                            }
+
                     ?>
                         <tr>
 

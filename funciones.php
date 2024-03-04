@@ -327,7 +327,7 @@ function calculo_unico_insert($id_usuario_insertado, $tiempo_trabajo, $pdo)
         return "Error de excepción: " . $e->getMessage();
     }
 }
-//funcion para actualiazar los dias y horas trabajados
+//funcion para actualizar los dias y horas trabajados
 function calcular_actualizar($pdo,$dias_laborados,$horas_trabajadas,$dias_totales_acu_user,$dias_totales_vac_user,$id_usuarios){
     try {
 

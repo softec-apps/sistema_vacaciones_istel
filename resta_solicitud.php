@@ -21,7 +21,7 @@ function seleccionar($pdo){
             'diasPorAno' => $diasPorAno
         ];
     } catch (PDOException $e) {
-        echo "Error de exepcion en la funcion de limite" .$e->getMessage();
+        return "Error de excepción en la función de limite" .$e->getMessage();
     }
 
 }
@@ -82,7 +82,7 @@ function obtenerDiasTrabajadosParaUsuario($pdo, $id_usuario) {
 
         return $resultados;
     } catch (PDOException $e) {
-        echo "Error de excepción en la función de Días trabajados para un solo usuario: " . $e->getMessage();
+        return "Error de excepción en la función de Días trabajados para un solo usuario: " . $e->getMessage();
     }
 }
 
@@ -121,7 +121,7 @@ function obtenerDiasTrabajadosParaTodos($pdo) {
 
         return $resultados;
     } catch (PDOException $e) {
-        echo "Error de exepcion en la funcion de Dias trabajados" .$e->getMessage();
+        return "Error de excepción en la función de Dias trabajados" .$e->getMessage();
     }
 }
 
@@ -168,7 +168,7 @@ function obtenerUsuariosConPermios($pdo) {
 
         return $resultados;
     } catch (PDOException $e) {
-        echo "Error de exepcion en la funcion de Dias trabajados" .$e->getMessage();
+        return "Error de excepción en la función de Dias trabajados" .$e->getMessage();
     }
 }
 
@@ -183,7 +183,7 @@ function obtenerFechaIngreso($pdo, $id_usuario) {
         return $resultado['fecha_ingreso'];
 
     } catch (PDOException $e) {
-        echo "Error de exepcion en la funcion de Fecha Ingreso" .$e->getMessage();
+        return "Error de excepción en la función de Fecha Ingreso" .$e->getMessage();
     }
 
 }
@@ -208,10 +208,13 @@ function consulta_unica($pdo, $id_usuario_insertado) {
         $intervalo = $fecha_ingreso_obj->diff($fecha_actual_obj);
         $diasTrabajados = $intervalo->days;
 
+        // Obtener el resultado en días como un número entero
+        $diasTrabajados = (int)$intervalo->format('%r%a');
+
         return $diasTrabajados;
 
     } catch (PDOException $e) {
-        echo "Error de exepcion en la funcion de consulta" .$e->getMessage();
+        return "Error de excepción en la función de consulta" .$e->getMessage();
     }
 
 }
@@ -234,7 +237,7 @@ function horas_ocupadas($pdo, $id_usuario_insertado) {
         }
 
     } catch (PDOException $e) {
-        echo "Error de exepcion en la funcion de consulta" .$e->getMessage();
+        return "Error de excepción en la función de consulta" .$e->getMessage();
     }
 }
 
