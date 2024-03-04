@@ -53,10 +53,14 @@ if ($_POST) {
         }
     }catch (PDOException $pdoEx) {
         // Capturar excepciones específicas de PDO
-        echo "Error de PDO: " . $pdoEx->getMessage();
+
+        redirect(RUTA_ABSOLUTA . "logout");
+        // echo "Error de PDO: " . $pdoEx->getMessage();
     }
     catch (Exception $e) {
-        echo "Error general: " . $e->getMessage();
+
+        redirect(RUTA_ABSOLUTA . "logout");
+        // echo "Error general: " . $e->getMessage();
     }
 }
 ?>

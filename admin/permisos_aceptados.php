@@ -32,22 +32,22 @@ $respuesta = soli_aceptadas($pdo);
 ?>
                 <div class="container-fluid mt-5">
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Permisos Ya aprobados</h1>
+                    <!-- <h1 class="h3 mb-2 text-gray-800">Permisos Ya aprobados</h1> -->
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Permisos Aprobados</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Permisos aprobados</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive crud-table">
                                 <table class="table table-bordered" id="tabla_permisos_aceptados">
                                     <thead>
                                         <tr>
-                                            <th>Cedula</th>
+                                            <th>Cédula </th>
                                             <th>Nombres</th>
                                             <th>Fecha emitida</th>
-                                            <th>Usuario Solicita</th>
+                                            <th>Tipo de permiso</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
@@ -70,6 +70,7 @@ $respuesta = soli_aceptadas($pdo);
                                                 $direccion_unidad = $valor ["direccion_unidad"];
                                                 $fecha_permiso = $valor ["fecha_permiso"];
                                                 $motivo_permiso = $valor ["motivo_permiso"];
+                                                $motivo_permiso = str_replace('_', ' ', $motivo_permiso);
                                                 $tiempoLimite_motivo = $valor ["tiempo_motivo"];
                                                 $desc_motivo = $valor['desc_motivo'];
                                                 $dias_solicitados = $valor['dias_solicitados'];
@@ -102,12 +103,12 @@ $respuesta = soli_aceptadas($pdo);
                                             <td><?=  $cedula_user ;?></td>
                                             <td><?=  $nombres . " " . $apellidos ;?></td>
                                             <td><?=  $fecha_permiso ;?></td>
-                                            <td><?=  $usuario_solicita ;?></td>
+                                            <td><?=  $motivo_permiso ;?></td>
                                             <td>
                                                 <?php if ($permiso_aceptado == 1): ?>
-                                                    <button class="btn btn-success" title="Aceptado" data-toggle="modal" data-target="#cancelarSolicitud" data-id="<?= $id_permiso ?>" onclick="cancelar(this)"><i class="fa-solid fa-check"></i></button>
+                                                    <button class="btn btn-success" title="Permiso aprobado" data-toggle="modal" data-target="#cancelarSolicitud" data-id="<?= $id_permiso ?>" onclick="cancelar(this)"><i class="fa-solid fa-check"></i></button>
                                                 <?php elseif ($permiso_aceptado == 3): ?>
-                                                    <button class="btn btn-primary" title="Ya registrado"><i class="fa-solid fa-check"></i></button>
+                                                    <button class="btn btn-primary" title="Permiso aprobado y registrado"><i class="fa-solid fa-check"></i></button>
                                                 <?php endif; ?>
 
                                                 <form action="../datos_individuales" method="POST" class="d-inline-block m-1">
@@ -131,144 +132,32 @@ $respuesta = soli_aceptadas($pdo);
                 </div>
                 <!-- /.container-fluid -->
 
-
-
-
-    <!-- Modal Eliminar -->
-    <div class="modal fade" id="Eliminar" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalAdminLabel">Confirmar eliminación</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>¿Está seguro de que desea eliminar este usuario?</p>
-                    <form id="eliminarForm" action="eliminar_admin" method="post">
-                        <input type="hidden" name="cliente_id" id="cliente_id" value="">
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" form="eliminarForm" class="btn btn-danger">Eliminar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-
-    <!-- Modal Editar Pemisos-->
-    <div class="modal fade" id="Editar_permisos" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalAdminLabel">Editar Permisos</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="actualizar_permisos" method="POST">
-                        <input type="hidden" name="id_administrador" id="id_administrador" value="">
-
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="permisos[]" value="Administracion"
-                                id="permiso_administracion">
-                            <label class="form-check-label" for="permiso_administracion">Administración</label>
-                        </div>
-
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="permisos[]" value="Bolsa de empleo"
-                                id="permiso_bolsa">
-                            <label class="form-check-label" for="permiso_bolsa">Bolsa de Empleo</label>
-                        </div>
-
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="permisos[]"
-                                value="Seguimiento graduados" id="permiso_seguimiento">
-                            <label class="form-check-label" for="permiso_seguimiento">Seguimiento Graduados</label>
-                        </div>
-
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="permisos[]"
-                                value="Eventos y Encuestas" id="eventos_encuestas">
-                            <label class="form-check-label">Eventos y Encuestas</label>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            <button type="submit" class="btn btn-primary">Actualizar los Permisos</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-<!-- Modal de registrar la solicitud-->
-<div class="modal fade" id="registrar_solicitud" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalAdminLabel">Registrar Solicitudes de Permisos </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="aprobarForm" action="<?php echo RUTA_ABSOLUTA ?>procesar" method="post">
-                    <p>Estás a punto de registrar una solicitud de permiso del usuario con los siguientes datos:</p>
-
-                    <input type="hidden" name="id_registrar" id="id_registrar" value ="" />
-                    <input class="form-control" type="hidden" name="registrar" value ="3" />
-                    <div class="form-floating mb-3">
-                        <div>
-                            <label>Ingrese su nombre como Jefe</label>
-                            <input class="form-control" name="user" type="text" required />
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger cerrarModal" data-dismiss="modal">No registrar</button>
-                        <button type="submit" class="btn btn-success">Registrar Solicitud de permiso</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 <!-- Modal para cancelar una solicitud -->
 <div class="modal fade" id="cancelarSolicitud" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalAdminLabel">Confirmar Cancelacion del Permiso</h5>
+                <h5 class="modal-title" id="modalAdminLabel">Cancelar permiso aprobado</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p>¿Está seguro de que desea Cancelar esta solicitud ?</p>
-                <p>Recuerde que si cancela la solicitud este permiso se movera a la seccion de "Recepcion de Solicitudes"</p>
+                <p>¿Está seguro de que desea cancelar el permiso ya aprobado ?</p>
+                <p>Recuerde que si cancela la solicitud, el permiso se moverá a la sección de "Recepción de solicitud"</p>
+                <div class="alert alert-danger" role="alert">
+                El archivo subido por el jefe supervisor se eliminara
+                </div>
                 <form id="cancelarS" action="<?php echo RUTA_ABSOLUTA ?>admin/procesarSolicitudes" method="POST">
-                    <input type="hidden" name="id_cancelar" id="id_cancelar" value ="<?= $id_permiso ?>" />
+                    <input type="hidden" name="id_cancelar" id="id_cancelar" value ="" />
                     <input class="form-control" type="hidden" name="cancelar" value ="0" />
                     <input class="form-control" type="hidden" name="user" value="" />
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="submit" form="cancelarS" class="btn btn-warning">Aceptar</button>
+                <button type="submit" form="cancelarS" class="btn btn-primary">Aceptar</button>
             </div>
         </div>
     </div>

@@ -41,33 +41,34 @@ $resultados = mostrarUsuarios($pdo);
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Registrar Funcionarios con el dia que inicio a trabajar</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Registrar funcionarios con el día que inicio a trabajar</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered crud-table" id="tabla_admininstradores">
                 <thead>
                     <tr>
-                        <th>Id</th>
-                        <th>Cedula</th>
+                        <th>Cédula</th>
                         <th>Nombres</th>
                         <th>Apellidos</th>
-                        <th>Email</th>
+                        <th>Correo electrónico </th>
                         <th>Usuario</th>
-                        <th>Fecha Ingreso</th>
+                        <th>Fecha de ingreso</th>
                         <th class="exclude">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
                     if (empty($resultados)) {
-                        echo "<script>alert('no ha datos registrados')</script>";
+                        echo "<script>alert('no hay datos registrados')</script>";
                     }else {
                         foreach ($resultados as $key => $valor){
                             $id_usuarios = $valor ["id_usuarios"];
                             $cedula_usuarios = $valor['cedula'];
                             $nombres_usuarios = $valor['nombres'];
                             $apellidos_usuarios = $valor['apellidos'];
+                            $usuario = $valor['usuario'];
+                            $clave = $valor['contraseña'];
                             $email_usuarios = $valor['email'];
                             $rol_usuarios = $valor['rol'];
                             $fecha_ingreso = $valor['fecha_ingreso'];
@@ -78,9 +79,6 @@ $resultados = mostrarUsuarios($pdo);
                                 $funcionariosEncontrados = true;
                     ?>
                     <tr>
-                        <td>
-                            <?= 0 +1 ?>
-                        </td>
 
                         <td>
                             <?= $cedula_usuarios ?>
@@ -107,7 +105,7 @@ $resultados = mostrarUsuarios($pdo);
                         </td>
                         <td>
                             <button class="btn btn-primary m-1" title="Editar datos del usuario"
-                                data-toggle="modal" data-target="#Editar_datos" data-id="<?= $id_usuarios ?>" data-cedula="<?= $cedula_usuarios?>" data-name="<?= $nombres_usuarios ?>" data-lastname="<?= $apellidos_usuarios ?>" data-email="<?= $email_usuarios ?>"
+                                data-toggle="modal" data-target="#Editar_datos" data-id="<?= $id_usuarios ?>" data-cedula="<?= $cedula_usuarios?>" data-name="<?= $nombres_usuarios ?>" data-lastname="<?= $apellidos_usuarios ?>" data-user="<?= $usuario ?>" data-password="<?= $clave ?>" data-email="<?= $email_usuarios ?>"
                                 data-fecha_ingreso="<?= $fecha_ingreso ?>" data-tiempo_trabajo="<?= $tiempo_trabajo ?>" onclick="cargarDatos(this)">
                                 <i class="fa-solid fa-pencil"></i>
                             </button>
@@ -182,43 +180,54 @@ aria-hidden="true">
 
                     <div class="row mb-3">
                         <div class="col">
-                            <label>Ingrese la cedula </label>
-                            <input class="form-control" name="cedula" type="text"/>
+                            <label>Número de cédula </label>
+                            <input class="form-control" name="cedula" type="text" pattern="\d{10}" title="Ingrese exactamente los 10 números de la cédula" required/>
                         </div>
                         <div class="col">
-                            <label>Ingrese el Email del Usuario</label>
+                            <label>Correo electrónico </label>
                             <input class="form-control" type="email" name="email_A"/>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col">
-                            <label>Ingrese los nombres</label>
+                            <label>Nombre de usuario </label>
+                            <input class="form-control" name="user_A" type="text" required />
+                        </div>
+                        <div class="col">
+                            <label>Contraseña del usuario</label>
+                            <input class="form-control" type="text" name="password_A" required />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label>Nombres</label>
                             <input class="form-control" name="nombres" type="text"/>
                         </div>
                         <div class="col">
-                            <label>Ingrese los apellidos</label>
+                            <label>Apellidos</label>
                             <input class="form-control" name="apellidos" type="text"/>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col" id="optionTiempo">
-                            <label>Modalidad de Trabajo </label>
+                            <label>Modalidad de trabajo </label>
                             <select class="form-control" name="tiempo_trabajo">
                                 <option value="8">Tiempo Completo</option>
                                 <option value="4">Medio Tiempo</option>
                             </select>
                         </div>
                         <div class="col">
-                            <label> Seleccione la Fecha de Ingreso</label>
+                            <label> Seleccione la fecha de ingreso</label>
                             <input class="form-control" type="date" name="fecha_ingreso" required/>
                         </div>
                     </div>
 
                     <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Actualizar informacion</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-primary">Actualizar Informacion</button>
                     </div>
                 </form>
             </div>
@@ -234,7 +243,7 @@ aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalAdminLabel">Registrar Nuevo Funcionario</h5>
+                <h5 class="modal-title" id="modalAdminLabel">Registrar un funcionario</h5>
                 <button type="button" class="close cerrarModal" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -246,54 +255,54 @@ aria-hidden="true">
 
                     <div class="row mb-3">
                         <div class="col">
-                            <label>Ingrese la cedula </label>
-                            <input class="form-control" name="cedula" type="text" required />
+                            <label>Número de cédula  </label>
+                            <input class="form-control" name="cedula" type="text" pattern="\d{10}" title="Ingrese exactamente los 10 números de la cédula" required />
                         </div>
                         <div class="col">
-                            <label>Ingrese los nombre </label>
+                            <label>Nombres </label>
                             <input class="form-control" name="nombres" type="text" required />
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col">
-                            <label>Ingrese los apellidos </label>
+                            <label>Apellidos </label>
                             <input class="form-control" name="apellidos" type="text" required />
                         </div>
                         <div class="col">
-                            <label>Email del Funcionario</label>
+                            <label>Correo electrónico</label>
                             <input class="form-control" type="email" name="email_A" required />
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col">
-                            <label>Ingrese un usuario </label>
+                            <label>Nombre de usuario </label>
                             <input class="form-control" name="user_A" type="text" required />
                         </div>
                         <div class="col">
-                            <label>Contraseña del Funcionario</label>
+                            <label>Contraseña del usuario</label>
                             <input class="form-control" type="text" name="password_A" required />
                         </div>
                     </div>
 
                     <div class="row mb-3" >
                         <div class="col" id="optionTiempo2">
-                            <label>Modalidad de Trabajo</label>
+                            <label>Modalidad de trabajo</label>
                             <select class="form-control" name="tiempo_trabajo" required>
                                 <option value="8">Tiempo Completo</option>
                                 <option value="4">Medio Tiempo</option>
                             </select>
                         </div>
                         <div class="col" id="opcionesFuncionario">
-                            <label>Seleccione la Fecha de Ingreso</label>
+                            <label>Seleccione la fecha de ingreso</label>
                             <input class="form-control" type="date" name="fecha_ingreso" id="fecha_ingreso" required/>
                         </div>
                     </div>
 
                     <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Registrar funcionario</button>
                         <button type="button" class="btn btn-secondary cerrarModal" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-primary">Registrar Funcionario Nuevo</button>
                     </div>
                 </form>
             </div>
@@ -313,6 +322,8 @@ aria-hidden="true">
         var cedulaInput = modal.querySelector('[name="cedula"]');
         var nombresInput = modal.querySelector('[name="nombres"]');
         var apellidosInput = modal.querySelector('[name="apellidos"]');
+        var user_AInput = modal.querySelector('[name="user_A"]');
+        var password_AInput = modal.querySelector('[name="password_A"]');
         var emailInput = modal.querySelector('[name="email_A"]');
         var fecha_ingresoInput = modal.querySelector('[name="fecha_ingreso"]');
         var tiempo_trabajoInput = modal.querySelector('[name="tiempo_trabajo"]');
@@ -321,6 +332,8 @@ aria-hidden="true">
         var cedula = button.getAttribute('data-cedula');
         var username = button.getAttribute('data-name');
         var lastname = button.getAttribute('data-lastname');
+        var user = button.getAttribute('data-user');
+        var password = button.getAttribute('data-password');
         var email = button.getAttribute('data-email');
         var fecha_ingreso = button.getAttribute('data-fecha_ingreso');
         var tiempo_trabajo = button.getAttribute('data-tiempo_trabajo');
@@ -330,6 +343,8 @@ aria-hidden="true">
         cedulaInput.value = cedula;
         nombresInput.value = username;
         apellidosInput.value = lastname;
+        user_AInput.value = user;
+        password_AInput.value = password;
         emailInput.value = email;
         fecha_ingresoInput.value = fecha_ingreso;
         tiempo_trabajoInput.value = tiempo_trabajo;

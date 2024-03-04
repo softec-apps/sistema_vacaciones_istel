@@ -81,7 +81,7 @@ $rol = $_SESSION['rol'];
         <!-- Sidebar Toggle-->
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0 ms-0 rounded-5 toggle" id="sidebarToggle" href="#!"><i class="fas fa-bars icono"></i></button>
         <!-- Navbar Brand-->
-        <p class=" fa-lg ps-2 pe-5 me-5 mb-0 texto">Sistema Vacaciones</p>
+        <p class=" fa-lg ps-2 pe-5 me-5 mb-0 texto">Sistema permisos</p>
         <!-- Topbar Navbar -->
         <ul class="navbar-nav ml-auto" id="datos">
             <div class="topbar-divider d-none d-sm-block"></div>
@@ -90,7 +90,7 @@ $rol = $_SESSION['rol'];
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                     <span class="mr-2 d-none d-lg-inline text-white"><?php echo $nombre; ?></span>
-                    <img class="img-profile rounded-circle" src="<?php echo RUTA_ABSOLUTA; ?>img/undraw_profile.svg">
+                    <img class="img-profile rounded-circle" src="<?php echo RUTA_ABSOLUTA; ?>imagenes_defecto/descarga.jpg">
                 </a>
                 <!-- Dropdown - User Information -->
                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -98,7 +98,7 @@ $rol = $_SESSION['rol'];
                          if($rol == 'admin') { ?>
                     <a class="dropdown-item" href="<?php echo RUTA_ABSOLUTA; ?>configuracion/configuracionAcumulados">
                         <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Configuracion
+                        Configuración
                     </a>
                     <?php }?>
                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
@@ -116,9 +116,9 @@ $rol = $_SESSION['rol'];
             <nav class="sb-sidenav accordion superior " id="sidenavAccordion">
                 <div class="sb-sidenav-menu ">
                     <div class="nav">
-                        <div class="sb-sidenav-menu-heading">Panel</div>
+                        <!-- <div class="sb-sidenav-menu-heading">Panel</div> -->
 
-                        <a class="nav-link texto rounded-5" href="
+                        <a class="nav-link texto rounded-5 mt-3" href="
                         <?php
                         switch ($rol) {
                             case ROL_ADMIN:
@@ -154,54 +154,110 @@ $rol = $_SESSION['rol'];
                          if($rol == 'admin') { ?>
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>admin/admin">
                             <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-user-secret"></i></div>
-                            Agg Usuarios
+                            Agregar usuarios
                         </a>
+
+
+                        <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>admin/register">
+                        <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-user-tie"></i></div>
+                        Ingresar funcionarios
+                        </a>
+
                         <!-- <form action="admin/calcular" method="post" > -->
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>admin/trabajo">
                             <!-- <input type="hidden" name="id_usuario" value=""> -->
                             <!-- <button class="nav-link texto text-left rounded-5" type="submit"> -->
                             <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-calendar"></i></div>
-                            Dias de trabajo de los Funcionario</button>
+                            Funcionarios</button>
                         </a>
                         <!-- </form> -->
 
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>admin/solicitud_general">
                         <div class="sb-nav-link-icon"><i class="fa-lg bi bi-envelope"></i></div>
-                        Solicitar Permiso General
+                        Solicitar permiso
                         </a>
 
-                        <!-- <a class="nav-link collapsed texto rounded-5" href="#" data-bs-toggle="collapse"
-                            data-bs-target="#collapseLogs" aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="bi bi-substack"></i></div>
-                            Logs
+                        <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>admin/archivosSubidos">
+                        <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-folder-open"></i></div>
+                        Archivos
+                        </a>
+
+                        <a class="nav-link collapsed texto rounded-5" href="#" data-bs-toggle="collapse"
+                            data-bs-target="#permisos" aria-expanded="false" aria-controls="collapseLayouts">
+                            <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-file-shield"></i></div>
+                            Permisos
                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                         </a>
-                        <div class="collapse" id="collapseLogs" aria-labelledby="headingOne"
+                        <div class="collapse" id="permisos" aria-labelledby="headingOne"
                             data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav rounded-4 me-3">
-                                <a class="nav-link texto rounded-4" href="<?php echo RUTA_ABSOLUTA; ?>admin/admin">
-                                    Logs Permisos aceptados por el jefe supervisor
+                                <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>admin/permisos_pendientes">
+                                <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-bell"></i></div>
+                                Recepción solicitud
                                 </a>
-                                <a class="nav-link texto rounded-4" href="<?php echo RUTA_ABSOLUTA; ?>admin/funcionarios">
-                                    Logs de Permisos Solicitados
+                                <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>permisos/aceptados">
+                                <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-check"></i></div>
+                                Permisos aprobados
                                 </a>
-                                <a class="nav-link texto rounded-4" href="<?php echo RUTA_ABSOLUTA; ?>admin/funcionarios">
-                                    Logs de Permisos regitrados por talentos humanos
+                                <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>permisos/rechazados">
+                                <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-xmark"></i></div>
+                                Permisos rechazados
                                 </a>
+                                <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>admin/permisos">
+                                <div class="sb-nav-link-icon"><i class="fa-lg fa-regular fa-registered"></i></div>
+                                Registrar permisos
+                                </a>
+
                             </nav>
-                        </div> -->
+                        </div>
+
+                        <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>admin/permisos_registrados">
+                        <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-check-double"></i></div>
+                        Registrados
+                        </a>
+
+
+                        <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>admin/solicitud">
+                        <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-person-chalkboard"></i></div>
+                        Datos funcionario
+                        </a>
+<!-- 
+                        <a class="dropdown-item bg-danger text-white rounded-5" href="#" data-toggle="modal" data-target="#logoutModal">
+                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-white"></i>
+                            Cerrar Sesión
+                        </a> -->
                         <?php }
 
                         if($rol == 'Funcionario') { ?>
                         <!-- Funcionarios -->
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>funcionario/solicitudUser">
                             <div class="sb-nav-link-icon"><i class="fa-lg fas fa-hand-paper"></i></div>
-                            Solicitud para un permiso
+                            Solicitar un permiso
+                        </a>
+
+                        <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>funcionario/subirArchivos">
+                            <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-file-lines"></i></div>
+                            Subir archivos
+                        </a>
+
+                        <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>funcionario/archivosSubidos">
+                            <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-file-arrow-up"></i></div>
+                            Archivos subidos
+                        </a>
+
+                        <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>funcionario/aprobados">
+                            <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-calendar-check"></i></div>
+                            Permisos aprobados
                         </a>
 
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>funcionario/rechazados">
                             <div class="sb-nav-link-icon"><i class="fa-lg fa-regular fa-calendar-xmark"></i></div>
-                            Permisos Rechazados
+                            Permisos rechazados
+                        </a>
+
+                        <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>funcionario/archivosRegistrados">
+                            <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-calendar-week"></i></div>
+                            Permisos registrados
                         </a>
 
                         <?php }
@@ -210,19 +266,30 @@ $rol = $_SESSION['rol'];
                         <!-- Jefe -->
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>jefe/permisosSolicitados">
                             <div class="sb-nav-link-icon"><i class="fa-lg fas fa-inbox"></i></div>
-                            Recepcion de Solicitudes
+                            Solicitudes
                         </a>
+
+                        <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>jefe/archivosSubidos">
+                            <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-folder"></i></div>
+                            Archivos subidos
+                        </a>
+
+                        <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>jefe/archivosUsuarios">
+                            <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-id-card-clip"></i></div>
+                            Archivos usuarios
+                        </a>
+
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>jefe/permisosAprobados">
                             <div class="sb-nav-link-icon"><i class="fa-lg fa-regular fa-circle-check"></i></div>
-                            Permisos Aprobados
+                            Permisos aprobados
                         </a>
                         <a class="nav-link texto rounded-4" href="<?php echo RUTA_ABSOLUTA; ?>jefe/permisosRechazados">
                             <div class="sb-nav-link-icon"><i class="fa-lg fa-regular fa-circle-xmark"></i></div>
-                            Permisos Rechazados
+                            Permisos rechazados
                         </a>
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>jefe/trabajoFuncionarios">
                             <div class="sb-nav-link-icon"><i class="fa-lg fas fa-umbrella-beach"></i></div>
-                            Dias de Trabajo y Vacaciones de los Funcionarios
+                            Trabajo funcionarios
                         </a>
                         <?php
                         }
@@ -230,7 +297,7 @@ $rol = $_SESSION['rol'];
                         ?>
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>talentoHumano/registrarFuncionario">
                             <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-user-plus"></i></div>
-                            Registrar Nuevos Funcionarios
+                            Registrar funcionarios
                         </a>
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>talentoHumano/permisosAprobados">
                             <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-envelope-open-text"></i></div>
@@ -241,63 +308,26 @@ $rol = $_SESSION['rol'];
                             Permisos registrados
                         </a>
 
+                        <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>talentoHumano/archivosSubidos">
+                            <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-folder-open"></i></div>
+                            Archivos subidos
+                        </a>
+                        <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>talentoHumano/archivosRegistrados">
+                            <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-folder-closed"></i></div>
+                            Archivos registrados
+                        </a>
+
                         <?php
-                        }
-                         if($rol == 'admin') { ?>
-                        <div class="sb-sidenav-menu-heading">Prueba</div>
-                        <a class="nav-link collapsed texto rounded-5" href="#" data-bs-toggle="collapse"
-                            data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="fa-solid fa-user-tie"></i></div>
-                            Jefe Aprueba
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne"
-                            data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav rounded-4 me-3">
-                                <a class="nav-link texto rounded-4" href="<?php echo RUTA_ABSOLUTA; ?>admin/permisos_pendientes">Recepcion de solicitudes</a>
-                                <a class="nav-link texto rounded-4" href="<?php echo RUTA_ABSOLUTA; ?>permisos/aceptados">
-                                Permisos aprobados</a>
-                                <a class="nav-link texto rounded-4" href="<?php echo RUTA_ABSOLUTA; ?>permisos/rechazados">
-                                Permisos Rechazados</a>
-                                <a class="nav-link texto rounded-4" href="<?php echo RUTA_ABSOLUTA; ?>admin/vacaciones">Dias de vaciones y dias de trabajo de los Funcionario</a>
-                            </nav>
-                        </div>
-
-                        <a class="nav-link collapsed texto rounded-5" href="#" data-bs-toggle="collapse"
-                            data-bs-target="#collapseTalentosH" aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="fa-solid fa-person-burst"></i></div>
-                            Talento Humano
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="collapseTalentosH" aria-labelledby="headingOne"
-                            data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav rounded-4 me-3">
-                                <a class="nav-link texto rounded-4" href="<?php echo RUTA_ABSOLUTA; ?>admin/permisos">Permisos Aceptados por el supervisor</a>
-                                <a class="nav-link texto rounded-4" href="<?php echo RUTA_ABSOLUTA; ?>admin/permisos_registrados">Permisos Ya Registrados</a>
-                                <a class="nav-link texto rounded-4" href="<?php echo RUTA_ABSOLUTA; ?>admin/register">Registrar dias de Trabajo de los funcionarios</a>
-                            </nav>
-                        </div>
-
-                        <a class="nav-link collapsed texto rounded-5" href="#" data-bs-toggle="collapse"
-                            data-bs-target="#collapseFuncionarios" aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="fa-solid fa-user-group"></i></div>
-                            Funcionarios
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="collapseFuncionarios" aria-labelledby="headingOne"
-                            data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav rounded-4 me-3">
-                                <a class="nav-link texto rounded-4" href="<?php echo RUTA_ABSOLUTA; ?>admin/solicitud">Solicitar Permiso</a>
-                            </nav>
-                        </div>
-
-                        <?php } ?>
+                        }?>
                     </div>
                 </div>
-                <!-- <div class="sb-sidenav-footer">
-                    <div class="small">Logged in as:</div>
-                    Start Bootstrap
-                </div> -->
+                <div class="sb-sidenav-footer">
+                    <!-- <div class="small">Logged in as:</div> -->
+                    <a class="dropdown-item bg-danger text-white rounded-5" href="#" data-toggle="modal" data-target="#logoutModal">
+                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-white"></i>
+                        Cerrar Sesión
+                    </a>
+                </div>
             </nav>
         </div>
         <!-- End of Sidebar -->

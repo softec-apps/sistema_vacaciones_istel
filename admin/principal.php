@@ -24,87 +24,204 @@ if (isset($flash_message)) {
 }
 
 $titulo = "Panel";
-include_once("../plantilla/header.php")
-?>
+include_once "../plantilla/header.php";
 
-<div class="row mx-5 pt-5">
-    <!-- Earnings (Monthly) Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <a class="btn" href="<?php echo RUTA_ABSOLUTA; ?>admin/admin">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Administradores
+include_once "estadisticas.php";
+$estadisticas = total_usuarios($pdo);
+$estadisticas = $estadisticas[0]["total"];
+$permisoAceptados = countAceptados($pdo);
+$permisoAceptados = $permisoAceptados[0]["total"];
+$permisoRegistrados = countRegistrados($pdo);
+$permisoRegistrados = $permisoRegistrados[0]["total"];
+$permisoRechazados = permisosRechazados($pdo);
+$permisoRechazados = $permisoRechazados[0]["total"];
+$permisosRealizados = permisosRealizados($pdo);
+$permisosRealizados = $permisosRealizados[0]["total"];
+?><style>
+        .card-body .hoverable .fa-2x:hover  {
+            color:  #001f3f;
+        }
+        .fa-2x{
+            color: #fff;
+        }
+    </style>
+<div class="container-fluid mt-4">
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Inicio</h1>
+    <!-- <div class="w-25 text-end">
+        <img class=" d-none d-sm-inline-block w-25" src="<?php echo RUTA_ABSOLUTA; ?>imagenes_defecto/logo_instituto.png">
+    </div> -->
+</div>
+
+
+
+    <div class="row ">
+        <!-- Carta 1 -->
+        <div class="col-xl-3 col-md-6 mb-4 " >
+            <div class="card shadow h-100 py-2 bg-primary rounded-5">
+                <div class="card-body ">
+                    <div class="row no-gutters align-items-center ">
+                        <div class="col mr-2 ">
+                            <div class="text-xs font-weight-bold text-white text-uppercase mb-1 ">
+                                Usuarios
                             </div>
+                            <div class="h5 mb-0 font-weight-bold text-white"><?= $estadisticas ?></div>
                         </div>
-                        <div class="col-auto">
-                            <i class="fa-solid fa-user-secret fa-2x text-gray-300"></i>
+                        <div class="col-auto hoverable">
+                            <a  href="<?php echo RUTA_ABSOLUTA; ?>admin/admin">
+                                <i class="fa-solid fa-user-secret fa-2x "></i>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-        </a>
-    </div>
+        </div>
 
-    <!-- Earnings (Monthly) Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <a class="btn" href="<?php echo RUTA_ABSOLUTA; ?>admin/trabajo">
-            <div class="card border-left-success shadow h-100 py-2">
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card shadow h-100 py-2 bg-success rounded-5">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-white text-uppercase mb-1">
+                                    Días de trabajo de los funcionarios
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold white"></div>
+                            </div>
+                            <div class="col-auto hoverable ">
+                                <a  href="<?php echo RUTA_ABSOLUTA; ?>admin/trabajo">
+                                    <i class="fa-solid fa-calendar fa-2x "></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card shadow h-100 py-2 bg-primary rounded-5">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-white text-uppercase mb-1">Generar Solicitud
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-white"></div>
+                            </div>
+                            <div class="col-auto hoverable ">
+                                <a  href="<?php echo RUTA_ABSOLUTA; ?>admin/solicitud_general">
+                                    <i class="bi bi-envelope fa-2x "></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <!-- Pending Requests Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card shadow h-100 py-2 bg-warning rounded-5">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Dias de Trabajo de los Funcionarios
+                            <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">
+                                Recepción de solicitudes
                             </div>
+                            <div class="h5 mb-0 font-weight-bold text-dark"><?= $permisosRealizados ?></div>
                         </div>
-                        <div class="col-auto">
-                            <i class="fa-solid fa-calendar fa-2x text-gray-300"></i>
+                        <div class="col-auto hoverable ">
+                            <a  href="<?php echo RUTA_ABSOLUTA; ?>admin/permisos_pendientes">
+                                <!-- <i class="fas fa-inbox fa-2x "></i> -->
+                                <i class="fa-solid fa-bell fa-2x "></i>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-        </a>
-    </div>
-
-    <!-- Earnings (Monthly) Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <a class="btn" href="<?php echo RUTA_ABSOLUTA; ?>admin/solicitud_general">
-            <div class="card border-left-info shadow h-100 py-2">
+        </div>
+        <!-- Carta 5 -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card shadow h-100 py-2 bg-success rounded-5">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Generar Solicitud
+                            <div class="text-xs font-weight-bold text-white text-uppercase mb-1">
+                                Permisos aprobados
                             </div>
+                            <div class="h5 mb-0 font-weight-bold text-white"><?= $permisoAceptados ?></div>
                         </div>
-                        <div class="col-auto">
-                            <i class="bi bi-envelope fa-2x text-gray-300"></i>
+                        <div class="col-auto hoverable ">
+                            <a  href="<?php echo RUTA_ABSOLUTA; ?>permisos/aceptados">
+                                <i class="fa-solid fa-check fa-2x "></i>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-        </a>
-    </div>
-
-    <!-- Pending Requests Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <a class="btn" href="<?php echo RUTA_ABSOLUTA; ?>admin/permisos_pendientes">
-            <div class="card border-left-warning shadow h-100 py-2">
+        </div>
+        <!-- Carta 6 -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card shadow h-100 py-2 bg-danger rounded-5">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Recepcion de solicitudes
+                            <div class="text-xs font-weight-bold text-white text-uppercase mb-1">
+                                Permisos rechazados
                             </div>
+                            <div class="h5 mb-0 font-weight-bold text-white"><?= $permisoRechazados ?></div>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-inbox fa-2x text-gray-300"></i>
+                        <div class="col-auto hoverable ">
+                            <a  href="<?php echo RUTA_ABSOLUTA; ?>permisos/rechazados">
+                                <!-- <i class="fas fa-inbox fa-2x "></i> -->
+                                <i class="fa-solid fa-xmark fa-2x "></i>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-        </a>
+        </div>
+        <!-- Carta 7 -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card shadow h-100 py-2 bg-success rounded-5">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-white text-uppercase mb-1">
+                                Registrar permisos
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-white"><?= $permisoAceptados ?></div>
+                        </div>
+                        <div class="col-auto hoverable ">
+                            <a  href="<?php echo RUTA_ABSOLUTA; ?>admin/permisos">
+                                <!-- <i class="fas fa-inbox fa-2x "></i> -->
+                                <i class="fa-regular fa-registered fa-2x "></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Carta 8 -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card shadow h-100 py-2 bg-primary rounded-5">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-white text-uppercase mb-1">
+                                Permisos registrados
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-white"><?= $permisoRegistrados ?></div>
+                        </div>
+                        <div class="col-auto hoverable ">
+                            <a  href="<?php echo RUTA_ABSOLUTA; ?>admin/permisos_registrados">
+                                <!-- <i class="fas fa-inbox fa-2x "></i> -->
+                                <i class="fa-solid fa-check-double fa-2x "></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

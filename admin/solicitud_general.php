@@ -9,6 +9,12 @@ if (!isset($_SESSION['id_usuarios'])) {
 }
 $cedula = $_SESSION['cedula'];
 $nombre = $_SESSION['nombres'];
+
+if (empty($nombre)) {
+    $nombreSesion = "Admin";
+}else {
+    $nombreSesion = $nombre;
+}
 $rol = $_SESSION['rol'];
 
 if ($rol !== ROL_ADMIN) {
@@ -37,21 +43,21 @@ $vista = obtenerUsuariosConPermios($pdo);
 
 ?>
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Vista general para ver todos los funcionarios que han solicitado un permiso</h1>
+    <h1 class="h3 mb-2 text-gray-800">Todos los permisos generados</h1>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Aqui se puede generar una solicitud para el usuario </h6>
+            <h6 class="m-0 font-weight-bold text-primary">Aquí se puede generar una solicitud para el usuario </h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered crud-table" id="tabla_vacaciones_funcionarios">
                     <thead>
                         <tr>
+                            <th>Cédula</th>
                             <th>Nombres</th>
                             <th>Apellidos</th>
-                            <th>Cedula</th>
                             <th>D.T</th>
                             <th>H.DT.A</th>
                             <th class="exclude">P.A</th>
@@ -73,6 +79,70 @@ $vista = obtenerUsuariosConPermios($pdo);
                                 $diasTrabajados = $valor ["dias_trabajados"];
                                 $permiso_aceptado = $valor ["permisoUsuario"];
 
+                                $ruta_solicita = $valor['ruta_solicita'];
+                                $ruta_aprueba = $valor['ruta_aprueba'];
+                                $ruta_registra = $valor['ruta_registra'];
+
+
+                                $rutaSolicita = verificarRuta($ruta_solicita);
+                                $rutaAprueba = verificarRuta($ruta_aprueba);
+                                $rutaRegistra = verificarRuta($ruta_registra);
+
+                                if (!empty($ruta_solicita) && $permiso_aceptado == 0) {
+                                    $ruta_solicita = '<a class="btn btn-success m-1" title="Solicitud firmada por el funcionario" href="' . RUTA_ABSOLUTA . $rutaSolicita .'" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
+                                    $ruta_aprueba = null;
+
+                                    $ruta_registra = null;
+
+                                    $permiso_aceptado = '<button class="btn btn-warning" title="Permiso en proceso" data-toggle="modal"
+                                    data-target="#aceptarSolicitud" data-id="'. $id_permiso .'" onclick="aceptar(this)"><i class="fa-solid fa-sync fa-spin"></i></button>';
+                                    $eliminar = null;
+                                }elseif ($permiso_aceptado == 1) {
+                                    $ruta_solicita = '<a class="btn btn-success m-1" title="Solicitud firmada por el usuario" href="' . RUTA_ABSOLUTA . $rutaSolicita .'" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
+
+                                    $ruta_aprueba = '<a class="btn btn-primary m-1" title="Solicitud firmada por el jefe" href="' . RUTA_ABSOLUTA . $rutaAprueba .'" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
+
+                                    $ruta_registra = null;
+
+                                    $permiso_aceptado = ' <button class="btn btn-success" title="Permiso aprobado" data-toggle="modal"
+                                    data-target="#cancelarSolicitud" data-id="'. $id_permiso .'" onclick="cancelar(this)"><i class="fa-solid fa-check"></i></button>';
+                                    $eliminar = null;
+                                }elseif ($permiso_aceptado == 2) {
+                                    $permiso_aceptado = '<button class="btn btn-danger" title="Permiso rechazado" ><i class="fa-solid fa-xmark"></i></button>';
+
+                                    $ruta_solicita = null;
+
+                                    $ruta_aprueba = null;
+
+                                    $ruta_registra = null;
+
+                                    $eliminar = null;
+                                }elseif ($permiso_aceptado == 3) {
+                                    $permiso_aceptado = '<button class="btn btn-primary" title="Permiso registrado" ><i class="fa-solid fa-check"></i></button>';
+
+                                    $ruta_solicita = '<a class="btn btn-success m-1" title="Solicitud firmada por el usuario" href="' . RUTA_ABSOLUTA . $rutaSolicita .'" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
+
+                                    $ruta_aprueba = '<a class="btn btn-primary m-1" title="Solicitud firmada por el jefe" href="' . RUTA_ABSOLUTA . $rutaAprueba .'" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
+
+                                    $ruta_registra = '<a class="btn btn-warning m-1" title="Solicitud registrada por talento humano" href="' . RUTA_ABSOLUTA . $rutaRegistra .'" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
+
+                                    $eliminar = null;
+                                }elseif ($permiso_aceptado == 0) {
+                                    $permiso_aceptado = '<button class="btn btn-primary m-1" title="Subir archivo" data-toggle="modal"
+                                    data-target="#subirEscaneado" data-id="'. $id_permiso .'" onclick="subirArchivo(this)" >
+                                    <i class="fa-solid fa-file-arrow-up"></i>
+                                    </button>';
+                                    $eliminar = '<button class="btn btn-danger m-1" title="Eliminar" data-toggle="modal"
+                                    data-target="#Eliminar" data-id="'. $id_permiso .'" onclick="eliminar(this)">
+                                    <i class="fas fa-trash"></i>
+                                    </button>';
+                                    $ruta_solicita = null;
+
+                                    $ruta_aprueba = null;
+
+                                    $ruta_registra = null;
+                                }
+
                                 $horasDePermisoSolicitadas = $valor ["horas_permiso"];
                                 $fechaIngreso = $valor ["fecha_ingreso"];
                                 $tiempoTrabajo = $valor ["tiempo_trabajo"];
@@ -93,15 +163,15 @@ $vista = obtenerUsuariosConPermios($pdo);
                         ?>
                         <tr>
                             <td>
+                            <?= $cedula ?>
+                            </td>
+
+                            <td>
                                 <?= $nombres ?>
                             </td>
 
                             <td>
                                 <?= $apellidos ?>
-                            </td>
-
-                            <td>
-                            <?= $cedula ?>
                             </td>
 
                             <td>
@@ -113,21 +183,7 @@ $vista = obtenerUsuariosConPermios($pdo);
                             </td>
 
                             <td>
-                            <?php if ($permiso_aceptado == 0): ?>
-                                <button class="btn btn-warning" title="Solicitud en proceso" data-toggle="modal"
-                                    data-target="#aceptarSolicitud" data-id="<?= $id_permiso ?>" onclick="aceptar(this)"><i class="fa-solid fa-sync fa-spin"></i></button>
-
-                            <?php elseif ($permiso_aceptado == 1): ?>
-
-                                <button class="btn btn-success" title="Aceptado" data-toggle="modal"
-                                    data-target="#cancelarSolicitud" data-id="<?= $id_permiso ?>" onclick="cancelar(this)"><i class="fa-solid fa-check"></i></button>
-
-                            <?php elseif ($permiso_aceptado == 2): ?>
-                                <button class="btn btn-info" title="Permiso Rechazado" ><i class="fa-solid fa-xmark"></i></button>
-
-                            <?php elseif ($permiso_aceptado == 3): ?>
-                                <button class="btn btn-primary" title="Ya registrado" ><i class="fa-solid fa-check"></i></button>
-                            <?php endif; ?>
+                            <?= $permiso_aceptado ?>
                             </td>
 
                             <td>
@@ -137,14 +193,12 @@ $vista = obtenerUsuariosConPermios($pdo);
                                         <i class="bi bi-eye"></i>
                                     </button>
                                 </form>
-                                <?php if ($permiso_aceptado == 1 || $permiso_aceptado == 3 ): ?>
 
-                                <?php elseif ($permiso_aceptado == 0): ?>
-                                    <button class="btn btn-danger m-1" title="Eliminar" data-toggle="modal"
-                                    data-target="#Eliminar" data-id="<?= $id_permiso ?>" onclick="eliminar(this)">
-                                    <i class="fas fa-trash"></i>
-                                    </button>
-                                <?php endif; ?>
+                                <?php echo $eliminar; ?>
+
+                                <?= $ruta_solicita ?>
+                                <?= $ruta_aprueba ?>
+                                <?= $ruta_registra ?>
                             </td>
 
                         </tr>
@@ -160,12 +214,12 @@ $vista = obtenerUsuariosConPermios($pdo);
     </div>
 
 <!-- Modal para solicitar permisos -->
-<div class="modal fade" id="registrar_vacaciones" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
+<div class="modal fade" id="registrar_vacaciones" role="dialog" aria-labelledby="modalAdminLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalAdminLabel">Solicitar Permiso </h5>
+                <h5 class="modal-title" id="modalAdminLabel">Solicitar permiso </h5>
                 <button type="button" class="close cerrarModal" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -174,9 +228,9 @@ $vista = obtenerUsuariosConPermios($pdo);
                 <form action="../solicitar_permiso" method="post" id="solicitud_permiso_form">
                     <input type="hidden" name="nombre_usuario" id="nombre_usuario">
 
-                    <div class="row mb-3">
-                        <div class="col">
-                            <select class="form-select" name="id_usuario" onchange="updateHiddenField(this)" required>
+                    <div class="mb-3">
+                        <div class="">
+                            <select class="select_soli" name="id_usuario" onchange="updateHiddenField(this)" required style="width:100%;">
                                 <option value="" disabled selected>Seleccione un usuario</option>
                                 <?php
                                     $itero = cedulas($pdo);
@@ -194,58 +248,18 @@ $vista = obtenerUsuariosConPermios($pdo);
                                 ?>
                             </select>
                         </div>
+                    </div>
 
+                    <div class="row mb-3">
                         <div class="col">
-                            <select class="form-select" name="provincia" required >
-                                <option value="" disabled selected>Provincias</option>
-                                <option value="Azuay">Azuay</option>
-                                <option value="Bolívar">Bolívar</option>
-                                <option value="Cañar">Cañar</option>
-                                <option value="Carchi">Carchi</option>
-                                <option value="Chimborazo">Chimborazo</option>
-                                <option value="Cotopaxi">Cotopaxi</option>
-                                <option value="El Oro">El Oro</option>
-                                <option value="Esmeraldas">Esmeraldas</option>
-                                <option value="Galápagos">Galápagos</option>
-                                <option value="Guayas">Guayas</option>
-                                <option value="Imbabura">Imbabura</option>
-                                <option value="Loja">Loja</option>
-                                <option value="Los Ríos">Los Ríos</option>
-                                <option value="Manabí">Manabí</option>
-                                <option value="Morona Santiago">Morona Santiago</option>
-                                <option value="Napo">Napo</option>
-                                <option value="Orellana">Orellana</option>
-                                <option value="Pastaza">Pastaza</option>
-                                <option value="Pichincha">Pichincha</option>
-                                <option value="Santa Elena">Santa Elena</option>
-                                <option value="Santo Domingo de los Tsáchilas">Santo Domingo de los Tsáchilas</option>
-                                <option value="Sucumbíos">Sucumbíos</option>
-                                <option value="Tungurahua">Tungurahua</option>
-                                <option value="Zamora-Chinchipe">Zamora-Chinchipe</option>
+                            <select class="form-select" name="regimen" required >
+                                <option value="" disabled selected>Tipo de Regimen</option>
+                                <option value="LOSEP">LOSEP</option>
+                                <option value="CODIGO DEL TRABAJO">CODIGO DEL TRABAJO</option>
                             </select>
                         </div>
-                    </div>
 
-                    <div class="row mb-3">
                         <div class="col">
-                            <!-- <label>Ingrese el Regimen </label> -->
-                            <input class="form-control" type="text" name="regimen" placeholder="Regimen" required/>
-                        </div>
-                        <div class="col">
-                            <!-- <label>Ingrese la coordinacion Zonal </label> -->
-                            <input class="form-control" type="text" name="coordinacion" placeholder="Coordinacion Zonal"   required/>
-                        </div>
-                    </div>
-
-
-
-                    <div class="row mb-3">
-                        <div class="col">
-                            <!-- <label>Ingrese la Dirrecion o Unidad </label> -->
-                            <input class="form-control" type="text" name="direccion" placeholder="Direccion o Unidad"  required/>
-                        </div>
-                        <div class="col">
-                            <!-- <label>Motivo </label> -->
                             <select class="form-select" name="motivo" id="motivo" required>
                                 <option value="" disabled selected>Motivo del Permiso</option>
                                 <option value="LICENCIA_POR_CALAMIDAD_DOMESTICA">Licencia por calamidad domestica</option>
@@ -264,37 +278,33 @@ $vista = obtenerUsuariosConPermios($pdo);
 
                     <div class="row mb-3">
                         <div class="col" id="div_fecha_inicio">
-                            <!-- <label for="fecha_inicio" id="label_fecha_inicio">fecha inicio del permiso</label> -->
                             <input class="form-control" type="text" name="fecha_inicio" placeholder="Fecha de Inicio" id="fecha_inicio" onfocus="(this.type='date')" onblur="(this.type='text')" required/>
                         </div>
                         <div class="col" id="div_fecha_fin">
-                            <!-- <label for="fecha_fin" id="label_fecha_fin">fecha fin del permiso</label> -->
                             <input class="form-control" type="text" name="fecha_fin" placeholder="Fecha Fin" id="fecha_fin" onfocus="(this.type='date')" onblur="(this.type='text')" />
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col" id="div_hora_inicio">
-                            <!-- <label for="hora_inicio" id="label_hora_inicio">hora inicio del permiso</label> -->
                             <input class="form-control" type="text" name="hora_inicio" placeholder="Hora de Inicio" id="hora_inicio" onfocus="(this.type='time')" onblur="(this.type='text')" required/>
                         </div>
                         <div class="col" id="div_hora_fin">
-                            <!-- <label for="hora_fin" id="label_hora_fin">hora fin del permiso</label> -->
                             <input class="form-control" placeholder="Hora Fin" type="text" name="hora_fin" placeholder="Hora Fin" id="hora_fin" onfocus="(this.type='time')" onblur="(this.type='text')"/>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col">
-                            <input class="form-control" placeholder="Observaciones o Justificativos"  type="text" name="observaciones"  />
+                            <textarea class="form-control" name="observaciones" cols="30" rows="4" placeholder="Observaciones o Justificativos"></textarea>
                         </div>
                     </div>
 
                     <input class="form-control" type="hidden" name="permiso_aceptado" value="0" />
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger cerrarModal" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-success">Solicitar Permiso</button>
+                        <button type="submit" class="btn btn-primary">Solicitar permiso</button>
+                        <button type="button" class="btn btn-secondary cerrarModal" data-dismiss="modal">Cerrar</button>
                     </div>
                 </form>
             </div>
@@ -326,33 +336,100 @@ $vista = obtenerUsuariosConPermios($pdo);
         </div>
     </div>
 </div>
+
+<!-- Modal del archivo escaneado -->
+<div class="modal fade" id="subirEscaneado" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAdminLabel">Subir archivo escaneado</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form id="subirForm" action="<?php echo RUTA_ABSOLUTA ?>admin/archivos" method="post" enctype="multipart/form-data">
+                    <div class="form-floating mb-3">
+                        <div>
+                            <label >Descripción del archivo</label>
+                            <textarea class="form-control" name="archivoDescripcion" id="archivoDescripcion" cols="30" rows="2" required></textarea>
+                        </div>
+                    </div>
+                    <input type="hidden" name="id_permiso" id="id_permisoSubir" value="">
+                    <input type="hidden" name="asistir" id="asistir" value="<?= $nombreSesion?>">
+                    <label >Archivo firmado por el solicitante</label>
+                    <input class="form-control" type="file" name="archivo" id="archivo" required>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="subirForm" class="btn btn-primary">Subir archivo</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Modal aceptar Solicitud -->
 <div class="modal fade" id="aceptarSolicitud" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalAdminLabel">¿Está seguro de que desea Aceptar esta solicitud ?</h5>
+                <h5 class="modal-title" id="modalAdminLabel">¿Está seguro de que desea aprobar esta solicitud ?</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <!-- <p>¿Está seguro de que desea Aceptar esta solicitud ?</p> -->
-                <form id="AceptarS" action="<?php echo RUTA_ABSOLUTA ?>procesar" method="POST">
+                <form id="AceptarS" action="<?php echo RUTA_ABSOLUTA ?>procesar" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="id_aprueba" id="id_aprueba" value ="" />
-                    <input class="form-control" type="hidden" name="aprobar" value ="1" />
+                    <input type="hidden" name="aprobar" value ="1" />
+                    <input type="hidden" name="id_user" id="id_user" value ="" />
                     <div class="form-floating mb-3">
                         <div>
-                            <label>Ingrese su nombre para aprobar  </label>
-                            <input class="form-control" type="text" name="user" required/>
+                            <select class="selectSoli" name="user" required style="width:100%;">
+                                <option value="" disabled selected>Seleccione al usuario que aprueba la solicitud</option>
+                                <?php
+                                    $iteroSinAdmin = sinAdmin($pdo);
+
+                                    foreach ($iteroSinAdmin as $key => $posicionSin):
+                                    $id_iterado = $posicionSin ["id_usuarios"];
+                                    $cedula_iterada = $posicionSin ["cedula"];
+                                    $nombres_iterado = $posicionSin ["nombres"];
+                                    $apellidos_iterado = $posicionSin ["apellidos"];
+                                    $nombreCompleto = $nombres_iterado . " " . $apellidos_iterado;
+                                ?>
+                                <option value="<?php echo $nombreCompleto;?>" data-id="<?= $id_iterado;?>"><?php echo $nombreCompleto;?></option>
+
+                                <?php
+                                endforeach;
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <div>
+                            <label >Descripción del archivo</label>
+                            <textarea class="form-control" name="archivoDescripcion" id="archivoDescripcion" cols="30" rows="2" required></textarea>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="asistirAprobacion" value="<?= $nombreSesion?>">
+
+                    <div class="form-floating mb-3">
+                        <div>
+                            <label >Archivo firmado por el jefe supervisor</label>
+                            <input class="form-control" type="file" name="archivoAprueba" id="archivoAprueba" required>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <button type="submit" form="AceptarS" class="btn btn-primary">Aprobar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>
@@ -363,28 +440,35 @@ $vista = obtenerUsuariosConPermios($pdo);
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalAdminLabel">Confirmar Cancelacion del Permiso</h5>
+                <h5 class="modal-title" id="modalAdminLabel">Cancelar el permiso</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p>¿Está seguro de que desea Cancelar esta solicitud ?</p>
+                <p>¿Está seguro de que desea cancelar este permiso ?</p>
                 <form id="cancelarS" action="<?php echo RUTA_ABSOLUTA ?>procesar" method="POST">
-                    <input type="hidden" name="id_cancelar" id="id_cancelar" value ="<?= $id_permiso ?>" />
+                    <input type="hidden" name="id_cancelar" id="id_cancelar" value ="" />
                     <input class="form-control" type="hidden" name="cancelar" value ="0" />
                     <input class="form-control" type="hidden" name="user" value="" />
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="submit" form="cancelarS" class="btn btn-warning">Aceptar</button>
+                <button type="submit" form="cancelarS" class="btn btn-primary">Aceptar</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    $('.select_soli').select2({
+        dropdownParent: $('#registrar_vacaciones .modal-body')
+    });
+    $('.selectSoli').select2({
+        dropdownParent: $('#aceptarSolicitud .modal-body')
+    });
+
     $(".cerrarModal").click(function(){
         $("#registrar_vacaciones").modal('hide');
     });aceptar
@@ -392,6 +476,11 @@ $vista = obtenerUsuariosConPermios($pdo);
         var userId = button.getAttribute('data-id');
         // Rellenar el campo oculto con el ID del cliente
         document.getElementById('id_permiso').value = userId;
+    }
+    function subirArchivo(button) {
+        var permisoId = button.getAttribute('data-id');
+        // Rellenar el campo oculto con el ID del cliente
+        document.getElementById('id_permisoSubir').value = permisoId;
     }
     function aceptar(button) {
         var userId = button.getAttribute('data-id');
@@ -641,8 +730,8 @@ $vista = obtenerUsuariosConPermios($pdo);
 
             // Validar que la diferencia entre la fecha de inicio y la fecha de fin sea mayor a dos días
             var diferenciaDias = Math.ceil((fechaFin - fechaInicio) / (1000 * 60 * 60 * 24));
-            if (diferenciaDias <= 2) {
-                alert("La diferencia entre la fecha de inicio y la fecha de fin debe ser mayor a dos días.");
+            if (diferenciaDias <= 1) {
+                alert("La diferencia entre la fecha de inicio y la fecha de fin debe ser mayor a un día.");
                 event.preventDefault();
                 return;
             }
@@ -653,6 +742,20 @@ $vista = obtenerUsuariosConPermios($pdo);
                 event.preventDefault();
                 return;
             }
+        });
+    });
+
+    $(document).ready(function(){
+        // Cuando cambia la selección en el campo 'user'
+        $('select[name="user"]').change(function(){
+            // Obtener directamente el valor del atributo 'value' de la opción seleccionada (nombre)
+            var nombreCompleto = $(this).val();
+
+            // Obtener el valor del atributo 'data-id' de la opción seleccionada (id_iterado)
+            var idIterado = $(':selected', this).data('id');
+
+            // Actualizar el valor de 'id_user' con el id_iterado correspondiente
+            $('#id_user').val(idIterado);
         });
     });
 </script>

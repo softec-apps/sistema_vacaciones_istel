@@ -24,207 +24,123 @@ if (isset($flash_message)) {
 
 $titulo = "Trabajo  y Vacaciones";
 include_once("../plantilla/header.php");
-
 include_once("../resta_solicitud.php");
+
+include_once "../funciones.php";
 ?>
 
-                <div class="container-fluid mt-5">
+<div class="container-fluid mt-5">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Días de vacaciones y días trabajados de los funcionarios</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered crud-table" id="tabla_vacaciones">
+                    <thead>
+                        <tr>
+                            <th>Cédula</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>D.T</th>
+                            <th>D.D.VAC</th>
+                            <th>D.OCP</th>
+                            <th>H.T.A</th>
+                            <th>Modalidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                        $resultadosTodosUsuarios = obtenerDiasTrabajadosParaTodos($pdo);
 
-                    <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Dias de Vacaciones y dias trabajados de los funcionarios</h1>
-                    <!-- DataTales Example -->
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Dias de Vacaciones y dias trabajados de los funcionarios</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered crud-table" id="tabla_vacaciones">
-                                    <thead>
-                                        <tr>
-                                            <th>Cedula</th>
-                                            <th>Nombres</th>
-                                            <th>Apellidos</th>
-                                            <th>D.T</th>
-                                            <th>D.D.VAC</th>
-                                            <th>D.OCP</th>
-                                            <th>H.T.A</th>
-                                            <th>Modalidad</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php
-                                        // Ejemplo de uso
-                                        $resultadosTodosUsuarios = obtenerDiasTrabajadosParaTodos($pdo);
+                        foreach ($resultadosTodosUsuarios as $resultado) {
+                            $id_usuario = $resultado['id_usuario'];
+                            $cedulaIterada = $resultado['cedula'];
+                            $nombresIterado = $resultado['nombre'];
+                            $apellidosIterado = $resultado['apellido'];
+                            $diasTrabajados = $resultado['dias_trabajados'];
+                            $horasDePermisoSolicitadas = $resultado['horas_permiso'];
+                            $fechaIngreso = $resultado['fecha_ingreso'];
+                            $tiempoTrabajo = $resultado['tiempo_trabajo'];
 
-                                        foreach ($resultadosTodosUsuarios as $resultado) {
-                                            $id_usuario = $resultado['id_usuario'];
-                                            $cedulaIterada = $resultado['cedula'];
-                                            $nombresIterado = $resultado['nombre'];
-                                            $apellidosIterado = $resultado['apellido'];
-                                            $diasTrabajados = $resultado['dias_trabajados'];
-                                            $horasDePermisoSolicitadas = $resultado['horas_permiso'];
-                                            $fechaIngreso = $resultado['fecha_ingreso'];
-                                            $tiempoTrabajo = $resultado['tiempo_trabajo'];
+                            $diasDeVacaciones = calcularDiasVacaciones(
+                                $diasTrabajados,
+                                $horasDePermisoSolicitadas,
+                                $limiteVacaciones,
+                                $diasPorAnoTrabajado,
+                                $diasPorAno,
+                                $tiempoTrabajo
+                            );
 
-                                            $diasDeVacaciones = calcularDiasVacaciones(
-                                                $diasTrabajados,
-                                                $horasDePermisoSolicitadas,
-                                                $limiteVacaciones,
-                                                $diasPorAnoTrabajado,
-                                                $diasPorAno,
-                                                $tiempoTrabajo
-                                            );
-                                            // var_dump($diasDeVacaciones);
-                                            // echo"<br/>";
-                                            // echo $limiteVacaciones;
-                                            // if ($diasDeVacaciones > $limiteVacaciones) {
-                                            //     echo "Error: El total de días de vacaciones supera el límite permitido de $limiteVacaciones días.";
-                                            // } else {
-                                                $diasDePermisoSolicitados = $horasDePermisoSolicitadas / $tiempoTrabajo;
-                                                /* echo "El empleado tiene derecho a $diasDeVacaciones días de vacaciones. Se han utilizado $diasDePermisoSolicitados días de permiso.";
-                                                echo"<br/>"; */
-                                            // }
-                                            $dias_totales = $diasDeVacaciones + $diasDePermisoSolicitados;
-                                            $limiteVerde = 30;
-                                            $limiteAmarillo = 45;
-                                            $limiteRojo = 60;
-                                    ?>
-                                        <tr>
+                            $diasDePermisoSolicitados = $horasDePermisoSolicitadas / $tiempoTrabajo;
 
-                                            <td>
-                                            <?= $cedulaIterada ?>
-                                            </td>
+                            $dias_totales = $diasDeVacaciones + $diasDePermisoSolicitados;
+                            $porcentajeVerde = 50;
+                            $porcentajeAmarillo = 75;
 
-                                            <td>
-                                            <?= $nombresIterado ?>
-                                            </td>
+                            $limiteVerde = $limiteVacaciones*($porcentajeVerde/100);
+                            $limiteAmarillo = $limiteVacaciones*($porcentajeAmarillo/100);
+                            $limiteRojo = $limiteVacaciones;
+                            $horasTrabajadas = $diasTrabajados * $tiempoTrabajo;
+                            $prueba = calcular_actualizar($pdo,$diasTrabajados,$horasTrabajadas,$dias_totales,$diasDeVacaciones,$id_usuario);
+                    ?>
+                        <tr>
 
-                                            <td>
-                                            <?= $apellidosIterado ?>
-                                            </td>
+                            <td>
+                            <?= $cedulaIterada ?>
+                            </td>
 
-                                            <td>
-                                            <?= $diasTrabajados ?>
-                                            </td>
+                            <td>
+                            <?= $nombresIterado ?>
+                            </td>
 
-                                            <td <?php
-                                                if ($diasDeVacaciones == $limiteVerde || $diasDeVacaciones < $limiteAmarillo) {
-                                                    echo 'class="bg-success text-white rounded-4" title="Dias disponibles en orden"';
-                                                } elseif ($diasDeVacaciones == $limiteAmarillo || $diasDeVacaciones < $limiteRojo) {
-                                                    echo 'class="bg-warning rounded-4" title="Se acerca al limite"';
-                                                } elseif ($diasDeVacaciones >= $limiteRojo) {
-                                                    echo 'class="bg-danger text-white rounded-4" title="El limite es 60 dias"';
-                                                }
-                                                ?>>
-                                                <?php echo $diasDeVacaciones; ?>
-                                            </td>
+                            <td>
+                            <?= $apellidosIterado ?>
+                            </td>
 
-                                            <td>
-                                            <?= $diasDePermisoSolicitados ?>
-                                            </td>
+                            <td>
+                            <?= $diasTrabajados ?>
+                            </td>
 
-                                            <td>
-                                            <?= $dias_totales ?>
-                                            </td>
+                            <td <?php
+                                if ($diasDeVacaciones < 0) {
+                                    echo 'class="bg-dark text-white " title="Posee días de vacaciones negativos" ';
+                                }elseif ($diasDeVacaciones == $limiteVerde || $diasDeVacaciones < $limiteAmarillo) {
+                                    echo 'class="bg-success text-white " title="Días disponibles en orden"';
+                                } elseif ($diasDeVacaciones == $limiteAmarillo || $diasDeVacaciones < $limiteRojo) {
+                                    echo 'class="bg-warning " title="Se acerca al limite"';
+                                } elseif ($diasDeVacaciones >= $limiteRojo) {
+                                    echo 'class="bg-danger text-white " title="El limite es '. $limiteVacaciones .' dias"';
+                                }
+                                ?>>
+                                <?php echo $diasDeVacaciones; ?>
+                            </td>
 
-                                            <td>
-                                            <?php if ($tiempoTrabajo == 8) {
-                                                echo "Tiempo Completo";
-                                            }else {
-                                                echo "Medio Tiempo";
-                                            } ?>
-                                            </td>
+                            <td>
+                            <?= $diasDePermisoSolicitados ?>
+                            </td>
 
-                                        </tr>
-                                        <?php } ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                            <td>
+                            <?= $dias_totales ?>
+                            </td>
 
-                </div>
-                <!-- /.container-fluid -->
+                            <td>
+                            <?php if ($tiempoTrabajo == 8) {
+                                echo "Tiempo Completo";
+                            }else {
+                                echo "Medio Tiempo";
+                            } ?>
+                            </td>
 
-
-
-
-    <!-- Modal Editar datos del usuario -->
-    <!-- <div class="modal fade" id="Editar_datos" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalAdminLabel">Editar datos del usuario</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="editar_datos" method="post">
-                        <input type="hidden" name="cliente_id" value="">
-                        <div class="form-floating mb-3">
-                            <div>
-                                <label>Ingrese el nuevo nombre de usuario</label>
-                                <input class="form-control" name="user" type="text" required />
-                            </div>
-                        </div>
-
-                        <div class="form-floating mb-3">
-                            <div>
-                                <label>Ingrese el nuevo Email del Usuario</label>
-                                <input class="form-control" type="email" name="email" required />
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            <button type="submit" class="btn btn-primary">Actualizar Informacion</button>
-                        </div>
-                    </form>
-                </div>
+                        </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
             </div>
         </div>
-    </div> -->
+    </div>
 
-
-
-    <!-- Modal para registrar administradores -->
-    <!-- <div class="modal fade" id="registrar_vacaciones" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalAdminLabel">Coloque los dias limites </h5>
-                    <button type="button" class="close cerrarModal" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="editar_datos" method="post">
-                        <input type="hidden" name="cliente_id" value="">
-                        <div class="form-floating mb-3">
-                            <div>
-                                <label>Dias limite por dias acumulados</label>
-                                <input class="form-control" name="user" type="text" required />
-                            </div>
-                        </div>
-
-                        <div class="form-floating mb-3">
-                            <div>
-                                <label>Ingrese el nuevo Email del Usuario</label>
-                                <input class="form-control" type="email" name="email" required />
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger cerrarModal" data-dismiss="modal">Cerrar</button>
-                            <button type="submit" class="btn btn-success">Registrar dias limite</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div> -->
+</div>
 
 <script>
     $(".cerrarModal").click(function(){

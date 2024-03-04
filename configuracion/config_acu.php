@@ -30,7 +30,7 @@ include_once "../conexion.php";
 
 function seleccionar($pdo){
     try {
-        $consulta = "SELECT limiteVacaciones, diasPorAño, diasAnuales FROM configuracion";
+        $consulta = "SELECT limiteVacaciones, diasPorAño, diasAnuales, numero FROM configuracion";
         $stmt = $pdo->prepare($consulta);
         $stmt->execute();
 
@@ -40,15 +40,20 @@ function seleccionar($pdo){
         $limiteVacaciones = $resultado["limiteVacaciones"];
         $diasPorAnoTrabajado = $resultado["diasPorAño"];
         $diasPorAno = $resultado["diasAnuales"];
+        $numero = $resultado["numero"];
 
         // Puedes devolver las variables si es necesario
         return [
             'limiteVacaciones' => $limiteVacaciones,
             'diasPorAnoTrabajado' => $diasPorAnoTrabajado,
-            'diasPorAno' => $diasPorAno
+            'diasPorAno' => $diasPorAno,
+            'numero' => $numero,
         ];
     } catch (PDOException $e) {
-        echo "Error de excepción: " . $e->getMessage();
+        create_flash_message(
+            'Ocurrio un error con el sistema',
+            'error'
+        );
     }
 
 }
@@ -58,18 +63,20 @@ $seleccionar = seleccionar($pdo);
 $limiteVacaciones = $seleccionar['limiteVacaciones'];
 $diasPorAnoTrabajado = $seleccionar['diasPorAnoTrabajado'];
 $diasPorAno = $seleccionar['diasPorAno'];
+$numero = $seleccionar['numero'];
+$numero_formateado = number_format($numero, 14);
 
 ?>
 
 <div class="container-fluid">
 <script src="js/flash_messages.js"></script>
 <button type="button" class="btn btn-info m-3" data-toggle="modal" data-target="#modalConf">
-    Actualizar datos de Configuracion
+    Actualizar datos de configuración
 </button>
 </div>
     <div class="row m-4 text-center">
-    <!-- Earnings (Monthly) Card Example -->
-        <div class="col-xl-3 col-md-6 mb-3 ">
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-4 col-md-6 mb-3 ">
             <div class="card shadow border-left-success py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -84,13 +91,13 @@ $diasPorAno = $seleccionar['diasPorAno'];
         </div>
 
         <!-- Earnings (Monthly) Card Example -->
-        <div class="col-xl-3 col-md-6 mb-3">
+        <div class="col-xl-4 col-md-6 mb-3">
             <div class="card border-left-danger shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Dias por Cada año Trabajado</div>
+                                Días de incremento por cada <?= $diasPorAno ?> Trabajado</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $diasPorAnoTrabajado ?></div>
                         </div>
                     </div>
@@ -98,13 +105,13 @@ $diasPorAno = $seleccionar['diasPorAno'];
             </div>
         </div>
         <!-- Pending Requests Card Example -->
-        <div class="col-xl-3 col-md-6 mb-3" >
+        <div class="col-xl-4 col-md-12 mb-3" >
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Dias por Año</div>
+                                Días a tomar en cuenta</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $diasPorAno ?></div>
                         </div>
                     </div>
@@ -119,7 +126,7 @@ $diasPorAno = $seleccionar['diasPorAno'];
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Actualizar datos de Configuracion</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Actualizar datos de configuración</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -130,29 +137,28 @@ $diasPorAno = $seleccionar['diasPorAno'];
 
                     <div class="form-floating mb-3">
                         <div >
-                            <label >Limite de Vacaciones </label>
+                            <label >Limite de vacaciones </label>
                             <input class="form-control" name="limiteVac" type="number" value="<?= $limiteVacaciones ?>"/>
                         </div>
                     </div>
 
                     <div class="form-floating mb-3">
                         <div>
-                        <label >Dias por año Trabajado</label>
+                        <label >Días por año trabajado</label>
                         <input class="form-control" type="number" name="diasTrAño" value="<?= $diasPorAnoTrabajado ?>"/>
                         </div>
                     </div>
 
                     <div class="form-floating mb-3">
                         <div>
-                        <label >Dias por Año </label>
+                        <label >Días por año </label>
                         <input class="form-control" type="number" name="diasXaño" value = "<?= $diasPorAno ?>"/>
                         </div>
                     </div>
 
-
                     <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Actualizar datos</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-primary">Actualizar Datos</button>
                     </div>
                 </form>
             </div>

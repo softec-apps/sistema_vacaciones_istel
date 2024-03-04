@@ -5,14 +5,16 @@ include_once "../flash_messages.php";
  session_start();
 
  if (!isset($_SESSION['id_usuarios'])) {
-    redirect("../logout");
+
+    redirect(RUTA_ABSOLUTA . "logout");
  }
  $cedula = $_SESSION['cedula'];
  $nombre = $_SESSION['nombres'];
  $rol = $_SESSION['rol'];
 
  if ($rol != 'Talento_Humano') {
-    redirect("../logout");
+
+    redirect(RUTA_ABSOLUTA . "logout");
 }
 
 $message = '';
@@ -25,7 +27,18 @@ if (isset($flash_message)) {
 }
 
 $titulo = "TalentoH";
-include_once("../plantilla/header.php")
+include_once "../plantilla/header.php";
+include_once "../conexion.php";
+include_once "../funciones.php";
+
+$funcionario = contar($pdo);
+$funcionario = $funcionario[0]["total"];
+
+$permisoAceptados = countAceptados($pdo);
+$permisoAceptados = $permisoAceptados[0]["total"];
+
+$permisoRegistrados = countRegistrados($pdo);
+$permisoRegistrados = $permisoRegistrados[0]["total"];
 ?>
     <style>
         .card-body .hoverable .fa-2x:hover  {
@@ -51,7 +64,7 @@ include_once("../plantilla/header.php")
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 Funcionarios</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">5</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $funcionario; ?></div>
                         </div>
                         <div class="col-auto hoverable">
                             <a href="<?php echo RUTA_ABSOLUTA; ?>talentoHumano/registrarFuncionario">
@@ -71,7 +84,7 @@ include_once("../plantilla/header.php")
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                 Permisos Aceptados</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">10</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $permisoAceptados; ?></div>
                         </div>
                         <div class="col-auto verde">
                             <a href="<?php echo RUTA_ABSOLUTA; ?>talentoHumano/permisosAprobados">
@@ -91,7 +104,7 @@ include_once("../plantilla/header.php")
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                 Permisos Registrados</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">10</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $permisoRegistrados; ?></div>
                         </div>
                         <div class="col-auto amarillo ">
                             <a href="<?php echo RUTA_ABSOLUTA; ?>talentoHumano/permisosRegistrados">

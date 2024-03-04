@@ -30,7 +30,12 @@ if(isset($_POST["aprobar_rechazo"])) {
 
         redirect(RUTA_ABSOLUTA . "permisos/rechazados");
     } catch (PDOException $e) {
-        echo "Error de exepcion" . $e->getMessage();
+        create_flash_message(
+            'Ocurrio un error con el sistema',
+            'error'
+        );
+        redirect(RUTA_ABSOLUTA . "logout");
+        // echo "Error de exepcion" . $e->getMessage();
     }
 }
 ?>

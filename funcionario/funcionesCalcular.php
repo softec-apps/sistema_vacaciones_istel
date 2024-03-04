@@ -21,7 +21,11 @@ function seleccionar($pdo){
             'diasPorAno' => $diasPorAno
         ];
     } catch (PDOException $e) {
-        echo "Error de exepcion en la funcion de limite" .$e->getMessage();
+        create_flash_message(
+            'Ocurrio un error con el sistema',
+            'error'
+        );
+        redirect(RUTA_ABSOLUTA . "logout");
     }
 
 }
@@ -77,7 +81,12 @@ function obtenerDiasTrabajadosParaUsuario($pdo, $id_usuario) {
         ];
 
     } catch (PDOException $e) {
-        echo "Error de exepcion" .$e->getMessage();
+        create_flash_message(
+            'Ocurrio un error con el sistema',
+            'error'
+        );
+        redirect(RUTA_ABSOLUTA . "logout");
+        // echo "Error de exepcion" .$e->getMessage();
     }
 }
 
@@ -92,7 +101,12 @@ function obtenerFechaIngreso($pdo, $id_usuario) {
         return $resultado['fecha_ingreso'];
 
     } catch (PDOException $e) {
-        echo "Error de exepcion" .$e->getMessage();
+        create_flash_message(
+            'Ocurrio un error con el sistema',
+            'error'
+        );
+        redirect(RUTA_ABSOLUTA . "logout");
+        // echo "Error de exepcion" .$e->getMessage();
     }
 }
 
@@ -119,7 +133,12 @@ function consulta_unica($pdo, $id_usuario_insertado) {
         return $diasTrabajados;
 
     } catch (PDOException $e) {
-        echo "Error de exepcion" .$e->getMessage();
+        create_flash_message(
+            'Ocurrio un error con el sistema',
+            'error'
+        );
+        redirect(RUTA_ABSOLUTA . "logout");
+        // echo "Error de exepcion" .$e->getMessage();
     }
 }
 
@@ -141,7 +160,12 @@ function horas_ocupadas($pdo, $id_usuario_insertado) {
         }
 
     } catch (PDOException $e) {
-        echo "Error de exepcion" .$e->getMessage();
+        create_flash_message(
+            'Ocurrio un error con el sistema',
+            'error'
+        );
+        redirect(RUTA_ABSOLUTA . "logout");
+        // echo "Error de exepcion" .$e->getMessage();
     }
 }
 // Ejemplo de uso para un solo usuario
@@ -161,12 +185,16 @@ function obtenerMensajeDiasVacaciones($id_usuario,$nombre_usuario,$apellidos_u,$
             $tiempo_trabajo
         );
 
+        $diasDeVacaciones = number_format($diasDeVacaciones,2);
 
         $diasDePermisoSolicitados = $horasDePermisoSolicitadas / $tiempo_trabajo;
-        return "El usuario  $nombre_usuario   $apellidos_u tiene $diasDeVacaciones días de vacaciones Y se han ocupado en total $diasDePermisoSolicitados días de permiso.";
+        return "El usuario  $nombre_usuario   $apellidos_u tiene $diasDeVacaciones días de vacaciones y se han ocupado en total $diasDePermisoSolicitados días de permiso.";
 
     } else {
-        return "Error: El usuario no fue encontrado.";
+        create_flash_message(
+            'Error: El usuario no fue encontrado.',
+            'error'
+        );
     }
 }
 
@@ -174,7 +202,7 @@ function obtenerMensajeDiasVacaciones($id_usuario,$nombre_usuario,$apellidos_u,$
 
 function diasSelect($id,$pdo){
     try {
-        $consulta = "SELECT usuarios.id_usuarios,registros_permisos.id_permisos,usuarios.cedula,usuarios.nombres,usuarios.apellidos, registros_permisos.horas_ocupadas,registros_permisos.permiso_aceptado,registros_permisos.dias_solicitados,registros_permisos.horas_solicitadas,usuarios.tiempo_trabajo,registros_permisos.motivo_permiso FROM usuarios,registros_permisos WHERE usuarios.id_usuarios = registros_permisos.id_usuarios AND registros_permisos.id_usuarios = :id_usuario";
+        $consulta = "SELECT usuarios.id_usuarios,registros_permisos.id_permisos,usuarios.cedula,usuarios.nombres,usuarios.apellidos, registros_permisos.horas_ocupadas,registros_permisos.permiso_aceptado,registros_permisos.dias_solicitados,registros_permisos.horas_solicitadas,usuarios.tiempo_trabajo,registros_permisos.motivo_permiso,registros_permisos.ruta_solicita,registros_permisos.ruta_aprueba,registros_permisos.ruta_registra FROM usuarios,registros_permisos WHERE usuarios.id_usuarios = registros_permisos.id_usuarios AND registros_permisos.id_usuarios = :id_usuario AND COALESCE(registros_permisos.ruta_solicita, '') != '' ";
         $stmt = $pdo->prepare($consulta);
 
         $stmt->bindParam(':id_usuario',$id,PDO::PARAM_STR);
@@ -183,10 +211,107 @@ function diasSelect($id,$pdo){
         return $res_vista_permisos;
 
     } catch (PDOException $e) {
-        return "Error de exepcion" . $e->getMessage();
+        create_flash_message(
+            'Ocurrio un error con el sistema',
+            'error'
+        );
+        redirect(RUTA_ABSOLUTA . "logout");
     }
 }
+
 $nuevosDatos = diasSelect($id, $pdo);
+
+function subirArchivos($id,$pdo){
+    try {
+        $consulta = "SELECT usuarios.id_usuarios,registros_permisos.id_permisos,usuarios.cedula,usuarios.nombres,usuarios.apellidos, registros_permisos.horas_ocupadas,registros_permisos.permiso_aceptado,registros_permisos.dias_solicitados,registros_permisos.horas_solicitadas,usuarios.tiempo_trabajo,registros_permisos.motivo_permiso,registros_permisos.ruta_solicita,registros_permisos.ruta_aprueba,registros_permisos.ruta_registra FROM usuarios,registros_permisos WHERE usuarios.id_usuarios = registros_permisos.id_usuarios AND registros_permisos.id_usuarios = :id_usuario AND COALESCE(registros_permisos.ruta_solicita, '') = '' ";
+        $stmt = $pdo->prepare($consulta);
+
+        $stmt->bindParam(':id_usuario',$id,PDO::PARAM_STR);
+        $stmt->execute();
+        $res_vista_permisos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $res_vista_permisos;
+
+    } catch (PDOException $e) {
+        create_flash_message(
+            'Ocurrio un error con el sistema',
+            'error'
+        );
+        redirect(RUTA_ABSOLUTA . "logout");
+    }
+}
+
+function datosdeArchivos($pdo,$id){
+    try {
+        $con = "SELECT usuarios.id_usuarios,usuarios.nombres,usuarios.apellidos,usuarios.cedula,registros_permisos.id_permisos,archivos.id_archivo,archivos.ruta_solicita,archivos.ruta_aprueba,archivos.ruta_registra FROM usuarios JOIN registros_permisos ON usuarios.id_usuarios = registros_permisos.id_usuarios JOIN archivos ON registros_permisos.id_permisos = archivos.id_permiso WHERE usuarios.id_usuarios = :id_usuarios AND COALESCE(registros_permisos.ruta_solicita, '') != '' AND COALESCE(registros_permisos.ruta_aprueba, '') != ''";
+        $stmt = $pdo->prepare($con);
+
+        $stmt->bindParam(':id_usuarios',$id,PDO::PARAM_INT);
+        $stmt->execute();
+        $res_vista = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Cerrar la conexión
+        $pdo = null;
+        return $res_vista;
+
+    } catch (PDOException $e) {
+        return "Error de excepción: " . $e->getMessage();
+    }
+}
+
+
+function archivosAprobados($pdo,$id){
+    try {
+        $con = "SELECT registros_permisos.id_permisos,archivos.id_archivo,archivos.ruta_aprueba,registros_permisos.motivo_permiso FROM registros_permisos, archivos,usuarios WHERE usuarios.id_usuarios = registros_permisos.id_usuarios AND usuarios.id_usuarios = :id_usuarios AND registros_permisos.id_permisos  = archivos.id_permiso AND COALESCE(registros_permisos.ruta_aprueba, '') != '' ";
+        $stmt = $pdo->prepare($con);
+        $stmt->bindParam(':id_usuarios',$id,PDO::PARAM_INT);
+
+        $stmt->execute();
+        $res_vista = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $pdo = null;
+        return $res_vista;
+
+    } catch (PDOException $e) {
+        return "Error de excepción: " . $e->getMessage();
+    }
+}
+
+function archivosRegistrados($pdo,$id){
+    try {
+        $con = "SELECT registros_permisos.id_permisos,archivos.id_archivo,archivos.ruta_registra,registros_permisos.motivo_permiso FROM registros_permisos, archivos,usuarios WHERE usuarios.id_usuarios = registros_permisos.id_usuarios AND usuarios.id_usuarios = :id_usuarios AND registros_permisos.id_permisos  = archivos.id_permiso AND COALESCE(registros_permisos.ruta_registra, '') != '' ";
+        $stmt = $pdo->prepare($con);
+
+        $stmt->bindParam(':id_usuarios',$id,PDO::PARAM_INT);
+
+        $stmt->execute();
+        $res_vista = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $pdo = null;
+        return $res_vista;
+
+    } catch (PDOException $e) {
+        return "Error de excepción: " . $e->getMessage();
+    }
+}
+
+
+
+function datosdeArchivosDelUsuario($pdo,$id){
+    try {
+        $con = "SELECT registros_permisos.id_permisos,archivos.id_archivo,archivos.ruta_solicita,archivos.descripcion_solicita FROM registros_permisos, archivos,usuarios WHERE usuarios.id_usuarios = registros_permisos.id_usuarios AND usuarios.id_usuarios = :id_usuarios AND registros_permisos.id_permisos  = archivos.id_permiso AND COALESCE(registros_permisos.ruta_solicita, '') != '' ";
+        $stmt = $pdo->prepare($con);
+
+        $stmt->bindParam(':id_usuarios',$id,PDO::PARAM_INT);
+
+        $stmt->execute();
+        $res_vista = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $pdo = null;
+        return $res_vista;
+
+    } catch (PDOException $e) {
+        return "Error de excepción: " . $e->getMessage();
+    }
+}
 
 function diasSelect2($id,$pdo){
     try {
@@ -199,7 +324,11 @@ function diasSelect2($id,$pdo){
         return $res_vista_permisos;
 
     } catch (PDOException $e) {
-        return "Error de exepcion" . $e->getMessage();
+        create_flash_message(
+            'Ocurrio un error con el sistema',
+            'error'
+        );
+        redirect(RUTA_ABSOLUTA . "logout");
     }
 }
 $nuevosDatos2 = diasSelect2($id, $pdo);

@@ -1,0 +1,122 @@
+<?php
+include_once "../conexion.php";
+include_once "../funciones_solicitudes.php";
+include_once "../redirection.php";
+include_once "../flash_messages.php";
+function obtenerAnioMesActual() {
+    $anio = date("Y");
+    $mes = date("m");
+
+    return array('anio' => $anio, 'mes' => $mes);
+}
+$anioMesArray = obtenerAnioMesActual();
+$anio = $anioMesArray['anio'];
+$mes = $anioMesArray['mes'];
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    // Obtener la ruta del script actual
+    $baseDir = __DIR__;
+
+    // Construir rutas relativas basadas en $baseDir
+    $directorioBase = realpath($baseDir . '/..') . "/htArchivos";
+
+    $directorioAnio = $directorioBase . '/' . $anio;
+    $directorioMes = $directorioAnio . '/' . $mes;
+
+    $id = $_POST['id_permiso'];
+    $asistir = $_POST['asistir'];
+    if (empty($asistir)) {
+        $asistir = "Admin";
+    }
+    $archivoDescripcion = "Asistido por ". $asistir . " " . $_POST['archivoDescripcion'];
+
+    // Obtener información del archivo
+    $nombreOriginal = $_FILES['archivo']['name'];
+    $nombreSinEspacios = str_replace(' ', '_', $nombreOriginal); // Reemplazar espacios por guiones bajos
+
+
+    $nombreLimpio = quitarAcentos($nombreSinEspacios); // Quitar acentos y caracteres especiales
+    $extension = pathinfo($nombreLimpio, PATHINFO_EXTENSION);
+
+    // Crear un nombre único para el archivo
+    $nombreUnico = date("d") . date("His") . date("m") . '.' . $extension;
+
+    $route = $directorioMes . '/' . $nombreUnico;
+    $file_tmp = $_FILES['archivo']['tmp_name'];
+
+    try {
+
+        if (!file_exists($directorioBase)) {
+            mkdir($directorioBase, 0777, true);
+        }
+
+        if (!file_exists($directorioAnio)) {
+            mkdir($directorioAnio, 0777, true);
+        }
+
+        if (!file_exists($directorioMes)) {
+            mkdir($directorioMes, 0777, true);
+        }
+        // Verificar si la extensión es PDF
+        if (strtolower($extension) != 'pdf') {
+            throw new Exception("Solo se permiten archivos PDF.");
+        } elseif (move_uploaded_file($file_tmp, $route)) {
+
+            // Construir la ruta relativa basada en $baseDir
+            $routeRelativeToScript = str_replace($baseDir, '', $route);
+
+            // Asignar la nueva ruta relativa
+            $route = $routeRelativeToScript;
+            // Iniciar la transacción
+            $pdo->beginTransaction();
+
+            // Actualizar la tabla registros_permisos
+            $consulta = "UPDATE registros_permisos SET ruta_solicita = :ruta_solicita  WHERE id_permisos = :id_permisos";
+            $stmt = $pdo->prepare($consulta);
+            $stmt->bindParam(':id_permisos', $id, PDO::PARAM_INT);
+            $stmt->bindParam(':ruta_solicita', $route, PDO::PARAM_STR);
+            $stmt->execute();
+
+            // Insertar en la tabla de archivos
+            $insertArchivos = "INSERT INTO archivos (id_permiso,descripcion_solicita, ruta_solicita) VALUES (:id_permiso,:descripcion_solicita, :ruta_solicita)";
+            $stmtArchivos = $pdo->prepare($insertArchivos);
+
+            $stmtArchivos->bindParam(':id_permiso', $id, PDO::PARAM_INT);
+            $stmtArchivos->bindParam(':descripcion_solicita', $archivoDescripcion, PDO::PARAM_STR);
+            $stmtArchivos->bindParam(':ruta_solicita', $route, PDO::PARAM_STR);
+            $stmtArchivos->execute();
+
+            // Confirmar la transacción
+            $pdo->commit();
+
+            create_flash_message("Archivo guardado con éxito", 'success');
+            redirect(RUTA_ABSOLUTA . "admin/solicitud_general");
+        } else {
+
+            create_flash_message("El archivo no se pudo guardar.", 'error');
+            redirect(RUTA_ABSOLUTA . "admin/solicitud_general");
+        }
+    } catch (PDOException $e) {
+        // Si hay un error, revierte la transacción
+        $pdo->rollBack();
+
+        create_flash_message("Error:" . $e->getMessage(), 'error');
+        redirect(RUTA_ABSOLUTA . "admin/solicitud_general");
+    }catch (Exception $e) {
+        // Manejar la excepción específica para archivos no PDF
+        create_flash_message($e->getMessage(), 'error');
+        redirect(RUTA_ABSOLUTA . "admin/solicitud_general");
+    } finally {
+        // Cerrar la conexión a la base de datos
+        $pdo = null;
+    }
+
+}
+
+// Función para quitar acentos y caracteres especiales
+function quitarAcentos($cadena) {
+    $cadena = strtr(utf8_decode($cadena), utf8_decode('áéíóúüñÁÉÍÓÚÜÑ'), 'aeiouunAEIOUUN');
+    return utf8_encode($cadena);
+}
+?>

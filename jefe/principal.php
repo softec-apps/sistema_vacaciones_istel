@@ -4,7 +4,8 @@ include_once "../flash_messages.php";
 session_start();
 
 if (!isset($_SESSION['id_usuarios'])) {
-redirect("inicio");
+
+    redirect(RUTA_ABSOLUTA . "logout");
 }
 $cedula = $_SESSION['cedula'];
 $nombre = $_SESSION['nombres'];
@@ -12,7 +13,8 @@ $rol = $_SESSION['rol'];
 $fecha_ingreso = $_SESSION['fecha_ingreso'];
 
 if ($rol != 'jefe') {
-    redirect("inicio");
+
+    redirect(RUTA_ABSOLUTA . "logout");
 }
 
 $message = '';

@@ -8,7 +8,7 @@ if ($_POST) {
     try {
         $cedula = $_POST["cedula"];
         $nombres = ucwords($_POST["nombres"]);
-        $apellidos = ucwords($_POST["apellidos"];)
+        $apellidos = ucwords($_POST["apellidos"]);
         $email = $_POST["email_A"];
         $usuario = $_POST["user_A"];
         $clave = $_POST["password_A"];
@@ -53,10 +53,20 @@ if ($_POST) {
         }
     }catch (PDOException $pdoEx) {
         // Capturar excepciones específicas de PDO
-        echo "Error de PDO: " . $pdoEx->getMessage();
+        create_flash_message(
+            'Ocurrio un error con el sistema',
+            'error'
+        );
+        redirect(RUTA_ABSOLUTA . "logout");
+        // echo "Error de PDO: " . $pdoEx->getMessage();
     }
     catch (Exception $e) {
-        echo "Error general: " . $e->getMessage();
+        create_flash_message(
+            'Ocurrio un error con el sistema',
+            'error'
+        );
+        redirect(RUTA_ABSOLUTA . "logout");
+        // echo "Error general: " . $e->getMessage();
     }
 }
 ?>

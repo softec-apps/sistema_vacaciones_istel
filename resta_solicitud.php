@@ -127,7 +127,7 @@ function obtenerDiasTrabajadosParaTodos($pdo) {
 
 function obtenerUsuariosConPermios($pdo) {
     try {
-        $query = "SELECT usuarios.id_usuarios,registros_permisos.id_permisos,usuarios.cedula,usuarios.nombres,usuarios.apellidos,usuarios.tiempo_trabajo,registros_permisos.permiso_aceptado FROM usuarios,registros_permisos WHERE usuarios.id_usuarios = registros_permisos.id_usuarios AND rol = 'Funcionario'"; // Obtén todos los usuarios Funcionarios
+        $query = "SELECT usuarios.id_usuarios,registros_permisos.id_permisos,usuarios.cedula,usuarios.nombres,usuarios.apellidos,usuarios.tiempo_trabajo,registros_permisos.permiso_aceptado,registros_permisos.ruta_solicita,registros_permisos.ruta_aprueba,registros_permisos.ruta_registra FROM usuarios,registros_permisos WHERE usuarios.id_usuarios = registros_permisos.id_usuarios AND rol = 'Funcionario'"; // Obtén todos los usuarios Funcionarios
         $statement = $pdo->prepare($query);
         $statement->execute();
 
@@ -146,6 +146,9 @@ function obtenerUsuariosConPermios($pdo) {
             $apellidosIterado = $usuario['apellidos'];
             $tiempo_trabajo = $usuario['tiempo_trabajo'];
             $permisoUsuario = $usuario['permiso_aceptado'];
+            $ruta_solicita = $usuario['ruta_solicita'];
+            $ruta_aprueba = $usuario['ruta_aprueba'];
+            $ruta_registra = $usuario['ruta_registra'];
             $resultados[] = [
                 'id_usuario' => $id_usuario,
                 'id_permisos' => $id_permisos,
@@ -157,6 +160,9 @@ function obtenerUsuariosConPermios($pdo) {
                 'horas_permiso' => $horasDePermiso,
                 'fecha_ingreso' => $fechaIngreso,
                 'permisoUsuario' => $permisoUsuario,
+                'ruta_solicita' => $ruta_solicita,
+                'ruta_aprueba' => $ruta_aprueba,
+                'ruta_registra' => $ruta_registra,
             ];
         }
 

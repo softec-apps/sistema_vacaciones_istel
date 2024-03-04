@@ -1,16 +1,13 @@
 <?php
-include_once "funciones.php";
 include_once "conexion.php";
+include_once "funciones.php";
 include_once "flash_messages.php";
 
 
 if ($_POST) {
     $id_usuarios=$_POST["id_usuario"];
     $nombre_usuario =$_POST["nombre_usuario"];
-    $provincia =$_POST["provincia"];
     $regimen =$_POST["regimen"];
-    $coordinacion_zonal = $_POST["coordinacion"];
-    $direccion_unidad =$_POST["direccion"];
     $fecha_permisos_desde =$_POST["fecha_inicio"];
     $fecha_permiso_hasta = $_POST["fecha_fin"];
     $horas_permiso_desde =$_POST["hora_inicio"];
@@ -18,6 +15,11 @@ if ($_POST) {
     $motivo_permiso =$_POST["motivo"];
     $permiso_aceptado = $_POST["permiso_aceptado"];
     $observaciones =$_POST["observaciones"];
+
+
+    $provincia = "BOLIVAR";
+    $coordinacion_zonal = "COORDINACIÓN ZONAL 5 Y 8";
+    $direccion_unidad = "INSTITUTO SUPERIOR TECNOLÓGICO EL LIBERTADOR ";
 
     //no calcuar
     $fecha_permiso =  date('Y-m-d');
@@ -32,7 +34,40 @@ if ($_POST) {
     $dias_solicitados = $intervalo_completo->days;
     $horas_solicitadas = $intervalo_completo->h;
 
-    $dias_solicitados2 = $dias_solicitados * 8;
+    include_once "funciones_solicitudes.php";
+    // Llamamos a las funciones de validación
+    $existeRegistro = validarExistenciaRegistro($pdo, $id_usuarios, $fecha_permiso_desde_obj, $fecha_permiso_hasta_obj);
+    $existeHoras = validarExistenciaHoras($pdo, $id_usuarios, $horas_permiso_desde, $horas_permiso_hasta, $fecha_permiso);
+
+    if ($existeRegistro) {
+        create_flash_message(
+            'Ya existe un permiso con las mismas fechas de inicio y de fin del usuario.',
+            'error'
+        );
+        redirect(RUTA_ABSOLUTA . "admin/solicitud");
+        exit();
+    } elseif ($existeHoras) {
+        create_flash_message(
+            'Ya existe un permiso con las mismas horas de inicio y de fin para este dia',
+            'error'
+        );
+        redirect(RUTA_ABSOLUTA . "admin/solicitud");
+        exit();
+    }
+    $tiempo_trabajo = obtenerTiempoTrabajo($pdo, $id_usuarios);
+
+    if ($tiempo_trabajo === false) {
+        create_flash_message(
+            'Hubo un error al obtener el tiempo de trabajo',
+            'error'
+        );
+
+        redirect(RUTA_ABSOLUTA . "admin/solicitud");
+        exit();
+    }
+
+
+    $dias_solicitados2 = $dias_solicitados * 24;
     if (empty($dias_solicitados)) {
         $dias_solicitados;
     }else {
@@ -55,7 +90,8 @@ if ($_POST) {
         $valor_mostrar = $dias_solicitados;
         $xMultiplicar = $valor_mostrar * $numeroCambio;
         $horas_ocupadas = substr((string)$xMultiplicar, 0, 4);
-        $horas_ocupadas = $horas_ocupadas * 8;
+        $dias_totales = $horas_ocupadas;
+        $horas_ocupadas = $horas_ocupadas * $tiempo_trabajo;
     }
     $desc_motivo = "";
     $tiempoLimite_motivo ="";
@@ -89,10 +125,10 @@ if ($_POST) {
             break;
 
         case 'LICENCIA_POR_PATERNIDAD':
-            $tiempoLimite_motivo ="10 DÍAS (NORMAL), 15 DÍAS (CESAREA) Y 8 DÍAS MÁS PREMATURO, y 25 días Enfermedades Degenerativas etc.";
+            $tiempoLimite_motivo ="10 DÍAS (NORMAL), 15 DÍAS (CESÁREA) Y 8 DÍAS MÁS PREMATURO, y 25 días Enfermedades Degenerativas etc.";
             $desc_motivo = "Por paternidad, el servidor público tiene derecho a licencia con remuneración por el plazo de diez días contados desde el nacimiento de su hija o hijo cuando el parto es normal; en los casos de nacimiento múltiple o por cesárea se ampliará por cinco días más; En los casos de nacimientos prematuros o en condiciones de cuidado especial, se prolongará la licencia por paternidad con remuneración por ocho días más; y, cuando hayan nacido con una enfermedad degenerativa, terminal o irreversible o con un grado de discapacidad severa, el padre podrá tener licencia con remuneración por veinte y cinco días, hecho que se justificará con la presentación de un certificado médico, otorgado por un facultativo del Instituto Ecuatoriano de Seguridad Social y a falta de éste, por otro profesional médico debidamente avalado por los centros de salud pública; En caso de fallecimiento de la madre, durante el parto o mientras goza de la licencia por maternidad, el padre podrá hacer uso de la totalidad, o en su caso de la parte que reste del período de licencia que le hubiere correspondido a la madre;";
             // $tiempo_final = 10 || 15 || 18 || 25;
-            $limite_horas = 80;
+            $limite_horas = 600;
             $horas_ocupadas = 0;
             break;
 
@@ -103,7 +139,7 @@ if ($_POST) {
             $horas_ocupadas = 0;
             break;
 
-        case 'PERMISO_DE_DIAS_CON_CARGO_A_VACACIONES':
+        case 'PERMISO_DE_DÍAS_CON_CARGO_A_VACACIONES':
             $tiempoLimite_motivo ="Tomar en cuenta que los días de vacaciones son en un numero de 30 días (22 laborales, 8 sábados y domingos), después de 11 meses laborados, el cálculo se lo realiza multiplicando el tiempo laboral solicitado por 1,36363636363636";
             $desc_motivo = "Podrán concederse permisos imputables a vacaciones, siempre que éstos no excedan los días de vacación a los que la servidora o el servidor tenga derecho al momento de la solicitud.  (se suman horas, fracciones de horas y días)";
             $limite_horas = null;
@@ -111,11 +147,11 @@ if ($_POST) {
 
         case 'PERMISO_POR_ASUNTOS_OFICIALES':
             $tiempoLimite_motivo ="NO IMPUTABLE A VACACIONES";
-            $desc_motivo = "Esta licencia se hará efectiva siempre y cuando exista la disposición por su jefe inmediato de realizar labores innherentes a su puesto o a la Institución, o a su vez sea dispuesto por la máxima autoridad.";
+            $desc_motivo = "Esta licencia se hará efectiva siempre y cuando exista la disposición por su jefe inmediato de realizar labores inherentes a su puesto o a la Institución, o a su vez sea dispuesto por la máxima autoridad.";
             $limite_horas = null;
             $horas_ocupadas = 0;
             break;
-        case 'PERMISO_PARA_ATENCION_MEDICA':
+        case 'PERMISO_PARA_ATENCIÓN_MEDICA':
             $tiempoLimite_motivo ="HASTA POR 2 HORAS";
             $desc_motivo = "Las y los servidores/as tendrán derecho a permiso para atención médica hasta por dos horas, siempre que se justifique con certificado médico correspondiente otorgado por el Instituto Ecuatoriano de Seguridad Social o abalizado por los centros de salud pública.";
             $limite_horas = 2;
@@ -126,12 +162,11 @@ if ($_POST) {
             $tiempoLimite_motivo ="SEGÚN EL DETALLE SE LE ASIGNARÁ LA CATEGORÍA Y EL PERIODO";
             $desc_motivo = "Los demás que contempla la ley Orgánica del Servicio Público, su Reglamento, y el Reglamento Interno de la Institución.";
             $limite_horas = null;
-            $horas_ocupadas = 0;
             break;
 
         default:
-            $tiempoLimite_motivo = "Vacio";
-            $desc_motivo = "Vacio";
+            $tiempoLimite_motivo = "Vació";
+            $desc_motivo = "Vació";
             break;
     }
     // Verificar y mostrar mensaje de error si excede el límite
@@ -143,17 +178,14 @@ if ($_POST) {
         );
 
         redirect(RUTA_ABSOLUTA . "admin/solicitud");
-
-        // echo "Error: Las horas solicitadas exceden el límite permitido para este caso ($limite_horas horas).";
         exit();
     }elseif ($limite_horas !== null && $dias_solicitados2 > $limite_horas) {
         create_flash_message(
-            'Los Dias solicitadas exceden el límite permitido para este caso ' . ($limite_horas/8) . 'dias.',
+            'Los Dias solicitadas exceden el límite permitido para este caso ' . ($limite_horas/24) . 'dias.',
             'error'
         );
 
         redirect(RUTA_ABSOLUTA . "admin/solicitud");
-        // echo "Error: Los Dias solicitadas exceden el límite permitido para este caso " . ($limite_horas/8) . "dias.";
         exit();
     }
 
@@ -170,12 +202,16 @@ if ($_POST) {
         $stmt_dias_vacaciones->execute();
         $dias_disponibles = $stmt_dias_vacaciones->fetchColumn();
 
-        if ($dias_disponibles == 0) {
-            echo "Las horas o dias solicitados no pueden ser generados si el usuaro no tiene dias de trabajo";
+        if ($motivo_permiso == "PERMISO_DE_DIAS_CON_CARGO_A_VACACIONES" && $dias_disponibles == 0) {
+            create_flash_message(
+                'Las horas o dias solicitados no pueden ser generados si el usuario no tiene dias disponibles de vacaciones',
+                'error'
+            );
+            redirect(RUTA_ABSOLUTA . "admin/solicitud");
         }
-        elseif ($dias_disponibles >= $dias_solicitados || $horas_ocupadas == 0) {
+        else{
 
-            $consult_permisos = "INSERT INTO registros_permisos(id_usuarios,provincia,regimen,coordinacion_zonal,direccion_unidad,fecha_permiso,observaciones,motivo_permiso,tiempo_motivo,desc_motivo,dias_solicitados,horas_solicitadas,fecha_permisos_desde,fecha_permiso_hasta,horas_permiso_desde,horas_permiso_hasta,usuario_solicita,usuario_aprueba,usuario_registra,permiso_aceptado,horas_ocupadas)VALUES(:id_usuarios,:provincia,:regimen,:coordinacion_zonal,:direccion_unidad,:fecha_permiso,:observaciones,:motivo_permiso,:tiempo_motivo,:desc_motivo,:dias_solicitados,:horas_solicitadas,:fecha_permisos_desde,:fecha_permiso_hasta,:horas_permiso_desde,:horas_permiso_hasta,:usuario_solicita,:usuario_aprueba,:usuario_registra,:permiso_aceptado,:horas_ocupadas)";
+            $consult_permisos = "INSERT INTO registros_permisos(id_usuarios,provincia,regimen,coordinacion_zonal,direccion_unidad,fecha_permiso,observaciones,motivo_permiso,tiempo_motivo,desc_motivo,dias_solicitados,dias_totales,horas_solicitadas,fecha_permisos_desde,fecha_permiso_hasta,horas_permiso_desde,horas_permiso_hasta,usuario_solicita,usuario_aprueba,usuario_registra,permiso_aceptado,horas_ocupadas)VALUES(:id_usuarios,:provincia,:regimen,:coordinacion_zonal,:direccion_unidad,:fecha_permiso,:observaciones,:motivo_permiso,:tiempo_motivo,:desc_motivo,:dias_solicitados,:dias_totales,:horas_solicitadas,:fecha_permisos_desde,:fecha_permiso_hasta,:horas_permiso_desde,:horas_permiso_hasta,:usuario_solicita,:usuario_aprueba,:usuario_registra,:permiso_aceptado,:horas_ocupadas)";
             $stmt = $pdo->prepare($consult_permisos);
             $stmt->bindParam(':id_usuarios', $id_usuarios, PDO::PARAM_INT);
             $stmt->bindParam(':provincia', $provincia, PDO::PARAM_STR);
@@ -188,6 +224,7 @@ if ($_POST) {
             $stmt->bindParam(':tiempo_motivo', $tiempoLimite_motivo, PDO::PARAM_STR);
             $stmt->bindParam(':desc_motivo', $desc_motivo, PDO::PARAM_STR);
             $stmt->bindParam(':dias_solicitados', $dias_solicitados, PDO::PARAM_STR);
+            $stmt->bindParam(':dias_totales', $dias_totales, PDO::PARAM_STR);
             $stmt->bindParam(':horas_solicitadas', $horas_solicitadas2, PDO::PARAM_STR);
             $stmt->bindParam(':fecha_permisos_desde', $fecha_permisos_desde, PDO::PARAM_STR);
             $stmt->bindParam(':fecha_permiso_hasta', $fecha_permiso_hasta, PDO::PARAM_STR);
@@ -204,17 +241,8 @@ if ($_POST) {
             $id_usuario_insertado = $pdo->lastInsertId();
             $pdo->commit();
             create_flash_message(
-                'Solicitud Ingresada Correctamente',
+                'Solicitud ingresada correctamente',
                 'success'
-            );
-
-            redirect(RUTA_ABSOLUTA . "admin/solicitud");
-        } else {
-            // No hay suficientes días disponibles, revertir la transacción
-            $pdo->rollBack();
-            create_flash_message(
-                'No hay suficientes días de vacaciones disponibles.',
-                'error'
             );
 
             redirect(RUTA_ABSOLUTA . "admin/solicitud");
@@ -222,7 +250,11 @@ if ($_POST) {
     } catch (PDOException $e) {
 
         $pdo->rollBack();
-        return "Error de exepcion" . $e->getMessage();
+        create_flash_message(
+            'Error de excepción' . $e->getMessage();
+            'error'
+        );
+        redirect(RUTA_ABSOLUTA . "admin/solicitud");
     }
 }
 

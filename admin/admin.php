@@ -45,16 +45,19 @@ $resultados_users = mostrarUsuarios($pdo);
                     <table class="table table-bordered crud-table" id="tabla_admininstradores">
                         <thead>
                             <tr>
-                                <th>Cedula</th>
+                                <th>Cédula</th>
                                 <th>Nombres</th>
                                 <th>Apellidos</th>
-                                <th>Email</th>
+                                <th>Correo electrónico </th>
                                 <th>Rol</th>
                                 <th class="exclude">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
+                            // if (empty($resultados_users)) {
+                            //    echo "";
+                            // }
                             foreach ($resultados_users as $key => $valor){
                                 $id_usuarios = $valor ["id_usuarios"];
                                 $cedula_usuarios = $valor['cedula'];
@@ -63,9 +66,8 @@ $resultados_users = mostrarUsuarios($pdo);
                                 $usuario = $valor['usuario'];
                                 $clave = $valor['contraseña'];
                                 $email_usuarios = $valor['email'];
-                                $rol_usuarios = $valor['rol'];
-                                // Capitalizar la primera letra de cada palabra
-                                $rol_usuarios = ucwords($rol_usuarios);
+                                $rolUsuarios = $valor['rol'];
+                                $rol_usuarios = ucwords($rolUsuarios);
                                 // Eliminar guiones bajos
                                 $rol_usuarios = str_replace('_', ' ', $rol_usuarios);
                                 $fecha_ingreso = $valor['fecha_ingreso'];
@@ -97,7 +99,7 @@ $resultados_users = mostrarUsuarios($pdo);
 
                                 <td>
                                     <button class="btn btn-primary m-1" title="Editar datos del usuario"
-                                        data-toggle="modal" data-target="#Editar_datos" data-id="<?= $id_usuarios ?>" data-cedula="<?= $cedula_usuarios?>" data-name="<?= $nombres_usuarios ?>" data-lastname="<?= $apellidos_usuarios ?>" data-user="<?= $usuario ?>" data-password="<?= $clave ?>" data-email="<?= $email_usuarios ?>" data-rol="<?= $rol_usuarios ?>" data-fecha_ingreso="<?= $fecha_ingreso ?>" data-tiempo_trabajo="<?= $tiempo_trabajo ?>" onclick="cargarDatos(this)">
+                                        data-toggle="modal" data-target="#Editar_datos" data-id="<?= $id_usuarios ?>" data-cedula="<?= $cedula_usuarios?>" data-name="<?= $nombres_usuarios ?>" data-lastname="<?= $apellidos_usuarios ?>" data-user="<?= $usuario ?>" data-password="<?= $clave ?>" data-email="<?= $email_usuarios ?>" data-rol="<?= $rolUsuarios ?>" data-fecha_ingreso="<?= $fecha_ingreso ?>" data-tiempo_trabajo="<?= $tiempo_trabajo ?>" onclick="cargarDatos(this)">
                                         <i class="fa-solid fa-pencil"></i>
                                     </button>
 
@@ -164,67 +166,66 @@ $resultados_users = mostrarUsuarios($pdo);
 
                         <div class="row mb-3">
                             <div class="col">
-                                <label>Ingrese la nueva cedula</label>
-                                <input class="form-control" name="cedula" type="text"/>
+                                <label>Número de cédula </label>
+                                <input class="form-control" name="cedula" type="text" pattern="\d{10}" title="Ingrese exactamente los 10 números de la cédula" required/>
                             </div>
                             <div class="col">
-                                <label>Ingrese los nombres</label>
-                                <input class="form-control" name="nombres" type="text"/>
+                                <label>Nombres</label>
+                                <input class="form-control" name="nombres" type="text" required/>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col">
-                                <label>Ingrese los apellidos</label>
-                                <input class="form-control" name="apellidos" type="text"/>
+                                <label>Apellidos</label>
+                                <input class="form-control" name="apellidos" type="text" required/>
                             </div>
                             <div class="col">
-                                <label>Ingrese un usuario </label>
+                                <label>Nombre de usuario </label>
                                 <input class="form-control" name="user_A" type="text" required />
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col">
-                                <label>Contraseña para el usuario</label>
+                                <label>Contraseña del usuario</label>
                                 <input class="form-control" type="text" name="password_A" required />
                             </div>
                             <div class="col">
-                                <label>Ingrese el Email del Usuario</label>
-                                <input class="form-control" type="email" name="email_A"/>
+                                <label>Correo electrónico </label>
+                                <input class="form-control" type="email" name="email_A" required/>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col">
                                 <label>Seleccione el rol del usuario</label>
-                                <select class="form-control" name="roles">
+                                <select class="form-select" name="roles" required>
                                     <option value="admin">Administrador</option>
                                     <option value="jefe">Jefe o supervisor</option>
                                     <option value="Talento_Humano">Talentos Humanos</option>
                                     <option value="Funcionario">Funcionario</option>
                                 </select>
                             </div>
-                            <div class="col" id="optionTiempo" style="display: none;">
+                            <div class="col" id="optionTiempo">
                                 <label>Modalidad de Trabajo</label>
-                                <select class="form-control" name="tiempo_trabajo">
+                                <select class="form-select" name="tiempo_trabajo" required>
                                     <option value="8">Tiempo Completo</option>
                                     <option value="4">Medio Tiempo</option>
                                 </select>
                             </div>
                         </div>
 
-                        <div class="form-floating mb-3" id="opcionesFuncionario" style="display: none;">
-                            <!-- Aquí coloca las opciones adicionales para el rol de Funcionario -->
+                        <div class="form-floating mb-3" id="opcionesFuncionario">
                             <div>
-                                <label>Seleccione la fecha de Ingreso</label>
-                                <input class="form-control" type="date" name="fecha_ingreso" />
+                                <label>Seleccione la fecha de ingreso</label>
+                                <input class="form-control" type="date" name="fecha_ingreso" required/>
                             </div>
                         </div>
 
                         <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Actualizar informacion</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            <button type="submit" class="btn btn-primary">Actualizar Informacion</button>
                         </div>
                     </form>
                 </div>
@@ -240,7 +241,7 @@ $resultados_users = mostrarUsuarios($pdo);
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Registrar Nuevo Usuario</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Registrar nuevo usuario</h5>
                 <button type="button" class="close cerrarModal" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -251,33 +252,33 @@ $resultados_users = mostrarUsuarios($pdo);
 
                     <div class="row mb-3">
                         <div class="col">
-                            <label>Ingrese la cedula </label>
-                            <input class="form-control" name="cedula" type="text" required />
+                            <label>Número  de cédula  </label>
+                            <input class="form-control" name="cedula" type="text" pattern="\d{10}" title="Ingrese exactamente los 10 números de la cédula" required />
                         </div>
                         <div class="col">
-                            <label>Ingrese los nombres </label>
+                            <label>Nombres </label>
                             <input class="form-control" name="nombres" type="text" required />
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col">
-                            <label>Ingrese los apellidos </label>
+                            <label>Apellidos </label>
                             <input class="form-control" name="apellidos" type="text" required />
                         </div>
                         <div class="col">
-                            <label>Ingrese un usuario </label>
+                            <label>Nombre de usuario </label>
                             <input class="form-control" name="user_A" type="text" required />
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col">
-                            <label>Ingrese una contraseña </label>
+                            <label>Contraseña del usuario </label>
                             <input class="form-control" type="text" name="password_A" required />
                         </div>
                         <div class="col">
-                            <label>Ingrese el Email del Usuario</label>
+                            <label>Correo electrónico</label>
                             <input class="form-control" type="email" name="email_A" required />
                         </div>
                     </div>
@@ -285,7 +286,7 @@ $resultados_users = mostrarUsuarios($pdo);
                     <div class="row mb-3">
                         <div class="col">
                             <label>Seleccione el rol del usuario</label>
-                            <select class="form-control" id="roles" name="roles1"required onchange="mostrarOpciones()">
+                            <select class="form-select" id="roles" name="roles1"required onchange="mostrarOpciones()">
                                 <option value="admin">Administrador</option>
                                 <option value="jefe">Jefe o supervisor</option>
                                 <option value="Talento_Humano">Talentos Humanos</option>
@@ -293,8 +294,8 @@ $resultados_users = mostrarUsuarios($pdo);
                             </select>
                         </div>
                         <div class="col" id="optionTiempo2" style="display: none;">
-                            <label>Modalidad de Trabajo </label>
-                            <select class="form-control" name="tiempo_trabajo">
+                            <label>Modalidad de trabajo </label>
+                            <select class="form-select" name="tiempo_trabajo">
                                 <option value="8">Tiempo Completo</option>
                                 <option value="4">Medio Tiempo</option>
                             </select>
@@ -302,16 +303,15 @@ $resultados_users = mostrarUsuarios($pdo);
                     </div>
 
                     <div class="form-floating mb-3" id="function_option" style="display: none;">
-                        <!-- Aquí coloca las opciones adicionales para el rol de Funcionario -->
                         <div>
-                            <label>Seleccione la fecha de Ingreso</label>
+                            <label>Seleccione la fecha de ingreso</label>
                             <input class="form-control" type="date" name="fecha_ingreso" id="fecha_ingreso" />
                         </div>
                     </div>
 
                     <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Registrar nuevo usuario</button>
                         <button type="button" class="btn btn-secondary cerrarModal" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-primary">Registrar nuevo Usuario</button>
                     </div>
 
                 </form>
@@ -428,7 +428,7 @@ $resultados_users = mostrarUsuarios($pdo);
             var fechaActual = new Date();
 
             // Verificar si la fecha está vacía o es superior al año actual
-            if (!fechaIngresoInput.value.trim() || fechaIngreso.getFullYear() > fechaActual.getFullYear()) {
+            if (!fechaIngresoInput.value.trim() || fechaIngreso > fechaActual) {
                 alert('Por favor, ingrese una fecha de ingreso válida para el Funcionario.');
                 return false; // Evita que el formulario se envíe
             }
@@ -455,7 +455,7 @@ $resultados_users = mostrarUsuarios($pdo);
             var fechaActual = new Date();
 
             // Verificar si la fecha está vacía o es superior al año actual
-            if (fechaIngreso.getFullYear() > fechaActual.getFullYear()) {
+            if (fechaIngreso > fechaActual) {
                 alert('Por favor, ingrese una fecha de ingreso válida para el Usuario');
                 return false;
             }else if(!fechaIngresoInput.value.trim()){

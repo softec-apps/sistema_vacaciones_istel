@@ -162,7 +162,7 @@ function obtenerMensajeDiasVacaciones($id_usuario,$nombre_usuario,$apellidos_u,$
         );
 
             $diasDePermisoSolicitados = $horasDePermisoSolicitadas / $tiempo_trabajo;
-            return "El usuario  $nombre_usuario   $apellidos_u tiene $diasDeVacaciones días de vacaciones Y se han ocupado en total $diasDePermisoSolicitados días de permiso.";
+            return "El usuario  $nombre_usuario   $apellidos_u tiene $diasDeVacaciones días de vacaciones y se han ocupado en total $diasDePermisoSolicitados días de permiso.";
     } else {
         return "Error: El usuario no fue encontrado.";
     }

@@ -31,7 +31,7 @@ if ($_POST) {
         } elseif (strpos($id_insertado, "Error de repetición de cédula") !== false) {
 
             create_flash_message(
-                'La cédula ya existe o el Usuario Ya existe en la base de datos.',
+                'La cédula o el nombre de usuario Ya existe en la base de datos.',
                 'error'
             );
 
@@ -53,10 +53,20 @@ if ($_POST) {
         }
     }catch (PDOException $pdoEx) {
         // Capturar excepciones específicas de PDO
-        echo "Error de PDO: " . $pdoEx->getMessage();
+        create_flash_message(
+            'Ocurrio un error con el sistema1',
+            'error'
+        );
+        redirect(RUTA_ABSOLUTA . "admin/admin");
+        // echo "Error de PDO: " . $pdoEx->getMessage();
     }
     catch (Exception $e) {
-        echo "Error general: " . $e->getMessage();
+        create_flash_message(
+            'Ocurrio un error con el sistema2'  . $e->getMessage(),
+            'error'
+        );
+        redirect(RUTA_ABSOLUTA . "admin/admin");
+        // echo "Error general: " . $e->getMessage();
     }
 }
 ?>

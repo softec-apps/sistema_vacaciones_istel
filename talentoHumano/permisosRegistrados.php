@@ -35,19 +35,19 @@ $respuesta = soli_registradas($pdo);
 <div class="container-fluid mt-5">
 
                 <!-- Page Heading -->
-                <h1 class="h3 mb-2 text-gray-800">Permisos Registrados</h1>
+                <!-- <h1 class="h3 mb-2 text-gray-800">Permisos registrados</h1> -->
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Permisos Ya Registrados</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Permisos registrados</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive crud-table">
                                 <table class="table table-bordered" id="tabla_permisos_registrados">
                                     <thead>
                                         <tr>
-                                            <th>Cedula</th>
+                                            <th>Cédula</th>
                                             <th>Funcionario</th>
                                             <th>Fecha emitida</th>
                                             <th>Acciones</th>
@@ -135,13 +135,13 @@ $respuesta = soli_registradas($pdo);
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalAdminLabel">Confirmar Cancelacion del Permiso</h5>
+                <h5 class="modal-title" id="modalAdminLabel">Confirmar cancelacion del permiso</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p>¿Está seguro de que desea Cancelar el registro de esta solicitud ?</p>
+                <p>¿Está seguro de que desea cancelar el registro de esta solicitud ?</p>
                 <form id="cancelarS" action="<?php echo RUTA_ABSOLUTA ?>talentoH/procesarSolicitud" method="POST">
                     <input type="hidden" name="id_cancelar" id="id_cancelar" value ="<?= $id_permiso ?>" />
                     <input class="form-control" type="hidden" name="cancelar_registro" value ="1" />
@@ -149,8 +149,8 @@ $respuesta = soli_registradas($pdo);
                 </form>
             </div>
             <div class="modal-footer">
+                <button type="submit" form="cancelarS" class="btn btn-primary">Aceptar</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="submit" form="cancelarS" class="btn btn-warning">Aceptar</button>
             </div>
         </div>
     </div>

@@ -36,18 +36,18 @@ $vista = cons_table($pdo);
 
 ?>
                     <!-- Page Heading -->
-                    <h5 class="mb-3">Datos de los Funcionario que han solicitado Un permiso</h5>
+                    <h5 class="mb-3">Datos de los funcionarios que han hecho su solicitud</h5>
 
                     <!-- <h1 class="h3 mb-3 text-gray-800">Debe existir una parte que carge par realizar solicitudes por el id de la sesion del funcionario</h1>
                     <p>donde debe verifica si su solicitud fue aprobada o no Va a cargar todas las solicitudes realizadas</p> -->
 
-                    <p class="text-gray-900" id="mensaje_dias_vacaciones">El usuario  tiene 0 días de vacaciones Y se han ocupado en total 0 días de permiso.</p>
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header d-flex py-3">
-                            <p class="m-2 col-10 pl-0 font-weight-bold text-primary">Vista de las tablas con los datos para una solicitud
-                            </p>
-                            <select id="select_user" class="w-100">
+                            <!-- <p class="m-2 col-10 pl-0 font-weight-bold text-primary">Vista de las tablas con los datos para una solicitud
+                            </p> -->
+                            <p class="font-weight-bold text-primary me-5" id="mensaje_dias_vacaciones">El usuario  tiene 0 días de vacaciones y se han ocupado en total 0 días de permiso.</p>
+                            <select id="select_user" class="ms-5 w-25">
                                 <option disabled selected>Seleccione el Usuario</option>
                                 <?php
                                         $itero = cedulasConSoli($pdo);
@@ -72,12 +72,12 @@ $vista = cons_table($pdo);
                                 <table class="table table-bordered" id="tabla_Funcionarios">
                                     <thead>
                                         <tr>
+                                            <th>Cédula </th>
                                             <th>Nombres</th>
                                             <th>Apellidos</th>
-                                            <th>Cedula</th>
-                                            <th>Dias Solicitadas</th>
-                                            <th>Horas Solicitadas</th>
-                                            <th>Con Cargo a vacaciones</th>
+                                            <th>Dias solicitados</th>
+                                            <th>Horas solicitadas</th>
+                                            <th>Descuento de días de vacaciones</th>
                                             <th>Solicitud</th>
                                         </tr>
                                     </thead>
@@ -122,7 +122,7 @@ $vista = cons_table($pdo);
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalAdminLabel">Solicitar Permiso </h5>
+                    <h5 class="modal-title" id="modalAdminLabel">Solicitar permiso </h5>
                     <button type="button" class="close cerrarModal" data-dismiss="modal" aria-label="Cerrar">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -131,80 +131,37 @@ $vista = cons_table($pdo);
                     <form action="../solicitarPermiso" method="post" id="solicitud_permiso_form">
                         <input type="hidden" name="nombre_usuario" id="nombre_usuario">
 
-                        <div class="row mb-3">
-                            <div class="col">
-                                <select class="form-select" name="id_usuario" onchange="updateHiddenField(this)" required>
-                                    <option value="" disabled selected>Seleccione un usuario</option>
-                                    <?php
-                                        $itero = cedulas($pdo);
+                        <div class="mb-3">
+                            <select id="select_soli" class="form-control" name="id_usuario" onchange="updateHiddenField(this)" required style="width:100%;">
+                                <option value="" disabled selected>Seleccione un usuario</option>
+                                <?php
+                                    $itero = cedulas($pdo);
 
-                                        foreach ($itero as $key => $posicion):
-                                        $id_iterado = $posicion ["id_usuarios"];
-                                        $cedula_iterada = $posicion ["cedula"];
-                                        $nombres_iterado = $posicion ["nombres"];
-                                        $apellidos_iterado = $posicion ["apellidos"];
-                                    ?>
-                                    <option value="<?php echo $id_iterado;?>"><?php echo $nombres_iterado . " ".$apellidos_iterado ;?></option>
+                                    foreach ($itero as $key => $posicion):
+                                    $id_iterado = $posicion ["id_usuarios"];
+                                    $cedula_iterada = $posicion ["cedula"];
+                                    $nombres_iterado = $posicion ["nombres"];
+                                    $apellidos_iterado = $posicion ["apellidos"];
+                                ?>
+                                <option value="<?php echo $id_iterado;?>"><?php echo $nombres_iterado . " ".$apellidos_iterado ;?></option>
 
-                                    <?php
-                                    endforeach;
-                                    ?>
-                                </select>
-                            </div>
-
-                            <div class="col">
-                                <select class="form-select" name="provincia" required >
-                                    <option value="" disabled selected>Provincias</option>
-                                    <option value="Azuay">Azuay</option>
-                                    <option value="Bolívar">Bolívar</option>
-                                    <option value="Cañar">Cañar</option>
-                                    <option value="Carchi">Carchi</option>
-                                    <option value="Chimborazo">Chimborazo</option>
-                                    <option value="Cotopaxi">Cotopaxi</option>
-                                    <option value="El Oro">El Oro</option>
-                                    <option value="Esmeraldas">Esmeraldas</option>
-                                    <option value="Galápagos">Galápagos</option>
-                                    <option value="Guayas">Guayas</option>
-                                    <option value="Imbabura">Imbabura</option>
-                                    <option value="Loja">Loja</option>
-                                    <option value="Los Ríos">Los Ríos</option>
-                                    <option value="Manabí">Manabí</option>
-                                    <option value="Morona Santiago">Morona Santiago</option>
-                                    <option value="Napo">Napo</option>
-                                    <option value="Orellana">Orellana</option>
-                                    <option value="Pastaza">Pastaza</option>
-                                    <option value="Pichincha">Pichincha</option>
-                                    <option value="Santa Elena">Santa Elena</option>
-                                    <option value="Santo Domingo de los Tsáchilas">Santo Domingo de los Tsáchilas</option>
-                                    <option value="Sucumbíos">Sucumbíos</option>
-                                    <option value="Tungurahua">Tungurahua</option>
-                                    <option value="Zamora-Chinchipe">Zamora-Chinchipe</option>
-                                </select>
-                            </div>
+                                <?php
+                                endforeach;
+                                ?>
+                            </select>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col">
-                                <!-- <label>Ingrese el Regimen </label> -->
-                                <input class="form-control" type="text" name="regimen" placeholder="Regimen" required/>
+                                <select class="form-select" name="regimen" required >
+                                    <option value="" disabled selected>Tipo de regimen</option>
+                                    <option value="LOSEP">LOSEP</option>
+                                    <option value="CODIGO DEL TRABAJO">CODIGO DEL TRABAJO</option>
+                                </select>
                             </div>
                             <div class="col">
-                                <!-- <label>Ingrese la coordinacion Zonal </label> -->
-                                <input class="form-control" type="text" name="coordinacion" placeholder="Coordinacion Zonal"   required/>
-                            </div>
-                        </div>
-
-
-
-                        <div class="row mb-3">
-                            <div class="col">
-                                <!-- <label>Ingrese la Dirrecion o Unidad </label> -->
-                                <input class="form-control" type="text" name="direccion" placeholder="Direccion o Unidad"  required/>
-                            </div>
-                            <div class="col">
-                                <!-- <label>Motivo </label> -->
                                 <select id="motivo" class="form-select" name="motivo" required>
-                                    <option value="" disabled selected>Motivo del Permiso</option>
+                                    <option value="" disabled selected>Motivo del permiso</option>
                                     <option value="LICENCIA_POR_CALAMIDAD_DOMESTICA">Licencia por calamidad domestica</option>
                                     <option value="LICENCIA_POR_ENFERMEDAD">Licencia por enfermedad</option>
                                     <option value="LICENCIA_POR_MATERNIDAD">Licencia por maternidad</option>
@@ -246,8 +203,8 @@ $vista = cons_table($pdo);
                         <input class="form-control" type="hidden" name="permiso_aceptado" value="0" />
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger cerrarModal" data-dismiss="modal">Cerrar</button>
-                            <button type="submit" class="btn btn-success">Solicitar Permiso</button>
+                            <button type="submit" class="btn btn-primary">Solicitar permiso</button>
+                            <button type="button" class="btn btn-secondary cerrarModal" data-dismiss="modal">Cerrar</button>
                         </div>
                     </form>
                 </div>
@@ -256,6 +213,10 @@ $vista = cons_table($pdo);
     </div>
 
 <script>
+    $('#select_soli').select2({
+        dropdownParent: $('#registrar_vacaciones .modal-body')
+    });
+
     $(".cerrarModal").click(function(){
         $("#registrar_vacaciones").modal('hide');
     });
@@ -557,8 +518,8 @@ $vista = cons_table($pdo);
 
             // Validar que la diferencia entre la fecha de inicio y la fecha de fin sea mayor a dos días
             var diferenciaDias = Math.ceil((fechaFin - fechaInicio) / (1000 * 60 * 60 * 24));
-            if (diferenciaDias <= 2) {
-                alert("La diferencia entre la fecha de inicio y la fecha de fin debe ser mayor a dos días.");
+            if (diferenciaDias <= 1) {
+                alert("La diferencia entre la fecha de inicio y la fecha de fin debe ser mayor a un día.");
                 event.preventDefault();
                 return;
             }

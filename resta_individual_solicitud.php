@@ -27,9 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_usuario'])) {
     $htmlTabla = '';
     foreach ($nuevosDatos as $valor) {
         $htmlTabla .= '<tr>';
+        $htmlTabla .= '<td>' . $valor['cedula'] . '</td>';
         $htmlTabla .= '<td>' . $valor['nombres'] . '</td>';
         $htmlTabla .= '<td>' . $valor['apellidos'] . '</td>';
-        $htmlTabla .= '<td>' . $valor['cedula'] . '</td>';
         $horasOcupadasMultiplicadas = $valor['horas_ocupadas'];
         $permiso_aceptado = $valor['permiso_aceptado'];
         $dias_solicitados = $valor['dias_solicitados'];
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_usuario'])) {
             $horasOcupadasMultiplicadas = $horasOcupadasMultiplicadas / $tiempo_trabajo;
 
             $htmlTabla .= '<td>' . $horasOcupadasMultiplicadas . '</td>';
-            $htmlTabla .= '<td>---</td>';
+            $htmlTabla .= '<td> 0 </td>';
             $tipo_solicitud = "SI";
         }elseif ($valor['horas_ocupadas'] == 0) {
             $htmlTabla .= '<td>' . $dias_solicitados . '</td>';
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_usuario'])) {
             $tipo_solicitud = "NO";
         } else {
             // Mostrar las horas ocupadas y una columna vacía
-            $htmlTabla .= '<td>---</td>';
+            $htmlTabla .= '<td> 0 </td>';
             $htmlTabla .= '<td>' . $horasOcupadasMultiplicadas . '</td>';
             $tipo_solicitud = "SI";
         }

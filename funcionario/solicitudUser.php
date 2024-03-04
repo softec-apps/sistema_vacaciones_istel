@@ -4,7 +4,8 @@ include_once "../flash_messages.php";
  session_start();
 
  if (!isset($_SESSION['id_usuarios'])) {
-    redirect("inicio");
+
+    redirect(RUTA_ABSOLUTA . "logout");
  }
 $id = $_SESSION['id_usuarios'];
 $cedula = $_SESSION['cedula'];
@@ -14,7 +15,8 @@ $rol = $_SESSION['rol'];
 $fecha_ingreso = $_SESSION['fecha_ingreso'];
 
 if ($rol != 'Funcionario') {
-    redirect("inicio");
+
+    redirect(RUTA_ABSOLUTA . "logout");
 }
 
 $message = '';
@@ -59,12 +61,12 @@ if (!empty($nuevosDatos)) {
     $nombreUser = $nombreFuncionario . " " . $apellidosFuncionario;
 ?>
 
-                    <h5 class="text-gray-800"> <?php echo$mensaje; ?> </h5>
+                    <h5 class="text-gray-800">Todos los permisos realizados</h5>
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header d-flex py-3">
                             <p class="m-2 col-10 pl-0 font-weight-bold text-primary">
-                                Todas las solicutes realizadas
+                                <?php echo$mensaje; ?>
                             </p>
                         </div>
                         <div class="card-body">
@@ -72,11 +74,12 @@ if (!empty($nuevosDatos)) {
                                 <table class="table table-bordered" id="tabla_vacaciones_funcionarios">
                                     <thead>
                                         <tr>
-                                            <th>Tipo de permiso solicitado</th>
-                                            <th>Dias Solicitadas</th>
-                                            <th>Horas Solicitadas</th>
-                                            <th>Cargo a avacaciones</th>
-                                            <th>Solicitud</th>
+                                            <th>Tipo de permiso </th>
+                                            <th>Días solicitados</th>
+                                            <th>Horas solicitadas</th>
+                                            <th>Descuento de días de vacaciones</th>
+                                            <th class="exclude">Solicitud</th>
+                                            <th class="exclude">Archivos</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -109,20 +112,75 @@ if (!empty($nuevosDatos)) {
                                                 $tipo_solicitud = "Si";
                                             }
                                             $permiso_aceptado = $valor['permiso_aceptado'];
-                                            if ($permiso_aceptado == 2) {
-                                                $permiso_aceptado = '<button class=" btn-danger" disabled title="Solicitud Rechazada" ><i class="fa-solid fa-xmark"></i></button>';
-                                                $ver = null;
-                                            }elseif ($permiso_aceptado == 1 || $permiso_aceptado == 3) {
-                                                $permiso_aceptado = '<button class=" btn-success" disabled title="Aceptado" ><i class="fa-solid fa-check"></i></button>';
-                                                $ver ='<form action="../datos_individuales" method="POST" class="d-inline-block m-1">
-                                                            <input type="hidden" name="id_permisos" value="' . $id_permisos .'">
-                                                            <button class="btn btn-info m-1" title="Ver solicitud aprobada">
-                                                                <i class="bi bi-eye"></i>
-                                                            </button>
-                                                        </form>';
+                                            $ruta_solicita = $valor ["ruta_solicita"];
+                                            $ruta_aprueba = $valor['ruta_aprueba'];
+                                            $ruta_registra = $valor['ruta_registra'];
+
+                                            if (!empty($ruta_solicita) && $permiso_aceptado == 0) {
+                                                $ruta_solicita = '<a class="btn btn-warning m-1" title="Solicitud firmada por el funcionario" href="' . RUTA_ABSOLUTA . $ruta_solicita .'" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
+                                                $ruta_aprueba = null;
+
+                                                $ruta_registra = null;
+                                                $permisoAceptadoClass ="bg-primary text-white text-center";
+                                                $title = "Solicitud en proceso";
+                                                $icono = '<i class="fa-lg fa-solid fa-sync fa-spin mt-3"></i>';
+
+                                                $archivo = null;
+                                                $eliminar = null;
+                                            }elseif ($permiso_aceptado == 2) {
+
+                                                $ruta_solicita = '<a class="btn btn-warning m-1" title="Solicitud firmada por el funcionario" href="' . RUTA_ABSOLUTA . $ruta_solicita .'" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
+                                                $ruta_aprueba = null;
+                                                $ruta_registra = null;
+
+                                                $permisoAceptadoClass ="bg-danger text-white text-center";
+                                                $title = "Solicitud rechazada";
+                                                $icono = '<i class="fa-lg fa-solid fa-xmark mt-3"></i>';
+                                                $archivo = null;
+                                                $eliminar = null;
+                                            }elseif ($permiso_aceptado == 1) {
+
+                                                $ruta_solicita = '<a class="btn btn-warning m-1" title="Solicitud firmada por el funcionario" href="' . RUTA_ABSOLUTA . $ruta_solicita .'" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
+
+                                                $ruta_aprueba = '<a class="btn btn-success m-1" title="Solicitud firmada por el jefe" href="' . RUTA_ABSOLUTA . $ruta_aprueba .'" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
+
+                                                $ruta_registra = null;
+
+                                                $icono = '<i class="fa-lg fa-solid fa-check mt-3"></i>';
+                                                $permisoAceptadoClass ="bg-success text-white text-center";
+                                                $title = "Solicitud aprobada";
+
+                                                $archivo = null;
+
+                                                $eliminar = null;
+                                            }elseif ($permiso_aceptado == 3) {
+                                                $icono = '<i class="fa-lg fa-solid fa-check mt-3"></i>';
+                                                $permisoAceptadoClass ="bg-dark text-white text-center";
+                                                $title = "Solicitud registrada por talento humano";
+
+                                                $ruta_solicita = '<a class="btn btn-warning m-1" title="Solicitud firmada por el funcionario" href="' . RUTA_ABSOLUTA . $ruta_solicita .'" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
+
+                                                $ruta_aprueba = '<a class="btn btn-success m-1" title="Solicitud firmada por el jefe" href="' . RUTA_ABSOLUTA . $ruta_aprueba .'" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
+
+                                                $ruta_registra = '<a class="btn btn-dark m-1" title="Solicitud registrada por talento humano" href="' . RUTA_ABSOLUTA . $ruta_registra .'" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
+
+                                                $archivo = null;
+
+                                                $eliminar = null;
                                             }elseif ($permiso_aceptado == 0) {
-                                                $permiso_aceptado = '<button class=" btn-primary" disabled title="Solicitud en proceso"><i class="fa-solid fa-sync fa-spin"></i></button>';
-                                                $ver = null;
+                                                $permisoAceptadoClass ="bg-primary text-white text-center";
+                                                $title = "Solicitud en proceso";
+                                                $icono = '<button class="btn btn-primary m-1" title="Subir archivo" data-toggle="modal"
+                                                data-target="#subirEscaneado" data-id="'. $id_permisos .'" onclick="subirArchivo(this)" >
+                                                <i class="fa-lg fa-solid fa-file-arrow-up"></i>
+                                                </button>';
+
+                                                $archivo =  null;
+
+                                                $eliminar = '<button class="btn btn-danger m-1" title="Eliminar" data-toggle="modal"
+                                                data-target="#Eliminar" data-id="'. $id_permisos .'" onclick="eliminar(this)">
+                                                <i class="fas fa-trash"></i>
+                                                </button>';
                                             }
 
                                         ?>
@@ -143,9 +201,22 @@ if (!empty($nuevosDatos)) {
                                             <?= $tipo_solicitud?>
                                             </td>
 
-                                            <td>
-                                            <?= $permiso_aceptado?>
-                                            <?= $ver?>
+                                            <td class="<?= $permisoAceptadoClass?>" title="<?= $title; ?>">
+                                                <?= $icono?>
+                                            </td>
+
+                                            <td class="d-flex">
+                                                <form action="../datos_individuales" method="POST" class="d-inline-block m-1">
+                                                    <input type="hidden" name="id_permisos" value="<?= $id_permisos?> ">
+                                                    <button class="btn btn-info m-1" title="Ver solicitud aprobada">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                </form>
+                                            <?= $ruta_solicita?>
+                                            <?= $ruta_aprueba?>
+                                            <?= $ruta_registra?>
+                                            <?= $archivo?>
+                                            <?= $eliminar?>
                                             </td>
 
 
@@ -162,13 +233,38 @@ if (!empty($nuevosDatos)) {
                 </div>
                 <!-- /.container-fluid -->
 
+<!-- Modal Eliminar -->
+<div class="modal fade" id="Eliminar" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAdminLabel">Confirmar eliminación</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>¿Está seguro de que desea eliminar este registro de un permiso?</p>
+                <form id="eliminarForm" action="<?php echo RUTA_ABSOLUTA ?>funcionario/eliminar" method="post">
+                    <input type="hidden" name="id_permiso" id="id_permiso" value="">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" form="eliminarForm" class="btn btn-danger">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal para solicitar permisos -->
 <div class="modal fade" id="registrar_vacaciones" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalAdminLabel">Solicitar Permiso </h5>
+                <h5 class="modal-title" id="modalAdminLabel">Solicitar permiso </h5>
                 <button type="button" class="close cerrarModal" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -180,64 +276,23 @@ if (!empty($nuevosDatos)) {
 
                     <div class="row mb-3">
                         <div class="col">
-                            <select class="form-select" name="provincia" required >
-                                <option value="" disabled selected>Provincias</option>
-                                <option value="Azuay">Azuay</option>
-                                <option value="Bolívar">Bolívar</option>
-                                <option value="Cañar">Cañar</option>
-                                <option value="Carchi">Carchi</option>
-                                <option value="Chimborazo">Chimborazo</option>
-                                <option value="Cotopaxi">Cotopaxi</option>
-                                <option value="El Oro">El Oro</option>
-                                <option value="Esmeraldas">Esmeraldas</option>
-                                <option value="Galápagos">Galápagos</option>
-                                <option value="Guayas">Guayas</option>
-                                <option value="Imbabura">Imbabura</option>
-                                <option value="Loja">Loja</option>
-                                <option value="Los Ríos">Los Ríos</option>
-                                <option value="Manabí">Manabí</option>
-                                <option value="Morona Santiago">Morona Santiago</option>
-                                <option value="Napo">Napo</option>
-                                <option value="Orellana">Orellana</option>
-                                <option value="Pastaza">Pastaza</option>
-                                <option value="Pichincha">Pichincha</option>
-                                <option value="Santa Elena">Santa Elena</option>
-                                <option value="Santo Domingo de los Tsáchilas">Santo Domingo de los Tsáchilas</option>
-                                <option value="Sucumbíos">Sucumbíos</option>
-                                <option value="Tungurahua">Tungurahua</option>
-                                <option value="Zamora-Chinchipe">Zamora-Chinchipe</option>
+                            <select class="form-select" name="regimen" required >
+                                <option value="" disabled selected>Tipo de regimen</option>
+                                <option value="LOSEP">LOSEP</option>
+                                <option value="CODIGO DEL TRABAJO">CODIGO DEL TRABAJO</option>
                             </select>
                         </div>
                         <div class="col">
-                            <!-- <label>Ingrese el Regimen </label> -->
-                            <input class="form-control" type="text" name="regimen" placeholder="Regimen" required/>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col">
-                            <!-- <label>Ingrese la coordinacion Zonal </label> -->
-                            <input class="form-control" type="text" name="coordinacion" placeholder="Coordinacion Zonal"   required/>
-                        </div>
-                        <div class="col">
-                            <!-- <label>Ingrese la Dirrecion o Unidad </label> -->
-                            <input class="form-control" type="text" name="direccion" placeholder="Direccion o Unidad"  required/>
-                        </div>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <div>
-                            <!-- <label>Seleccione el motivo del permisos</label> -->
                             <select class="form-select" name="motivo" id="motivo" required>
-                                <option value="" disabled selected>Motivo del Permiso</option>
+                                <option value="" disabled selected>Motivo del permiso</option>
                                 <option value="LICENCIA_POR_CALAMIDAD_DOMESTICA">Licencia por calamidad domestica</option>
                                 <option value="LICENCIA_POR_ENFERMEDAD">Licencia por enfermedad</option>
                                 <option value="LICENCIA_POR_MATERNIDAD">Licencia por maternidad</option>
                                 <option value="LICENCIA_POR_MATRIMONIO_O_UNION_DE_ECHO">Licencia por matrimonio o union de echo</option>
                                 <option value="LICENCIA_POR_PATERNIDAD">Licencia por paternidad</option>
-                                <option value="PERMISO_PARA_ESTUDIOS_REGULARES">Permiso pra estudios regulares</option>
+                                <option value="PERMISO_PARA_ESTUDIOS_REGULARES">Permiso para estudios regulares</option>
                                 <option value="PERMISO_DE_DIAS_CON_CARGO_A_VACACIONES">Permisos de dias con cargo a vacaciones</option>
-                                <option value="PERMISO_POR_ASUNTOS_OFICIALES">Permiso por asuntos oficales</option>
+                                <!-- <option value="PERMISO_POR_ASUNTOS_OFICIALES">Permiso por asuntos oficales</option> -->
                                 <option value="PERMISO_PARA_ATENCION_MEDICA">Permiso para atencion medica</option>
                                 <option value="OTROS">Otros</option>
                             </select>
@@ -246,38 +301,33 @@ if (!empty($nuevosDatos)) {
 
                     <div class="row mb-3">
                         <div class="col" id="div_fecha_inicio">
-                            <!-- <label for="fecha_inicio" id="label_fecha_inicio">fecha inicio del permiso</label> -->
                             <input class="form-control" type="text" name="fecha_inicio" placeholder="Fecha de Inicio" id="fecha_inicio" onfocus="(this.type='date')" onblur="(this.type='text')" required/>
                         </div>
                         <div class="col" id="div_fecha_fin">
-                            <!-- <label for="fecha_fin" id="label_fecha_fin">fecha fin del permiso</label> -->
                             <input class="form-control" type="text" name="fecha_fin" placeholder="Fecha Fin" id="fecha_fin" onfocus="(this.type='date')" onblur="(this.type='text')" />
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col" id="div_hora_inicio">
-                            <!-- <label for="hora_inicio" id="label_hora_inicio">hora inicio del permiso</label> -->
                             <input class="form-control" type="text" name="hora_inicio" placeholder="Hora de Inicio" id="hora_inicio" onfocus="(this.type='time')" onblur="(this.type='text')" required/>
                         </div>
                         <div class="col" id="div_hora_fin">
-                            <!-- <label for="hora_fin" id="label_hora_fin">hora fin del permiso</label> -->
                             <input class="form-control" placeholder="Hora Fin" type="text" name="hora_fin" placeholder="Hora Fin" id="hora_fin" onfocus="(this.type='time')" onblur="(this.type='text')"/>
                         </div>
                     </div>
 
                     <input class="form-control" type="hidden" name="permiso_aceptado" value="0" />
 
-                    <div class="form-floating mb-3">
-                        <div>
-                            <!-- <label>Ingrese observaciones o justificativos del permisos(opcional)</label> -->
-                            <input class="form-control" type="text" name="observaciones" placeholder="Observaciones o Justificaciones(opcional)"/>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <textarea class="form-control" name="observaciones" cols="30" rows="4" placeholder="Observaciones o Justificativos"></textarea>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger cerrarModal" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-success">Solicitar Permiso</button>
+                        <button type="submit" class="btn btn-success">Solicitar permiso</button>
+                        <button type="button" class="btn btn-secondary cerrarModal" data-dismiss="modal">Cerrar</button>
                     </div>
                 </form>
             </div>
@@ -289,6 +339,16 @@ if (!empty($nuevosDatos)) {
     $(".cerrarModal").click(function(){
         $("#registrar_vacaciones").modal('hide');
     });
+    function eliminar(button) {
+        var userId = button.getAttribute('data-id');
+        // Rellenar el campo oculto con el ID del cliente
+        document.getElementById('id_permiso').value = userId;
+    }
+    function subirArchivo(button) {
+        var permisoId = button.getAttribute('data-id');
+        // Rellenar el campo oculto con el ID del cliente
+        document.getElementById('id_permisoSubir').value = permisoId;
+    }
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
     });
@@ -526,8 +586,8 @@ if (!empty($nuevosDatos)) {
 
             // Validar que la diferencia entre la fecha de inicio y la fecha de fin sea mayor a dos días
             var diferenciaDias = Math.ceil((fechaFin - fechaInicio) / (1000 * 60 * 60 * 24));
-            if (diferenciaDias <= 2) {
-                alert("La diferencia entre la fecha de inicio y la fecha de fin debe ser mayor a dos días.");
+            if (diferenciaDias <= 1) {
+                alert("La diferencia entre la fecha de inicio y la fecha de fin debe ser mayor a un día.");
                 event.preventDefault();
                 return;
             }
