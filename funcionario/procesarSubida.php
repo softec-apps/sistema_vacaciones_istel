@@ -15,10 +15,15 @@ $mes = $anioMesArray['mes'];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    $directorioBase = $_SERVER['DOCUMENT_ROOT'] . "/sistema_vacaciones/htArchivos";
+    // Obtener la ruta del script actual
+    $baseDir = __DIR__;
+
+    // Construir rutas relativas basadas en $baseDir
+    $directorioBase = realpath($baseDir . '/..') . "/htArchivos";
 
     $directorioAnio = $directorioBase . '/' . $anio;
     $directorioMes = $directorioAnio . '/' . $mes;
+
 
     $id = $_POST['id_permiso'];
     $archivoDescripcion = $_POST['archivoDescripcion'];
@@ -32,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $extension = pathinfo($nombreLimpio, PATHINFO_EXTENSION);
 
     // Crear un nombre único para el archivo
-    $nombreUnico = uniqid() . '_' . $id . '.' . $extension;
+    $nombreUnico = date("d") . date("His") . date("m") . '.' . $extension;
 
     $route = $directorioMes . '/' . $nombreUnico;
     $file_tmp = $_FILES['archivo']['tmp_name'];
@@ -55,7 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             throw new Exception("Solo se permiten archivos PDF.");
         } elseif (move_uploaded_file($file_tmp, $route)) {
 
-            $route = str_replace("C:/xampp/htdocs/sistema_vacaciones/", '', $route);
+            // Construir la ruta relativa basada en $baseDir
+            $routeRelativeToScript = str_replace($baseDir, '', $route);
+
+            // Asignar la nueva ruta relativa
+            $route = $routeRelativeToScript;
             // Iniciar la transacción
             $pdo->beginTransaction();
 

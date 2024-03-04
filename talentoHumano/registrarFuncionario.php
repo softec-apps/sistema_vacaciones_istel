@@ -52,7 +52,6 @@ $resultados = mostrarUsuarios($pdo);
                         <th>Nombres</th>
                         <th>Apellidos</th>
                         <th>Correo electrónico </th>
-                        <th>Usuario</th>
                         <th>Fecha de ingreso</th>
                         <th class="exclude">Acciones</th>
                     </tr>
@@ -94,10 +93,6 @@ $resultados = mostrarUsuarios($pdo);
 
                         <td>
                             <?= $email_usuarios ?>
-                        </td>
-
-                        <td>
-                            <?= $rol_usuarios ?>
                         </td>
 
                         <td>

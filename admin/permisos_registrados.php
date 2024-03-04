@@ -34,101 +34,68 @@ $respuesta = soli_registradas($pdo);
 
 <div class="container-fluid mt-5">
 
-                <!-- Page Heading -->
-                <!-- <h1 class="h3 mb-2 text-gray-800">Permisos Registrados</h1> -->
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Permisos registrados</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive crud-table">
+                <table class="table table-bordered" id="tabla_permisos_registrados">
+                    <thead>
+                        <tr>
+                            <th>Cédula</th>
+                            <th>Funcionario</th>
+                            <th>Fecha emitida</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        if (empty($respuesta)) {
+                            echo "";
 
-                    <!-- DataTales Example -->
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Permisos registrados</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive crud-table">
-                                <table class="table table-bordered" id="tabla_permisos_registrados">
-                                    <thead>
-                                        <tr>
-                                            <th>Cédula</th>
-                                            <th>Funcionario</th>
-                                            <th>Fecha emitida</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        if (empty($respuesta)) {
-                                            echo "";
+                        }else {
+                            $fecha_actual = date('Y-m-d');
+                            foreach ($respuesta as $key => $valor){
+                                $id_usuarios  = $valor ["id_usuarios"];
+                                $id_permiso  = $valor ["id_permisos"];
+                                $nombres  = $valor ["nombres"];
+                                $apellidos  = $valor ["apellidos"];
+                                $cedula_user  = $valor ["cedula"];
+                                $fecha_permiso = $valor ["fecha_permiso"];
+                                $motivo_permiso = $valor ["motivo_permiso"];
+                                $permiso_aceptado = $valor['permiso_aceptado'];
+                        ?>
+                        <tr>
+                            <td><?=  $cedula_user ;?></td>
+                            <td><?=  $nombres . " " . $apellidos ;?></td>
+                            <td><?=  $fecha_permiso ;?></td>
+                            <td>
+                                <?php if ($permiso_aceptado == 3): ?>
+                                    <button class="btn btn-success" title="Aceptado" data-toggle="modal"
+                                    data-target="#cancelarSolicitud" data-id="<?= $id_permiso ?>" onclick="cancelar(this)"><i class="fa-solid fa-check"></i></button>
+                                <?php endif; ?>
+                                <form action="../datos_individuales" method="POST" class="d-inline-block m-1">
+                                    <input type="hidden" name="id_permisos" value=" <?= $id_permiso ?>">
+                                    <button class="btn btn-info m-1" title="Ver los datos de esta solicitud">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </form>
+                            </td>
 
-                                        }else {
-                                            $fecha_actual = date('Y-m-d');
-                                            foreach ($respuesta as $key => $valor){
-                                                $id_usuarios  = $valor ["id_usuarios"];
-                                                $id_permiso  = $valor ["id_permisos"];
-                                                $nombres  = $valor ["nombres"];
-                                                $apellidos  = $valor ["apellidos"];
-                                                $cedula_user  = $valor ["cedula"];
-                                                $provincia = $valor ["provincia"];
-                                                $regimen = $valor ["regimen"];
-                                                $coordinacion_zonal = $valor ["coordinacion_zonal"];
-                                                $direccion_unidad = $valor ["direccion_unidad"];
-                                                $fecha_permiso = $valor ["fecha_permiso"];
-                                                $motivo_permiso = $valor ["motivo_permiso"];
-                                                $tiempoLimite_motivo = $valor ["tiempo_motivo"];
-                                                $desc_motivo = $valor['desc_motivo'];
-                                                $dias_solicitados = $valor['dias_solicitados'];
-                                                $horas_solicitadas = (empty(strtotime($valor['horas_solicitadas'])) || $valor['horas_solicitadas'] == '00:00:00') ? "0" : date('H:i', strtotime($valor['horas_solicitadas']));
+                        </tr>
+                    <?php
+                        };
+                    }
+                    ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-                                                $fecha_permisos_desde_formateada = $valor['fecha_permisos_desde'];
-                                                $fecha_permiso_hasta_formateada = $valor['fecha_permiso_hasta'];
-                                                $fecha_permisos_desde = ($fecha_permisos_desde_formateada == '0000-00-00') ? '' : date('d/m/Y', strtotime($fecha_permisos_desde_formateada));
-                                                $fecha_permiso_hasta = ($fecha_permiso_hasta_formateada == '0000-00-00') ? '' : date('d/m/Y', strtotime($fecha_permiso_hasta_formateada));
-
-                                                $horas_permiso_desde = $valor['horas_permiso_desde'];
-                                                $horas_permiso_hasta = $valor['horas_permiso_hasta'];
-                                                $usuario_solicita = $valor['usuario_solicita'];
-                                                $usuario_aprueba = $valor['usuario_aprueba'];
-
-                                                $usuario_registra = $valor['usuario_registra'];
-                                                $permiso_aceptado = $valor['permiso_aceptado'];
-
-                                                if (!empty($horas_solicitadas)) {
-                                                    $valor_mostrar = $horas_solicitadas;
-                                                    $xMultiplicar = 0;
-                                                } elseif (!empty($dias_solicitados)) {
-                                                    $numeroCambio = 1.36363636363636;
-                                                    $valor_mostrar = $dias_solicitados;
-                                                    $xMultiplicar = $valor_mostrar * $numeroCambio;
-                                                    $xMultiplicar = substr((string)$xMultiplicar, 0, 4);
-                                                }
-                                        ?>
-                                        <tr>
-                                            <td><?=  $cedula_user ;?></td>
-                                            <td><?=  $nombres . " " . $apellidos ;?></td>
-                                            <td><?=  $fecha_permiso ;?></td>
-                                            <td>
-                                                <?php if ($permiso_aceptado == 3): ?>
-                                                    <button class="btn btn-success" title="Aceptado" data-toggle="modal"
-                                                    data-target="#cancelarSolicitud" data-id="<?= $id_permiso ?>" onclick="cancelar(this)"><i class="fa-solid fa-check"></i></button>
-                                                <?php endif; ?>
-                                                <form action="../datos_individuales" method="POST" class="d-inline-block m-1">
-                                                    <input type="hidden" name="id_permisos" value=" <?= $id_permiso ?>">
-                                                    <button class="btn btn-info m-1" title="Ver los datos de esta solicitud">
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
-
-                                        </tr>
-                                    <?php
-                                        };
-                                    }
-                                    ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+</div>
 
 <div class="modal fade" id="cancelarSolicitud" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
     aria-hidden="true">

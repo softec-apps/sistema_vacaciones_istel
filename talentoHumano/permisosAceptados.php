@@ -43,7 +43,7 @@ $respuesta = permisosAprobados($pdo);
                 <table class="table table-bordered" id="tabla_permisos">
                     <thead>
                         <tr>
-                            <th>Cedula</th>
+                            <th>Cédula</th>
                             <th>Funcionario</th>
                             <th>Fecha emitida</th>
                             <th>Tipo permiso</th>
@@ -64,40 +64,14 @@ $respuesta = permisosAprobados($pdo);
                                 $nombres  = $valor ["nombres"];
                                 $apellidos  = $valor ["apellidos"];
                                 $cedula_user  = $valor ["cedula"];
-                                $provincia = $valor ["provincia"];
-                                $regimen = $valor ["regimen"];
-                                $coordinacion_zonal = $valor ["coordinacion_zonal"];
-                                $direccion_unidad = $valor ["direccion_unidad"];
                                 $fecha_permiso = $valor ["fecha_permiso"];
                                 $motivo_permiso = $valor ["motivo_permiso"];
                                 $motivo_permiso = str_replace('_', ' ', $motivo_permiso);
-                                $tiempoLimite_motivo = $valor ["tiempo_motivo"];
-                                $desc_motivo = $valor['desc_motivo'];
-                                $dias_solicitados = $valor['dias_solicitados'];
-                                $horas_solicitadas = (empty(strtotime($valor['horas_solicitadas'])) || $valor['horas_solicitadas'] == '00:00:00') ? "0" : date('H:i', strtotime($valor['horas_solicitadas']));
 
-                                $fecha_permisos_desde_formateada = $valor['fecha_permisos_desde'];
-                                $fecha_permiso_hasta_formateada = $valor['fecha_permiso_hasta'];
-                                $fecha_permisos_desde = ($fecha_permisos_desde_formateada == '0000-00-00') ? '' : date('d/m/Y', strtotime($fecha_permisos_desde_formateada));
-                                $fecha_permiso_hasta = ($fecha_permiso_hasta_formateada == '0000-00-00') ? '' : date('d/m/Y', strtotime($fecha_permiso_hasta_formateada));
-
-                                $horas_permiso_desde = $valor['horas_permiso_desde'];
-                                $horas_permiso_hasta = $valor['horas_permiso_hasta'];
-                                $usuario_solicita = $valor['usuario_solicita'];
-                                $usuario_aprueba = $valor['usuario_aprueba'];
-
-                                $usuario_registra = $valor['usuario_registra'];
                                 $permiso_aceptado = $valor['permiso_aceptado'];
+                                $ruta_aprueba = $valor ["ruta_aprueba"];
+                                $rutaAprueba = verificarRuta($ruta_aprueba);
 
-                                if (!empty($horas_solicitadas)) {
-                                    $valor_mostrar = $horas_solicitadas;
-                                    $xMultiplicar = 0;
-                                } elseif (!empty($dias_solicitados)) {
-                                    $numeroCambio = 1.36363636363636;
-                                    $valor_mostrar = $dias_solicitados;
-                                    $xMultiplicar = $valor_mostrar * $numeroCambio;
-                                    $xMultiplicar = substr((string)$xMultiplicar, 0, 4);
-                                }
                         ?>
                         <tr>
                             <td><?=  $cedula_user ;?></td>
@@ -105,6 +79,11 @@ $respuesta = permisosAprobados($pdo);
                             <td><?=  $fecha_permiso ;?></td>
                             <td><?=  $motivo_permiso ;?></td>
                             <td>
+                                <?php
+                                if (!empty($ruta_aprueba)) {
+                                    echo '<a class="btn btn-primary m-1" title="Solicitud firmada por el jefe supervisor" href="' . RUTA_ABSOLUTA . $rutaAprueba . '" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
+                                }
+                                ?>
                                 <form action="../datos_individuales" method="POST" class="d-inline-block m-1">
                                     <input type="hidden" name="id_permisos" value=" <?= $id_permiso ?>">
                                     <button class="btn btn-info m-1" title="Ver los datos de esta solicitud">

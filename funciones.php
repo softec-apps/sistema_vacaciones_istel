@@ -76,7 +76,11 @@ function star_sesion($usuario,$clave,$pdo){
                     redirect("talento_h/dashboard");
 
                 }else {
-                    echo("error de validacion de roles");
+                    create_flash_message(
+                        'Inicio de sesion correcto',
+                        'success'
+                    );
+                    redirect(RUTA_ABSOLUTA . "inicio");
                 }
             }else{
 
@@ -96,7 +100,7 @@ function star_sesion($usuario,$clave,$pdo){
         }
 
     } catch (PDOException $e) {
-        echo "Error de exepcion" .$e->getMessage();
+        return "Error de exepcion" .$e->getMessage();
     }
 }
 //Insertar datos e un usuario
@@ -187,7 +191,7 @@ function mostrarUsuarios($pdo){
         return $resultados;
 
     }catch (PDOException $e) {
-        echo "Error de exepcion" .$e->getMessage();
+        return "Error de exepcion" .$e->getMessage();
     }
 }
 //Actualizar datos de un usuario
@@ -243,7 +247,7 @@ function eliminar_user($pdo,$id_usuario){
         return "Usuario Eliminado";
 
     } catch (PDOException $e) {
-        echo "Error de exepcion" .$e->getMessage();
+        return "Error de exepcion" .$e->getMessage();
     }
 }
 //Consultar datos de la tabla de dias de trabajo de los funcionarios
@@ -262,7 +266,7 @@ function cons_multitabla($pdo){
         return $resultados;
 
     } catch (PDOException $e) {
-        echo "Error de exepcion" .$e->getMessage();
+        return "Error de exención" .$e->getMessage();
     }
 }
 
@@ -443,7 +447,7 @@ function soli_rechazadas($pdo){
 
 function permisosAprobados($pdo){
     try {
-        $soli_one = "SELECT registros_permisos.id_permisos,registros_permisos.id_usuarios,registros_permisos.fecha_permiso,registros_permisos.provincia,registros_permisos.regimen,usuarios.nombres,usuarios.apellidos,usuarios.cedula,registros_permisos.coordinacion_zonal,registros_permisos.direccion_unidad,registros_permisos.observaciones,registros_permisos.motivo_permiso,registros_permisos.tiempo_motivo,registros_permisos.fecha_permisos_desde,registros_permisos.fecha_permiso_hasta,registros_permisos.horas_permiso_desde,registros_permisos.horas_permiso_hasta,registros_permisos.dias_solicitados,registros_permisos.horas_solicitadas,registros_permisos.desc_motivo,registros_permisos.usuario_solicita,registros_permisos.usuario_aprueba,registros_permisos.usuario_registra,registros_permisos.desc_motivo,registros_permisos.permiso_aceptado FROM registros_permisos,usuarios WHERE usuarios.id_usuarios = registros_permisos.id_usuarios AND registros_permisos.permiso_aceptado = 1 ";
+        $soli_one = "SELECT registros_permisos.id_permisos,registros_permisos.id_usuarios,registros_permisos.fecha_permiso,usuarios.nombres,usuarios.apellidos,usuarios.cedula,registros_permisos.ruta_aprueba,registros_permisos.motivo_permiso,registros_permisos.permiso_aceptado FROM registros_permisos,usuarios WHERE usuarios.id_usuarios = registros_permisos.id_usuarios AND registros_permisos.permiso_aceptado = 1 ";
         $stmt = $pdo->prepare($soli_one);
         // $stmt->bindParam(':id_permisos',$id_permisos,PDO::PARAM_INT);
         // $stmt->bindParam(':permiso_aceptado',$permiso_aceptado,PDO::PARAM_STR);
@@ -460,7 +464,7 @@ function permisosAprobados($pdo){
 function soli_registradas($pdo){
     try {
         $permiso_aceptado = 3;
-        $soli_one = "SELECT registros_permisos.id_permisos,registros_permisos.id_usuarios,registros_permisos.fecha_permiso,registros_permisos.provincia,registros_permisos.regimen,usuarios.nombres,usuarios.apellidos,usuarios.cedula,registros_permisos.coordinacion_zonal,registros_permisos.direccion_unidad,registros_permisos.observaciones,registros_permisos.motivo_permiso,registros_permisos.tiempo_motivo,registros_permisos.fecha_permisos_desde,registros_permisos.fecha_permiso_hasta,registros_permisos.horas_permiso_desde,registros_permisos.horas_permiso_hasta,registros_permisos.dias_solicitados,registros_permisos.horas_solicitadas,registros_permisos.desc_motivo,registros_permisos.usuario_solicita,registros_permisos.usuario_aprueba,registros_permisos.usuario_registra,registros_permisos.desc_motivo,registros_permisos.permiso_aceptado FROM registros_permisos,usuarios WHERE usuarios.id_usuarios = registros_permisos.id_usuarios AND registros_permisos.permiso_aceptado = :permiso_aceptado ";
+        $soli_one = "SELECT registros_permisos.id_permisos,registros_permisos.id_usuarios,registros_permisos.fecha_permiso,usuarios.nombres,usuarios.apellidos,usuarios.cedula,registros_permisos.motivo_permiso,registros_permisos.permiso_aceptado FROM registros_permisos,usuarios WHERE usuarios.id_usuarios = registros_permisos.id_usuarios AND registros_permisos.permiso_aceptado = :permiso_aceptado ";
         $stmt = $pdo->prepare($soli_one);
         // $stmt->bindParam(':id_permisos',$id_permisos,PDO::PARAM_INT);
         $stmt->bindParam(':permiso_aceptado',$permiso_aceptado,PDO::PARAM_STR);
@@ -744,6 +748,49 @@ function vista2($pdo,$id){
         return "Error de excepción: " . $e->getMessage();
     }
 }
+
+function vista3($pdo,$id){
+    try {
+
+        $con = "SELECT DISTINCT * FROM vista3 WHERE id_aprueba = :id";
+
+        $stmt = $pdo->prepare($con);
+        $stmt->bindParam(':id',$id,PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        $res_vista = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $pdo = null;
+
+        return $res_vista;
+
+    } catch (PDOException $e) {
+        return "Error de excepción: " . $e->getMessage();
+    }
+}
+
+function vista4($pdo,$id){
+    try {
+
+        $con = "SELECT * FROM permisosregistrados WHERE id_registra = :id";
+
+        $stmt = $pdo->prepare($con);
+        $stmt->bindParam(':id',$id,PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        $res_vista = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $pdo = null;
+
+        return $res_vista;
+
+    } catch (PDOException $e) {
+        return "Error de excepción: " . $e->getMessage();
+    }
+}
+
 
 function archivosDelFuncionarioAdmin($pdo,$id){
 

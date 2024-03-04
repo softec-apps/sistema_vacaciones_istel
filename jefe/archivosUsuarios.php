@@ -7,6 +7,7 @@ session_start();
 if (!isset($_SESSION['id_usuarios'])) {
     redirect(RUTA_ABSOLUTA . 'logout');
 }
+$id_user = $_SESSION['id_usuarios'];
 $cedula = $_SESSION['cedula'];
 $nombre = $_SESSION['nombres'];
 $rol = $_SESSION['rol'];
@@ -33,7 +34,7 @@ include_once("../plantilla/header.php")
 include_once  "../conexion.php";
 include_once  "../resta_solicitud.php";
 include_once  "../funciones.php";
-$vista = vista1($pdo);
+$vista = vista3($pdo,$id_user);
 
 ?>
 <!-- Page Heading -->
