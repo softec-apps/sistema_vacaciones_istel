@@ -100,6 +100,9 @@ function star_sesion($usuario,$clave,$pdo){
 
     } catch (PDOException $e) {
         return "Error de exención" .$e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 //Insertar datos de un usuario
@@ -171,6 +174,9 @@ function insertUsers($cedula, $nombres, $apellidos, $email, $usuario, $clave, $r
         } else {
             return "Error de excepción: " . $e->getMessage();
         }
+    }finally {
+
+        $pdo = null;
     }
 }
 
@@ -192,6 +198,9 @@ function mostrarUsuarios($pdo,$id){
 
     }catch (PDOException $e) {
         return "Error de exención" .$e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 //Actualizar datos de un usuario
@@ -227,6 +236,9 @@ function actualizar_usuario($pdo,$id_usuarios,$cedula,$nombres,$apellidos,$usuar
         }
 
         return "Error de exepcion" .$e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 
 }
@@ -250,6 +262,9 @@ function recuperarClave($pdo,$id_usuarios,$clave){
         return "Datos Actualizados";
     } catch (PDOException $e) {
         return "Error de excepción" .$e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 
 }
@@ -271,6 +286,9 @@ function eliminar_user($pdo,$id_usuario){
 
     } catch (PDOException $e) {
         return "Error de exepcion" .$e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 //Consultar datos de la tabla de dias de trabajo de los funcionarios
@@ -290,6 +308,9 @@ function cons_multitabla($pdo){
 
     } catch (PDOException $e) {
         return "Error de exención" .$e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 
@@ -348,6 +369,9 @@ function calculo_unico_insert($id_usuario_insertado, $tiempo_trabajo, $pdo)
 
     } catch (PDOException $e) {
         return "Error de excepción: " . $e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 //funcion para actualizar los dias y horas trabajados
@@ -374,6 +398,9 @@ function calcular_actualizar($pdo,$dias_laborados,$horas_trabajadas,$dias_totale
     } catch (PDOException $e) {
 
         return "Error de excepción: " . $e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 
@@ -390,6 +417,9 @@ function cons_table($pdo){
 
     } catch (PDOException $e) {
         return "Error de exepcion" . $e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 
@@ -407,6 +437,9 @@ function soli_no_aceptadas($pdo){
 
     } catch (PDOException $e) {
         return "Error de exepcion" . $e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 function soli_aceptadas($pdo){
@@ -419,6 +452,9 @@ function soli_aceptadas($pdo){
 
     } catch (PDOException $e) {
         return "Error de exepcion" . $e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 
@@ -436,6 +472,9 @@ function soliArchivosAceptadas($pdo){
 
     } catch (PDOException $e) {
         return "Error de exepcion" . $e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 
@@ -463,6 +502,9 @@ function soli_rechazadas($pdo){
 
     } catch (PDOException $e) {
         return "Error de exepcion" . $e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 
@@ -478,6 +520,9 @@ function permisosAprobados($pdo){
 
     } catch (PDOException $e) {
         return "Error de exepcion" . $e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 
@@ -495,6 +540,9 @@ function soli_registradas($pdo){
 
     } catch (PDOException $e) {
         return "Error de exepcion" . $e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 
@@ -514,6 +562,9 @@ function cedulas($pdo){
 
     } catch (PDOException $e) {
         return "Error de exepcion" . $e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 
@@ -532,6 +583,9 @@ function sinAdmin($pdo){
 
     } catch (PDOException $e) {
         return null;
+    }finally {
+
+        $pdo = null;
     }
 }
 
@@ -553,6 +607,9 @@ function cedulasConSoli($pdo){
 
     } catch (PDOException $e) {
         return "Error de exepcion" . $e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 //Funcion para ver la solicitud en especifico de un solo funcionario
@@ -567,6 +624,9 @@ function vista_unica($id_permisos,$pdo){
 
     } catch (PDOException $e) {
         return "Error de excepción: " . $e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 
@@ -584,6 +644,9 @@ function eliminar_permiso($pdo,$id_permisos){
         return true;
     } catch (PDOException $e) {
         return "Error de excepción: " . $e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 
@@ -660,6 +723,9 @@ function seleccionarConfi($pdo){
         ];
     } catch (PDOException $e) {
         return "Error de excepción: " . $e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 
@@ -696,6 +762,9 @@ function onceMeses($pdo, $id_usuario_insertado) {
 
     } catch (PDOException $e) {
         return "Error de excepción: " . $e->getMessage();
+    }finally {
+
+        $pdo = null;
     }
 }
 
