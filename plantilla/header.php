@@ -296,7 +296,7 @@ $rol = $_SESSION['rol'];
                         </a>
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>talentoHumano/permisosAprobados">
                             <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-envelope-open-text"></i></div>
-                            Permisos Aceptados por el Jefe Supervisor
+                            Permisos aprobados
                         </a>
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>talentoHumano/permisosRegistrados">
                             <div class="sb-nav-link-icon"><i class="fa-lg fas fa-check-circle"></i></div>
