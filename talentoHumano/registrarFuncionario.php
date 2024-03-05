@@ -397,7 +397,7 @@ aria-hidden="true">
             var fechaActual = new Date();
 
             // Verificar si la fecha está vacía o es superior al año actual
-            if (!fechaIngresoInput.value.trim() || fechaIngreso.getFullYear() > fechaActual.getFullYear()) {
+            if (!fechaIngresoInput.value.trim() || fechaIngreso > fechaActual) {
                 alert('Por favor, ingrese una fecha de ingreso válida para el Funcionario.');
                 return false; // Evita que el formulario se envíe
             }
@@ -424,7 +424,7 @@ aria-hidden="true">
             var fechaActual = new Date();
 
             // Verificar si la fecha está vacía o es superior al año actual
-            if (fechaIngreso.getFullYear() > fechaActual.getFullYear()) {
+            if (fechaIngreso > fechaActual) {
                 alert('Por favor, ingrese una fecha de ingreso válida para el Usuario');
                 return false;
             }else if(!fechaIngresoInput.value.trim()){
