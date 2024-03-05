@@ -7,6 +7,7 @@ session_start();
 if (!isset($_SESSION['id_usuarios'])) {
     redirect(RUTA_ABSOLUTA . 'logout');
 }
+$id_user = $_SESSION['id_usuarios'];
 $cedula = $_SESSION['cedula'];
 $nombre = $_SESSION['nombres'];
 $rol = $_SESSION['rol'];
@@ -31,7 +32,7 @@ include_once  "../funciones.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id_usuario = $_POST['id_usuario'];
-    $vista = archivos_individuales($pdo,$id_usuario);
+    $vista = archivosJefe($pdo,$id_usuario,$id_user);
     if (!empty($vista)) {
         $nombrePrueba = $vista['0']['nombres'];
      }else{

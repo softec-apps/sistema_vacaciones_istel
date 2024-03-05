@@ -9,13 +9,12 @@ if ($_POST) {
     $nombres =$_POST["nombres"];
     $apellidos =$_POST["apellidos"];
     $user_A =$_POST["user_A"];
-    $password_A =$_POST["password_A"];
     $email =$_POST["email_A"];
     $rol =$_POST["roles"];
     $fecha_ingreso = $_POST["fecha_ingreso"];
     $tiempo_trabajo = isset($_POST["tiempo_trabajo"]) ? $_POST["tiempo_trabajo"] : 0;
 
-    $act = actualizar_usuario($pdo,$id_usuarios,$cedula,$nombres,$apellidos,$user_A,$password_A,$email,$rol,$fecha_ingreso,$tiempo_trabajo);
+    $act = actualizar_usuario($pdo,$id_usuarios,$cedula,$nombres,$apellidos,$user_A,$email,$rol,$fecha_ingreso,$tiempo_trabajo);
 
     if (strpos($act, "Datos Actualizados") !== false) {
         create_flash_message(

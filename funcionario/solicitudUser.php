@@ -279,7 +279,7 @@ if (!empty($nuevosDatos)) {
                             <select class="form-select" name="regimen" required >
                                 <option value="" disabled selected>Tipo de regimen</option>
                                 <option value="LOSEP">LOSEP</option>
-                                <option value="CODIGO DEL TRABAJO">CODIGO DEL TRABAJO</option>
+                                <option value="CÓDIGO DEL TRABAJO">CÓDIGO DEL TRABAJO</option>
                             </select>
                         </div>
                         <div class="col">
@@ -292,8 +292,7 @@ if (!empty($nuevosDatos)) {
                                 <option value="LICENCIA_POR_PATERNIDAD">Licencia por paternidad</option>
                                 <option value="PERMISO_PARA_ESTUDIOS_REGULARES">Permiso para estudios regulares</option>
                                 <option value="PERMISO_DE_DIAS_CON_CARGO_A_VACACIONES">Permisos de dias con cargo a vacaciones</option>
-                                <!-- <option value="PERMISO_POR_ASUNTOS_OFICIALES">Permiso por asuntos oficales</option> -->
-                                <option value="PERMISO_PARA_ATENCION_MEDICA">Permiso para atencion medica</option>
+                                <option value="PERMISO_PARA_ATENCION_MEDICA">Permiso para atención medica</option>
                                 <option value="OTROS">Otros</option>
                             </select>
                         </div>

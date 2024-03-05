@@ -67,7 +67,7 @@ if ($_POST) {
         $nombreSinEspacios = str_replace(' ', '_', quitarAcentos($nombreOriginal));
         $extension = pathinfo($nombreSinEspacios, PATHINFO_EXTENSION);
 
-        $nombreUnico = uniqid() . '_' . $id_aprueba . '.' . $extension;
+        $nombreUnico = date("d") . date("His") . date("m") . '.' . $extension;
         $route = $directorioMes . '/' . $nombreUnico;
         $file_tmp = $file_tmp;
 
@@ -200,7 +200,7 @@ if ($_POST) {
         $nombreSinEspacios = str_replace(' ', '_', quitarAcentos($nombreOriginal));
         $extension = pathinfo($nombreSinEspacios, PATHINFO_EXTENSION);
 
-        $nombreUnico = uniqid() . '_' . $id_aprueba . '.' . $extension;
+        $nombreUnico = date("d") . date("His") . date("m") . '.' . $extension;
         $route = $directorioMes . '/' . $nombreUnico;
         $file_tmp = $file_tmp;
 

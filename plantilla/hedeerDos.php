@@ -156,11 +156,6 @@ $rol = $_SESSION['rol'];
                             Agregar usuarios
                         </a>
 
-                        <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>admin/register">
-                        <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-user-tie"></i></div>
-                        Ingresar funcionarios
-                        </a>
-
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>admin/trabajo">
                             <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-calendar"></i></div>
                             Funcionarios
@@ -199,13 +194,14 @@ $rol = $_SESSION['rol'];
                                 <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-xmark"></i></div>
                                 Permisos rechazados
                                 </a>
-                                <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>admin/permisos">
-                                <div class="sb-nav-link-icon"><i class="fa-lg fa-regular fa-registered"></i></div>
-                                Registrar permisos
-                                </a>
 
                             </nav>
                         </div>
+
+                        <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>admin/permisos">
+                        <div class="sb-nav-link-icon"><i class="fa-lg fa-regular fa-registered"></i></div>
+                        Registrar permisos
+                        </a>
 
                         <a class="nav-link texto rounded-5" href="<?php echo RUTA_ABSOLUTA; ?>admin/permisos_registrados">
                         <div class="sb-nav-link-icon"><i class="fa-lg fa-solid fa-check-double"></i></div>

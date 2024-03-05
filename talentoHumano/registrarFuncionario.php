@@ -6,6 +6,7 @@ session_start();
 if (!isset($_SESSION['id_usuarios'])) {
    redirect(RUTA_ABSOLUTA . 'logout');
 }
+$id_user = $_SESSION['id_usuarios'];
 $cedula = $_SESSION['cedula'];
 $nombre = $_SESSION['nombres'];
 $rol = $_SESSION['rol'];
@@ -29,14 +30,12 @@ include_once("../plantilla/header.php")
 
     <div class="container-fluid mt-5">
 
-<!-- Page Heading -->
-<!-- <h1 class="h3 mb-2 text-gray-800">Registrar Funcionarios con el dia que inicio a trabajar</h1> -->
 <?php
 
 include_once "../funciones.php";
 include_once "../conexion.php";
 
-$resultados = mostrarUsuarios($pdo);
+$resultados = mostrarUsuarios($pdo,$id_user);
 ?>
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
@@ -103,6 +102,11 @@ $resultados = mostrarUsuarios($pdo);
                                 data-toggle="modal" data-target="#Editar_datos" data-id="<?= $id_usuarios ?>" data-cedula="<?= $cedula_usuarios?>" data-name="<?= $nombres_usuarios ?>" data-lastname="<?= $apellidos_usuarios ?>" data-user="<?= $usuario ?>" data-password="<?= $clave ?>" data-email="<?= $email_usuarios ?>"
                                 data-fecha_ingreso="<?= $fecha_ingreso ?>" data-tiempo_trabajo="<?= $tiempo_trabajo ?>" onclick="cargarDatos(this)">
                                 <i class="fa-solid fa-pencil"></i>
+                            </button>
+
+                            <button class="btn btn-warning" title="Recuperar contraseña" data-toggle="modal"
+                                data-target="#Recuperar" data-id="<?= $id_usuarios ?>" onclick="recuperar(this)">
+                                <i class="fa-solid fa-key"></i>
                             </button>
 
                             <button class="btn btn-danger" title="Eliminar" data-toggle="modal"
@@ -173,6 +177,12 @@ aria-hidden="true">
                     <input type="hidden" name="cliente_id" value="">
                     <input type="hidden" name="roles" value="Funcionario">
 
+                    <div class="row mb-3 text-center">
+                        <div class="col">
+                            <label>Nombre de usuario </label>
+                            <input class="form-control" name="user_A" type="text" required />
+                        </div>
+                    </div>
                     <div class="row mb-3">
                         <div class="col">
                             <label>Número de cédula </label>
@@ -195,16 +205,6 @@ aria-hidden="true">
                         </div>
                     </div>
 
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label>Nombre de usuario </label>
-                            <input class="form-control" name="user_A" type="text" required />
-                        </div>
-                        <div class="col">
-                            <label>Contraseña del usuario</label>
-                            <input class="form-control" type="text" name="password_A" required />
-                        </div>
-                    </div>
 
                     <div class="row mb-3" >
                         <div class="col" id="optionTiempo">
@@ -221,7 +221,7 @@ aria-hidden="true">
                     </div>
 
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Actualizar informacion</button>
+                        <button type="submit" class="btn btn-primary">Actualizar información</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     </div>
                 </form>
@@ -304,6 +304,39 @@ aria-hidden="true">
     </div>
 </div>
 
+<!-- Modal recuperar contraseña -->
+<div class="modal fade" id="Recuperar" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
+        aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAdminLabel">Recuperar contraseña</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- <p></p> -->
+                <form id="recuperarForm" action="<?php echo RUTA_ABSOLUTA ?>talentoHumano/recovePassword" method="post">
+                    <input type="hidden" name="user_id" id="user_id" value="">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label>Nueva contraseña </label>
+                            <input class="form-control mb-3" type="text" name="recuperarClave" id="recuperarClave" required>
+                            <label>Repetir la contraseña</label>
+                            <input class="form-control" type="password" name="repetirClave" id="repetirClave" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" form="recuperarForm" class="btn btn-primary">Recuperar contraseña</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     $(".cerrarModal").click(function(){
         $("#registrar_administradores").modal('hide')
@@ -317,7 +350,6 @@ aria-hidden="true">
         var nombresInput = modal.querySelector('[name="nombres"]');
         var apellidosInput = modal.querySelector('[name="apellidos"]');
         var user_AInput = modal.querySelector('[name="user_A"]');
-        var password_AInput = modal.querySelector('[name="password_A"]');
         var emailInput = modal.querySelector('[name="email_A"]');
         var fecha_ingresoInput = modal.querySelector('[name="fecha_ingreso"]');
         var tiempo_trabajoInput = modal.querySelector('[name="tiempo_trabajo"]');
@@ -327,7 +359,6 @@ aria-hidden="true">
         var username = button.getAttribute('data-name');
         var lastname = button.getAttribute('data-lastname');
         var user = button.getAttribute('data-user');
-        var password = button.getAttribute('data-password');
         var email = button.getAttribute('data-email');
         var fecha_ingreso = button.getAttribute('data-fecha_ingreso');
         var tiempo_trabajo = button.getAttribute('data-tiempo_trabajo');
@@ -338,7 +369,6 @@ aria-hidden="true">
         nombresInput.value = username;
         apellidosInput.value = lastname;
         user_AInput.value = user;
-        password_AInput.value = password;
         emailInput.value = email;
         fecha_ingresoInput.value = fecha_ingreso;
         tiempo_trabajoInput.value = tiempo_trabajo;

@@ -6,6 +6,7 @@ session_start();
 if (!isset($_SESSION['id_usuarios'])) {
     redirect(RUTA_ABSOLUTA . 'logout');
 }
+$id_user = $_SESSION['id_usuarios'];
 $cedula = $_SESSION['cedula'];
 $nombre = $_SESSION['nombres'];
 $rol = $_SESSION['rol'];
@@ -32,7 +33,7 @@ include_once("../plantilla/header.php")
 include_once "../funciones.php";
 include_once "../conexion.php";
 
-$resultados_users = mostrarUsuarios($pdo);
+$resultados_users = mostrarUsuarios($pdo,$id_user);
 
 ?>
         <!-- DataTales Example -->
@@ -55,9 +56,6 @@ $resultados_users = mostrarUsuarios($pdo);
                         </thead>
                         <tbody>
                             <?php
-                            // if (empty($resultados_users)) {
-                            //    echo "";
-                            // }
                             foreach ($resultados_users as $key => $valor){
                                 $id_usuarios = $valor ["id_usuarios"];
                                 $cedula_usuarios = $valor['cedula'];
@@ -99,8 +97,12 @@ $resultados_users = mostrarUsuarios($pdo);
 
                                 <td>
                                     <button class="btn btn-primary m-1" title="Editar datos del usuario"
-                                        data-toggle="modal" data-target="#Editar_datos" data-id="<?= $id_usuarios ?>" data-cedula="<?= $cedula_usuarios?>" data-name="<?= $nombres_usuarios ?>" data-lastname="<?= $apellidos_usuarios ?>" data-user="<?= $usuario ?>" data-password="<?= $clave ?>" data-email="<?= $email_usuarios ?>" data-rol="<?= $rolUsuarios ?>" data-fecha_ingreso="<?= $fecha_ingreso ?>" data-tiempo_trabajo="<?= $tiempo_trabajo ?>" onclick="cargarDatos(this)">
+                                        data-toggle="modal" data-target="#Editar_datos" data-id="<?= $id_usuarios ?>" data-cedula="<?= $cedula_usuarios?>" data-name="<?= $nombres_usuarios ?>" data-lastname="<?= $apellidos_usuarios ?>" data-user="<?= $usuario ?>" data-email="<?= $email_usuarios ?>" data-rol="<?= $rolUsuarios ?>" data-fecha_ingreso="<?= $fecha_ingreso ?>" data-tiempo_trabajo="<?= $tiempo_trabajo ?>" onclick="cargarDatos(this)">
                                         <i class="fa-solid fa-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-warning" title="Recuperar contraseña" data-toggle="modal"
+                                        data-target="#Recuperar" data-id="<?= $id_usuarios ?>" onclick="recuperar(this)">
+                                        <i class="fa-solid fa-key"></i>
                                     </button>
 
                                     <button class="btn btn-danger" title="Eliminar" data-toggle="modal"
@@ -149,6 +151,39 @@ $resultados_users = mostrarUsuarios($pdo);
         </div>
     </div>
 
+    <!-- Modal recuperar contraseña -->
+    <div class="modal fade" id="Recuperar" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAdminLabel">Recuperar contraseña</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- <p></p> -->
+                    <form id="recuperarForm" action="<?php echo RUTA_ABSOLUTA ?>admin/recovePassword" method="post">
+                        <input type="hidden" name="user_id" id="user_id" value="">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label>Nueva contraseña </label>
+                                <input class="form-control mb-3" type="text" name="recuperarClave" id="recuperarClave" required>
+                                <label>Repetir la contraseña</label>
+                                <input class="form-control" type="password" name="repetirClave" id="repetirClave" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="recuperarForm" class="btn btn-primary">Recuperar contraseña</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Editar datos del usuario -->
     <div class="modal fade" id="Editar_datos" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
         aria-hidden="true">
@@ -188,16 +223,9 @@ $resultados_users = mostrarUsuarios($pdo);
 
                         <div class="row mb-3">
                             <div class="col">
-                                <label>Contraseña del usuario</label>
-                                <input class="form-control" type="text" name="password_A" required />
-                            </div>
-                            <div class="col">
                                 <label>Correo electrónico </label>
                                 <input class="form-control" type="email" name="email_A" required/>
                             </div>
-                        </div>
-
-                        <div class="row mb-3">
                             <div class="col">
                                 <label>Seleccione el rol del usuario</label>
                                 <select class="form-select" name="roles" required>
@@ -207,6 +235,9 @@ $resultados_users = mostrarUsuarios($pdo);
                                     <option value="Funcionario">Funcionario</option>
                                 </select>
                             </div>
+                        </div>
+
+                        <div class="row mb-3">
                             <div class="col" id="optionTiempo">
                                 <label>Modalidad de Trabajo</label>
                                 <select class="form-select" name="tiempo_trabajo" required>
@@ -214,17 +245,17 @@ $resultados_users = mostrarUsuarios($pdo);
                                     <option value="4">Medio Tiempo</option>
                                 </select>
                             </div>
-                        </div>
-
-                        <div class="form-floating mb-3" id="opcionesFuncionario">
-                            <div>
-                                <label>Seleccione la fecha de ingreso</label>
-                                <input class="form-control" type="date" name="fecha_ingreso" required/>
+                            <div class="col" id="opcionesFuncionario">
+                                <div>
+                                    <label>Seleccione la fecha de ingreso</label>
+                                    <input class="form-control" type="date" name="fecha_ingreso" required/>
+                                </div>
                             </div>
                         </div>
 
+
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Actualizar informacion</button>
+                            <button type="submit" class="btn btn-primary">Actualizar información</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                         </div>
                     </form>
@@ -296,6 +327,7 @@ $resultados_users = mostrarUsuarios($pdo);
                         <div class="col" id="optionTiempo2" style="display: none;">
                             <label>Modalidad de trabajo </label>
                             <select class="form-select" name="tiempo_trabajo">
+                                <option selected>Seleccione la modalidad</option>
                                 <option value="8">Tiempo Completo</option>
                                 <option value="4">Medio Tiempo</option>
                             </select>
@@ -368,7 +400,6 @@ $resultados_users = mostrarUsuarios($pdo);
         var nombresInput = modal.querySelector('[name="nombres"]');
         var apellidosInput = modal.querySelector('[name="apellidos"]');
         var user_AInput = modal.querySelector('[name="user_A"]');
-        var password_AInput = modal.querySelector('[name="password_A"]');
         var emailInput = modal.querySelector('[name="email_A"]');
         var rolInput = modal.querySelector('[name="roles"]');
         var tiempo_trabajoInput = modal.querySelector('[name="tiempo_trabajo"]');
@@ -391,16 +422,18 @@ $resultados_users = mostrarUsuarios($pdo);
         nombresInput.value = username;
         apellidosInput.value = lastname;
         user_AInput.value = user;
-        password_AInput.value = password;
         emailInput.value = email;
         rolInput.value = rol;
         // Mostrar u ocultar las opciones adicionales según el rol seleccionado
         if (rol === 'Funcionario') {
             $('#opcionesFuncionario').show();
             $('#optionTiempo').show();
+            document.querySelector('input[name="fecha_ingreso"]').required = true;
         } else {
             $('#opcionesFuncionario').hide();
             $('#optionTiempo').hide();
+            // Desactivar el requerimiento del campo de entrada
+            document.querySelector('input[name="fecha_ingreso"]').required = false;
         }
         tiempo_trabajoInput.value = tiempo_trabajo;
         fecha_ingresoInput.value = fecha_ingreso;
@@ -411,6 +444,11 @@ $resultados_users = mostrarUsuarios($pdo);
         var userId = button.getAttribute('data-id');
         // Rellenar el campo oculto con el ID del cliente
         document.getElementById('cliente_id').value = userId;
+    }
+    function recuperar(button) {
+        var userId = button.getAttribute('data-id');
+        // Rellenar el campo oculto con el ID del cliente
+        document.getElementById('user_id').value = userId;
     }
     function validarFormulario() {
         var rolInput = document.querySelector('[name="roles"]');

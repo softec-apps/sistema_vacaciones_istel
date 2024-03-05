@@ -32,97 +32,95 @@ include_once  "../conexion.php";
 include_once  "../funciones.php";
 $respuesta = soliarchivosAceptadas($pdo);
 ?>
-                <div class="container-fluid mt-5">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Permisos aprobados</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive crud-table">
-                                <table class="table table-bordered" id="tabla_permisos_aceptados">
-                                    <thead>
-                                        <tr>
-                                            <th>N° Cédula </th>
-                                            <th>Nombres</th>
-                                            <th>Fecha emitida</th>
-                                            <th>Tipo de permiso</th>
-                                            <th>Acciones</th>
-                                            <th>Archivos</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        if (empty($respuesta)) {
-                                            echo "";
+<div class="container-fluid mt-5">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Permisos aprobados</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive crud-table">
+                <table class="table table-bordered" id="tabla_permisos_aceptados">
+                    <thead>
+                        <tr>
+                            <th>N° Cédula </th>
+                            <th>Nombres</th>
+                            <th>Fecha emitida</th>
+                            <th>Tipo de permiso</th>
+                            <th>Acciones</th>
+                            <th>Archivos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        if (empty($respuesta)) {
+                            echo "";
 
-                                        }else {
-                                            $fecha_actual = date('Y-m-d');
-                                            foreach ($respuesta as $key => $valor){
-                                                $id_permiso  = $valor ["id_permisos"];
-                                                $nombres  = $valor ["nombres"];
-                                                $apellidos  = $valor ["apellidos"];
-                                                $cedula_user  = $valor ["cedula"];
-                                                $fecha_permiso = $valor ["fecha_permiso"];
-                                                $motivo_permiso = $valor ["motivo_permiso"];
-                                                $motivo_permiso = str_replace('_', ' ', $motivo_permiso);
-                                                $permiso_aceptado = $valor['permiso_aceptado'];
+                        }else {
+                            $fecha_actual = date('Y-m-d');
+                            foreach ($respuesta as $key => $valor){
+                                $id_permiso  = $valor ["id_permisos"];
+                                $nombres  = $valor ["nombres"];
+                                $apellidos  = $valor ["apellidos"];
+                                $cedula_user  = $valor ["cedula"];
+                                $fecha_permiso = $valor ["fecha_permiso"];
+                                $motivo_permiso = $valor ["motivo_permiso"];
+                                $motivo_permiso = str_replace('_', ' ', $motivo_permiso);
+                                $permiso_aceptado = $valor['permiso_aceptado'];
 
-                                                $ruta_solicita = $valor['ruta_solicita'];
-                                                $ruta_aprueba = $valor['ruta_aprueba'];
+                                $ruta_solicita = $valor['ruta_solicita'];
+                                $ruta_aprueba = $valor['ruta_aprueba'];
 
-                                                $rutaSolicita = verificarRuta($ruta_solicita);
-                                                $rutaAprueba = verificarRuta($ruta_aprueba);
-                                        ?>
-                                        <tr>
-                                            <td><?=  $cedula_user ;?></td>
-                                            <td><?=  $nombres . " " . $apellidos ;?></td>
-                                            <td><?=  $fecha_permiso ;?></td>
-                                            <td><?=  $motivo_permiso ;?></td>
-                                            <td>
-                                                <?php if ($permiso_aceptado == 1): ?>
-                                                    <button class="btn btn-success" title="Aceptado" data-toggle="modal" data-target="#cancelarSolicitud" data-id="<?= $id_permiso ?>" onclick="cancelar(this)"><i class="fa-solid fa-check"></i></button>
-                                                <?php elseif ($permiso_aceptado == 3): ?>
-                                                    <button class="btn btn-primary m-1" title="Ya registrado"><i class="fa-solid fa-check"></i></button>
-                                                <?php endif; ?>
+                                $rutaSolicita = verificarRuta($ruta_solicita);
+                                $rutaAprueba = verificarRuta($ruta_aprueba);
+                        ?>
+                        <tr>
+                            <td><?=  $cedula_user ;?></td>
+                            <td><?=  $nombres . " " . $apellidos ;?></td>
+                            <td><?=  $fecha_permiso ;?></td>
+                            <td><?=  $motivo_permiso ;?></td>
+                            <td>
+                                <?php if ($permiso_aceptado == 1): ?>
+                                    <button class="btn btn-success" title="Aceptado" data-toggle="modal" data-target="#cancelarSolicitud" data-id="<?= $id_permiso ?>" onclick="cancelar(this)"><i class="fa-solid fa-check"></i></button>
+                                <?php elseif ($permiso_aceptado == 3): ?>
+                                    <button class="btn btn-primary m-1" title="Ya registrado"><i class="fa-solid fa-check"></i></button>
+                                <?php endif; ?>
 
-                                                <form action="../datos_individuales" method="POST" class="d-inline-block m-1">
-                                                    <input type="hidden" name="id_permisos" value="<?= $id_permiso ?>">
-                                                    <button class="btn btn-info" title="Ver los datos de esta solicitud"><i class="bi bi-eye"></i></button>
-                                                </form>
-                                            </td>
+                                <form action="../datos_individuales" method="POST" class="d-inline-block m-1">
+                                    <input type="hidden" name="id_permisos" value="<?= $id_permiso ?>">
+                                    <button class="btn btn-info" title="Ver los datos de esta solicitud"><i class="bi bi-eye"></i></button>
+                                </form>
+                            </td>
 
-                                            <td>
-                                                <?php
+                            <td>
+                                <?php
 
-                                                if (!empty($ruta_solicita)) {
-                                                    echo '<a class="btn btn-success m-1" title="Solicitud firmada por el funcionario" href="' . RUTA_ABSOLUTA . $rutaSolicita . '" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
-                                                } elseif ($ruta_solicita == 'error') {
-                                                    echo '<button class="btn btn-danger m-1" title="Archivo no encontrado"><i class="fa-solid fa-circle-exclamation"></i></button>';
-                                                }
+                                if (!empty($ruta_solicita)) {
+                                    echo '<a class="btn btn-success m-1" title="Solicitud firmada por el funcionario" href="' . RUTA_ABSOLUTA . $rutaSolicita . '" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
+                                } elseif ($ruta_solicita == 'error') {
+                                    echo '<button class="btn btn-danger m-1" title="Archivo no encontrado"><i class="fa-solid fa-circle-exclamation"></i></button>';
+                                }
 
-                                                if (!empty($ruta_aprueba)) {
-                                                    echo '<a class="btn btn-primary m-1" title="Solicitud firmada por el jefe supervisor" href="' . RUTA_ABSOLUTA . $rutaAprueba . '" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
-                                                }elseif ($ruta_aprueba == 'error') {
-                                                    echo '<button class="btn btn-danger m-1" title="Archivo no encontrado"><i class="fa-solid fa-circle-exclamation"></i></button>';
-                                                }
+                                if (!empty($ruta_aprueba)) {
+                                    echo '<a class="btn btn-primary m-1" title="Solicitud firmada por el jefe supervisor" href="' . RUTA_ABSOLUTA . $rutaAprueba . '" target="_blank"><i class="fa-solid fa-file-arrow-down"></i></a>';
+                                }elseif ($ruta_aprueba == 'error') {
+                                    echo '<button class="btn btn-danger m-1" title="Archivo no encontrado"><i class="fa-solid fa-circle-exclamation"></i></button>';
+                                }
 
-                                                ?>
-                                            </td>
+                                ?>
+                            </td>
 
-                                        </tr>
-                                    <?php
-                                        };
-                                    }
-                                    ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                        </tr>
+                    <?php
+                        };
+                    }
+                    ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-                </div>
-                <!-- /.container-fluid -->
-
+</div>
 <!-- Modal para cancelar una solicitud -->
 <div class="modal fade" id="cancelarSolicitud" tabindex="-1" role="dialog" aria-labelledby="modalAdminLabel"
     aria-hidden="true">
@@ -138,7 +136,7 @@ $respuesta = soliarchivosAceptadas($pdo);
                 <p>¿Está seguro de que desea cancelar esta solicitud ?</p>
                 <p>Recuerde que si cancela la solicitud este permiso se moverá a la sección de "Solicitudes"</p>
                 <div class="alert alert-danger" role="alert">
-                El archivo de este permiso que subió se eliminara
+                El archivo de este permiso que subió se eliminara y su acción quedara guardada
                 </div>
 
                 <form id="cancelarS" action="<?php echo RUTA_ABSOLUTA ?>jefe/procesarSolicitud" method="POST">
@@ -159,12 +157,10 @@ $respuesta = soliarchivosAceptadas($pdo);
     });
     function aprobar(button) {
         var userId = button.getAttribute('data-registrar');
-        // Rellenar el campo oculto con el ID del cliente
         document.getElementById('id_registrar').value = userId;
     }
     function cancelar(button) {
         var userId = button.getAttribute('data-id');
-        // Rellenar el campo oculto con el ID del cliente
         document.getElementById('id_cancelar').value = userId;
     }
 </script>

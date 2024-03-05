@@ -13,14 +13,14 @@ if ($_POST) {
                 'El permiso no se puede eliminar',
                 'error'
             );
-            redirect(RUTA_ABSOLUTA . "funcionario/solicitudUser");
+            redirect(RUTA_ABSOLUTA . "funcionario/subirArchivos");
 
         }else {
             create_flash_message(
                 'Permiso eliminado correctamente',
                 'success'
             );
-            redirect(RUTA_ABSOLUTA . "funcionario/solicitudUser");
+            redirect(RUTA_ABSOLUTA . "funcionario/subirArchivos");
         }
 
     } catch (PDOException $e) {
@@ -28,7 +28,7 @@ if ($_POST) {
             'Ocurrio un error con el sistema',
             'error'
         );
-        redirect(RUTA_ABSOLUTA . "funcionario/solicitudUser");
+        redirect(RUTA_ABSOLUTA . "funcionario/subirArchivos");
     }
 }
 

@@ -136,7 +136,7 @@ if ($_POST) {
             $horas_ocupadas = 0;
             break;
 
-        case 'PERMISO_DE_DÍAS_CON_CARGO_A_VACACIONES':
+        case 'PERMISO_DE_DIAS_CON_CARGO_A_VACACIONES':
             $tiempoLimite_motivo ="Tomar en cuenta que los días de vacaciones son en un numero de 30 días (22 laborales, 8 sábados y domingos), después de 11 meses laborados, el cálculo se lo realiza multiplicando el tiempo laboral solicitado por 1,36363636363636";
             $desc_motivo = "Podrán concederse permisos imputables a vacaciones, siempre que éstos no excedan los días de vacación a los que la servidora o el servidor tenga derecho al momento de la solicitud.  (se suman horas, fracciones de horas y días)";
             $limite_horas = null;
@@ -148,7 +148,7 @@ if ($_POST) {
             $limite_horas = null;
             $horas_ocupadas = 0;
             break;
-        case 'PERMISO_PARA_ATENCIÓN_MEDICA':
+        case 'PERMISO_PARA_ATENCION_MEDICA':
             $tiempoLimite_motivo ="HASTA POR 2 HORAS";
             $desc_motivo = "Las y los servidores/as tendrán derecho a permiso para atención médica hasta por dos horas, siempre que se justifique con certificado médico correspondiente otorgado por el Instituto Ecuatoriano de Seguridad Social o abalizado por los centros de salud pública.";
             $limite_horas = 2;

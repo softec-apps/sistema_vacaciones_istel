@@ -127,7 +127,6 @@ if ($_POST) {
         case 'LICENCIA_POR_PATERNIDAD':
             $tiempoLimite_motivo ="10 DÍAS (NORMAL), 15 DÍAS (CESÁREA) Y 8 DÍAS MÁS PREMATURO, y 25 días Enfermedades Degenerativas etc.";
             $desc_motivo = "Por paternidad, el servidor público tiene derecho a licencia con remuneración por el plazo de diez días contados desde el nacimiento de su hija o hijo cuando el parto es normal; en los casos de nacimiento múltiple o por cesárea se ampliará por cinco días más; En los casos de nacimientos prematuros o en condiciones de cuidado especial, se prolongará la licencia por paternidad con remuneración por ocho días más; y, cuando hayan nacido con una enfermedad degenerativa, terminal o irreversible o con un grado de discapacidad severa, el padre podrá tener licencia con remuneración por veinte y cinco días, hecho que se justificará con la presentación de un certificado médico, otorgado por un facultativo del Instituto Ecuatoriano de Seguridad Social y a falta de éste, por otro profesional médico debidamente avalado por los centros de salud pública; En caso de fallecimiento de la madre, durante el parto o mientras goza de la licencia por maternidad, el padre podrá hacer uso de la totalidad, o en su caso de la parte que reste del período de licencia que le hubiere correspondido a la madre;";
-            // $tiempo_final = 10 || 15 || 18 || 25;
             $limite_horas = 600;
             $horas_ocupadas = 0;
             break;
@@ -139,7 +138,7 @@ if ($_POST) {
             $horas_ocupadas = 0;
             break;
 
-        case 'PERMISO_DE_DÍAS_CON_CARGO_A_VACACIONES':
+        case 'PERMISO_DE_DIAS_CON_CARGO_A_VACACIONES':
             $tiempoLimite_motivo ="Tomar en cuenta que los días de vacaciones son en un numero de 30 días (22 laborales, 8 sábados y domingos), después de 11 meses laborados, el cálculo se lo realiza multiplicando el tiempo laboral solicitado por 1,36363636363636";
             $desc_motivo = "Podrán concederse permisos imputables a vacaciones, siempre que éstos no excedan los días de vacación a los que la servidora o el servidor tenga derecho al momento de la solicitud.  (se suman horas, fracciones de horas y días)";
             $limite_horas = null;
@@ -151,7 +150,7 @@ if ($_POST) {
             $limite_horas = null;
             $horas_ocupadas = 0;
             break;
-        case 'PERMISO_PARA_ATENCIÓN_MEDICA':
+        case 'PERMISO_PARA_ATENCION_MEDICA':
             $tiempoLimite_motivo ="HASTA POR 2 HORAS";
             $desc_motivo = "Las y los servidores/as tendrán derecho a permiso para atención médica hasta por dos horas, siempre que se justifique con certificado médico correspondiente otorgado por el Instituto Ecuatoriano de Seguridad Social o abalizado por los centros de salud pública.";
             $limite_horas = 2;

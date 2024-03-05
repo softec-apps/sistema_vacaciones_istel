@@ -199,7 +199,7 @@ foreach ($subirArchivos as $valor) {
                             <td class="d-flex">
                                 <form action="../datos_individuales" method="POST" class="d-inline-block m-1">
                                     <input type="hidden" name="id_permisos" value="<?= $id_permisos?> ">
-                                    <button class="btn btn-info m-1" title="Ver solicitud aprobada">
+                                    <button class="btn btn-info m-1" title="Datos de la solicitud">
                                         <i class="bi bi-eye"></i>
                                     </button>
                                 </form>
@@ -265,7 +265,7 @@ foreach ($subirArchivos as $valor) {
                 <form id="subirForm" action="<?php echo RUTA_ABSOLUTA ?>funcionario/procesarSubida" method="post" enctype="multipart/form-data">
                     <div class="form-floating mb-3">
                         <div>
-                            <label>Descripcion del archivo</label>
+                            <label>Descripción del archivo</label>
                             <textarea class="form-control" name="archivoDescripcion" id="archivoDescripcion" cols="30" rows="2" required></textarea>
                         </div>
                     </div>

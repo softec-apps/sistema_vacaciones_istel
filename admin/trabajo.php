@@ -85,7 +85,7 @@ include_once "../funciones.php";
                             try {
                                 $prueba = calcular_actualizar($pdo,$diasTrabajados,$horasTrabajadas,$dias_totales,$diasDeVacaciones,$id_usuario);
                             } catch (PDOException $e) {
-                                echo "error en una función";
+                                create_flash_message('error en una función','error');
                             }
 
                     ?>

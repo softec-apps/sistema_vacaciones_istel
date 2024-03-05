@@ -3,10 +3,6 @@ include_once "../conexion.php";
 include_once "../funciones.php";
 include_once "../flash_messages.php";
 
-// $seleccionar = seleccionarConfi($pdo);
-// $numero = $seleccionar['numero'];
-// $numero_formateado = number_format($numero, 14);
-
 if ($_POST) {
     $id_usuarios=$_POST["id_usuario"];
     $nombre_usuario =$_POST["nombre_usuario"];
@@ -21,7 +17,7 @@ if ($_POST) {
 
 
     $provincia = "BOLIVAR";
-    $coordinacion_zonal = "COORDINACION ZONAL 5 Y 8";
+    $coordinacion_zonal = "COORDINACIÓN ZONAL 5 Y 8";
     $direccion_unidad = "INSTITUTO SUPERIOR TECNOLÓGICO EL LIBERTADOR ";
     //no calcuar
     $fecha_permiso =  date('Y-m-d');
@@ -118,7 +114,6 @@ if ($_POST) {
             $limite_horas = 2016;
             $desc_motivo = "Por maternidad, toda servidora pública tiene derecho a una licencia con remuneración de doce (12) semanas por el nacimiento de su hija o hijo; en caso de nacimiento múltiple el plazo se extenderá por diez días adicionales. La ausencia se justificará mediante la presentación del certificado médico otorgado por un facultativo del Instituto Ecuatoriano de Seguridad Social; y, a falta de éste, por otro profesional de los centros de salud pública. En dicho certificado se hará constar la fecha probable del parto o en la que tal hecho se produjo;";
             $horas_ocupadas = 0;
-            // $tiempo_final = 84;
             break;
         case 'LICENCIA_POR_MATRIMONIO_O_UNION_DE_ECHO':
             $tiempoLimite_motivo ="3 DÍAS LABORABLES (HÁBILES)";
@@ -128,9 +123,8 @@ if ($_POST) {
             break;
 
         case 'LICENCIA_POR_PATERNIDAD':
-            $tiempoLimite_motivo ="10 DÍAS (NORMAL), 15 DÍAS (CESAREA) Y 8 DÍAS MÁS PREMATURO, y 25 días Enfermedades Degenerativas etc.";
+            $tiempoLimite_motivo ="10 DÍAS (NORMAL), 15 DÍAS (CESÁREA) Y 8 DÍAS MÁS PREMATURO, y 25 días Enfermedades Degenerativas etc.";
             $desc_motivo = "Por paternidad, el servidor público tiene derecho a licencia con remuneración por el plazo de diez días contados desde el nacimiento de su hija o hijo cuando el parto es normal; en los casos de nacimiento múltiple o por cesárea se ampliará por cinco días más; En los casos de nacimientos prematuros o en condiciones de cuidado especial, se prolongará la licencia por paternidad con remuneración por ocho días más; y, cuando hayan nacido con una enfermedad degenerativa, terminal o irreversible o con un grado de discapacidad severa, el padre podrá tener licencia con remuneración por veinte y cinco días, hecho que se justificará con la presentación de un certificado médico, otorgado por un facultativo del Instituto Ecuatoriano de Seguridad Social y a falta de éste, por otro profesional médico debidamente avalado por los centros de salud pública; En caso de fallecimiento de la madre, durante el parto o mientras goza de la licencia por maternidad, el padre podrá hacer uso de la totalidad, o en su caso de la parte que reste del período de licencia que le hubiere correspondido a la madre;";
-            // $tiempo_final = 10 || 15 || 18 || 25;
             $limite_horas = 600;
             $horas_ocupadas = 0;
             break;
@@ -169,8 +163,8 @@ if ($_POST) {
             break;
 
         default:
-            $tiempoLimite_motivo = "Vacio";
-            $desc_motivo = "Vacio";
+            $tiempoLimite_motivo = "Vació";
+            $desc_motivo = "Vació";
             break;
     }
     // Verificar y mostrar mensaje de error si excede el límite
@@ -206,55 +200,51 @@ if ($_POST) {
         $stmt_dias_vacaciones->execute();
         $dias_disponibles = $stmt_dias_vacaciones->fetchColumn();
 
-        if ($motivo_permiso == "PERMISO_DE_DIAS_CON_CARGO_A_VACACIONES" && $dias_disponibles == 0) {
-            create_flash_message(
-                'Las horas o dias solicitados no pueden ser generados si el usuaro no tiene dias disponibles de vacaciones',
-                'error'
-            );
-            redirect(RUTA_ABSOLUTA . "funcionario/solicitudUser");
-        }
-        else{
 
-            $consult_permisos = "INSERT INTO registros_permisos(id_usuarios,provincia,regimen,coordinacion_zonal,direccion_unidad,fecha_permiso,observaciones,motivo_permiso,tiempo_motivo,desc_motivo,dias_solicitados,dias_totales,horas_solicitadas,fecha_permisos_desde,fecha_permiso_hasta,horas_permiso_desde,horas_permiso_hasta,usuario_solicita,usuario_aprueba,usuario_registra,permiso_aceptado,horas_ocupadas)VALUES(:id_usuarios,:provincia,:regimen,:coordinacion_zonal,:direccion_unidad,:fecha_permiso,:observaciones,:motivo_permiso,:tiempo_motivo,:desc_motivo,:dias_solicitados,:dias_totales,:horas_solicitadas,:fecha_permisos_desde,:fecha_permiso_hasta,:horas_permiso_desde,:horas_permiso_hasta,:usuario_solicita,:usuario_aprueba,:usuario_registra,:permiso_aceptado,:horas_ocupadas)";
-            $stmt = $pdo->prepare($consult_permisos);
-            $stmt->bindParam(':id_usuarios', $id_usuarios, PDO::PARAM_INT);
-            $stmt->bindParam(':provincia', $provincia, PDO::PARAM_STR);
-            $stmt->bindParam(':regimen', $regimen, PDO::PARAM_STR);
-            $stmt->bindParam(':coordinacion_zonal', $coordinacion_zonal, PDO::PARAM_STR);
-            $stmt->bindParam(':direccion_unidad', $direccion_unidad, PDO::PARAM_STR);
-            $stmt->bindParam(':fecha_permiso', $fecha_permiso, PDO::PARAM_STR);
-            $stmt->bindParam(':observaciones', $observaciones, PDO::PARAM_STR);
-            $stmt->bindParam(':motivo_permiso', $motivo_permiso, PDO::PARAM_STR);
-            $stmt->bindParam(':tiempo_motivo', $tiempoLimite_motivo, PDO::PARAM_STR);
-            $stmt->bindParam(':desc_motivo', $desc_motivo, PDO::PARAM_STR);
-            $stmt->bindParam(':dias_solicitados', $dias_solicitados, PDO::PARAM_STR);
-            $stmt->bindParam(':dias_totales', $dias_totales, PDO::PARAM_STR);
-            $stmt->bindParam(':horas_solicitadas', $horas_solicitadas2, PDO::PARAM_STR);
-            $stmt->bindParam(':fecha_permisos_desde', $fecha_permisos_desde, PDO::PARAM_STR);
-            $stmt->bindParam(':fecha_permiso_hasta', $fecha_permiso_hasta, PDO::PARAM_STR);
-            $stmt->bindParam(':horas_permiso_desde', $horas_permiso_desde, PDO::PARAM_STR);
-            $stmt->bindParam(':horas_permiso_hasta', $horas_permiso_hasta, PDO::PARAM_STR);
-            $stmt->bindParam(':usuario_solicita', $nombre_usuario, PDO::PARAM_STR);
-            $stmt->bindParam(':usuario_aprueba', $usuario_aprueba, PDO::PARAM_STR);
-            $stmt->bindParam(':usuario_registra', $usuario_registra, PDO::PARAM_STR);
-            $stmt->bindParam(':permiso_aceptado', $permiso_aceptado, PDO::PARAM_STR);
-            $stmt->bindParam(':horas_ocupadas', $horas_ocupadas, PDO::PARAM_STR);
-            $stmt->execute();
+        $consult_permisos = "INSERT INTO registros_permisos(id_usuarios,provincia,regimen,coordinacion_zonal,direccion_unidad,fecha_permiso,observaciones,motivo_permiso,tiempo_motivo,desc_motivo,dias_solicitados,dias_totales,horas_solicitadas,fecha_permisos_desde,fecha_permiso_hasta,horas_permiso_desde,horas_permiso_hasta,usuario_solicita,usuario_aprueba,usuario_registra,permiso_aceptado,horas_ocupadas)VALUES(:id_usuarios,:provincia,:regimen,:coordinacion_zonal,:direccion_unidad,:fecha_permiso,:observaciones,:motivo_permiso,:tiempo_motivo,:desc_motivo,:dias_solicitados,:dias_totales,:horas_solicitadas,:fecha_permisos_desde,:fecha_permiso_hasta,:horas_permiso_desde,:horas_permiso_hasta,:usuario_solicita,:usuario_aprueba,:usuario_registra,:permiso_aceptado,:horas_ocupadas)";
+        $stmt = $pdo->prepare($consult_permisos);
+        $stmt->bindParam(':id_usuarios', $id_usuarios, PDO::PARAM_INT);
+        $stmt->bindParam(':provincia', $provincia, PDO::PARAM_STR);
+        $stmt->bindParam(':regimen', $regimen, PDO::PARAM_STR);
+        $stmt->bindParam(':coordinacion_zonal', $coordinacion_zonal, PDO::PARAM_STR);
+        $stmt->bindParam(':direccion_unidad', $direccion_unidad, PDO::PARAM_STR);
+        $stmt->bindParam(':fecha_permiso', $fecha_permiso, PDO::PARAM_STR);
+        $stmt->bindParam(':observaciones', $observaciones, PDO::PARAM_STR);
+        $stmt->bindParam(':motivo_permiso', $motivo_permiso, PDO::PARAM_STR);
+        $stmt->bindParam(':tiempo_motivo', $tiempoLimite_motivo, PDO::PARAM_STR);
+        $stmt->bindParam(':desc_motivo', $desc_motivo, PDO::PARAM_STR);
+        $stmt->bindParam(':dias_solicitados', $dias_solicitados, PDO::PARAM_STR);
+        $stmt->bindParam(':dias_totales', $dias_totales, PDO::PARAM_STR);
+        $stmt->bindParam(':horas_solicitadas', $horas_solicitadas2, PDO::PARAM_STR);
+        $stmt->bindParam(':fecha_permisos_desde', $fecha_permisos_desde, PDO::PARAM_STR);
+        $stmt->bindParam(':fecha_permiso_hasta', $fecha_permiso_hasta, PDO::PARAM_STR);
+        $stmt->bindParam(':horas_permiso_desde', $horas_permiso_desde, PDO::PARAM_STR);
+        $stmt->bindParam(':horas_permiso_hasta', $horas_permiso_hasta, PDO::PARAM_STR);
+        $stmt->bindParam(':usuario_solicita', $nombre_usuario, PDO::PARAM_STR);
+        $stmt->bindParam(':usuario_aprueba', $usuario_aprueba, PDO::PARAM_STR);
+        $stmt->bindParam(':usuario_registra', $usuario_registra, PDO::PARAM_STR);
+        $stmt->bindParam(':permiso_aceptado', $permiso_aceptado, PDO::PARAM_STR);
+        $stmt->bindParam(':horas_ocupadas', $horas_ocupadas, PDO::PARAM_STR);
+        $stmt->execute();
 
-            // Obtener el ID del último usuario insertado
-            $id_usuario_insertado = $pdo->lastInsertId();
-            $pdo->commit();
-            create_flash_message(
-                'Solicitud Ingresada Correctamente',
-                'success'
-            );
+        // Obtener el ID del último usuario insertado
+        $id_usuario_insertado = $pdo->lastInsertId();
+        $pdo->commit();
+        create_flash_message(
+            'Solicitud Ingresada Correctamente',
+            'success'
+        );
 
-            redirect(RUTA_ABSOLUTA . "funcionario/solicitudUser");
-        }
+        redirect(RUTA_ABSOLUTA . "funcionario/solicitudUser");
     } catch (PDOException $e) {
 
         $pdo->rollBack();
-        return "Error de exepcion" . $e->getMessage();
+        create_flash_message(
+            $e->getMessage(),
+            'error'
+        );
+
+        redirect(RUTA_ABSOLUTA . "funcionario/solicitudUser");
     }
 }
 

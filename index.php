@@ -61,7 +61,7 @@ if (isset($flash_message)) {
                                 <div class=" px-4 py-5 pb-4">
                                     <div class="text-center">
                                     <img src="./imagenes_defecto/logo_instituto.png" class="img-fluid w-25 mb-2">
-                                        <h1 class="h4 text-gray-800 mb-4">Gestion de permisos y vacaciones</h1>
+                                        <h1 class="h4 text-gray-800 mb-4">Gestión de permisos y vacaciones</h1>
                                     </div>
                                     <hr class="bg-dark m-4">
                                     <form class="user m-4" action="login" method="post">

@@ -111,6 +111,9 @@ $respuesta = vista4($pdo,$id_user);
             </div>
             <div class="modal-body">
                 <p>¿Está seguro de que desea cancelar el registro de esta solicitud ?</p>
+                <div class="alert alert-danger" role="alert">
+                    Si continua se eliminara el archivo y su acción quedara guardada
+                </div>
                 <form id="cancelarS" action="<?php echo RUTA_ABSOLUTA ?>talentoH/procesarSolicitud" method="POST">
                     <input type="hidden" name="id_cancelar" id="id_cancelar" value ="<?= $id_permiso ?>" />
                     <input class="form-control" type="hidden" name="cancelar_registro" value ="1" />

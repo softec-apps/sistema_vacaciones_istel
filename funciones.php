@@ -32,8 +32,7 @@ function star_sesion($usuario,$clave,$pdo){
             $rol = $info['rol'];
 
             $pass_c = $clave;
-
-            if ($password_bd == $pass_c) {
+            if (password_verify($pass_c,$password_bd)) {
                 get_session();
                 $_SESSION['id_usuarios'] = $info['id_usuarios'];
                 $_SESSION['cedula'] = $info['cedula'];
@@ -42,9 +41,10 @@ function star_sesion($usuario,$clave,$pdo){
                 $_SESSION['rol'] = $info['rol'];
                 $_SESSION['fecha_ingreso'] = $info['fecha_ingreso'];
 
+                include_once "actualizar_diasTrabajados.php";
                 if ($rol == ROL_FUNCIONARIO) {
                     create_flash_message(
-                        'Inicio de sesion correcto',
+                        $mensaje,
                         'success'
                     );
 
@@ -52,7 +52,7 @@ function star_sesion($usuario,$clave,$pdo){
 
                 }elseif ($rol == ROL_JEFE) {
                     create_flash_message(
-                        'Inicio de sesion correcto',
+                        $mensaje,
                         'success'
                     );
 
@@ -61,7 +61,7 @@ function star_sesion($usuario,$clave,$pdo){
                 }elseif ($rol == ROL_ADMIN) {
 
                     create_flash_message(
-                        'Inicio de sesion correcto',
+                        $mensaje,
                         'success'
                     );
 
@@ -69,7 +69,7 @@ function star_sesion($usuario,$clave,$pdo){
 
                 }elseif ($rol == ROL_TALENTO_HUMANO) {
                     create_flash_message(
-                        'Inicio de sesion correcto',
+                        $mensaje,
                         'success'
                     );
 
@@ -77,7 +77,7 @@ function star_sesion($usuario,$clave,$pdo){
 
                 }else {
                     create_flash_message(
-                        'Inicio de sesion correcto',
+                        $mensaje,
                         'success'
                     );
                     redirect(RUTA_ABSOLUTA . "inicio");
@@ -91,7 +91,6 @@ function star_sesion($usuario,$clave,$pdo){
                 redirect(RUTA_ABSOLUTA . "inicio");
             }
         } else {
-            // Credenciales incorrectas, redirigir al usuario al formulario de inicio de sesión
             create_flash_message(
                 'Error en las credenciales',
                 'error'
@@ -100,10 +99,10 @@ function star_sesion($usuario,$clave,$pdo){
         }
 
     } catch (PDOException $e) {
-        return "Error de exepcion" .$e->getMessage();
+        return "Error de exención" .$e->getMessage();
     }
 }
-//Insertar datos e un usuario
+//Insertar datos de un usuario
 function insertUsers($cedula, $nombres, $apellidos, $email, $usuario, $clave, $rol, $fecha_ingreso,$tiempo_trabajo, $pdo)
 {
     try {
@@ -111,6 +110,7 @@ function insertUsers($cedula, $nombres, $apellidos, $email, $usuario, $clave, $r
         // Comenzar la transacción
         $pdo->beginTransaction();
 
+        $nuevoPassword=password_hash($clave, PASSWORD_DEFAULT);
         // Consulta de inserción con marcadores de posición
         $insertar_users = "INSERT INTO usuarios (cedula, nombres, apellidos, email, usuario, contraseña, rol, fecha_ingreso,tiempo_trabajo) VALUES (:cedula, :nombres, :apellidos, :email, :usuario, :clave, :rol, :fecha_ingreso, :tiempo_trabajo)";
 
@@ -124,7 +124,7 @@ function insertUsers($cedula, $nombres, $apellidos, $email, $usuario, $clave, $r
             ':apellidos' => $apellidos,
             ':email' => $email,
             ':usuario' => $usuario,
-            ':clave' => $clave,
+            ':clave' => $nuevoPassword,
             ':rol' => $rol,
             ':fecha_ingreso' => $fecha_ingreso,
             ':tiempo_trabajo' => $tiempo_trabajo,
@@ -175,11 +175,11 @@ function insertUsers($cedula, $nombres, $apellidos, $email, $usuario, $clave, $r
 }
 
 //Mostrar Datos de un Usuario
-function mostrarUsuarios($pdo){
+function mostrarUsuarios($pdo,$id){
     try {
 
-        $id=1;
-        $consuta_usuarios = "SELECT id_usuarios,cedula,nombres,apellidos,usuario,contraseña,email,rol,fecha_ingreso,tiempo_trabajo FROM usuarios WHERE id_usuarios <> :id_usuarios";
+        // $id=1;
+        $consuta_usuarios = "SELECT id_usuarios,cedula,nombres,apellidos,usuario,contraseña,email,rol,fecha_ingreso,tiempo_trabajo FROM usuarios WHERE id_usuarios <> :id_usuarios AND rol != 'admin'";
         //Premaramos la consulta
         $stmt = $pdo->prepare($consuta_usuarios);
 
@@ -191,15 +191,16 @@ function mostrarUsuarios($pdo){
         return $resultados;
 
     }catch (PDOException $e) {
-        return "Error de exepcion" .$e->getMessage();
+        return "Error de exención" .$e->getMessage();
     }
 }
 //Actualizar datos de un usuario
-function actualizar_usuario($pdo,$id_usuarios,$cedula,$nombres,$apellidos,$usuario,$clave,$email,$rol,$fecha_ingreso,$tiempo_trabajo){
+function actualizar_usuario($pdo,$id_usuarios,$cedula,$nombres,$apellidos,$usuario,$email,$rol,$fecha_ingreso,$tiempo_trabajo){
 
     try {
-        $act_user = "UPDATE usuarios SET cedula=:cedula,nombres=:nombres,apellidos=:apellidos,email=:email,usuario=:usuario,contraseña=:clave,rol=:rol,fecha_ingreso=:fecha_ingreso,tiempo_trabajo=:tiempo_trabajo WHERE id_usuarios =:id_usuarios";
-        //Premaramos la consulta
+
+        $act_user = "UPDATE usuarios SET cedula=:cedula,nombres=:nombres,apellidos=:apellidos,email=:email,usuario=:usuario,rol=:rol,fecha_ingreso=:fecha_ingreso,tiempo_trabajo=:tiempo_trabajo WHERE id_usuarios =:id_usuarios";
+        //Preparamos la consulta
         $stmt = $pdo->prepare($act_user);
 
         //Parametros con sus valores
@@ -209,7 +210,6 @@ function actualizar_usuario($pdo,$id_usuarios,$cedula,$nombres,$apellidos,$usuar
         $stmt->bindParam(':apellidos',$apellidos,PDO::PARAM_STR);
         $stmt->bindParam(':email',$email,PDO::PARAM_STR);
         $stmt->bindParam(':usuario',$usuario,PDO::PARAM_STR);
-        $stmt->bindParam(':clave',$clave,PDO::PARAM_STR);
         $stmt->bindParam(':rol',$rol,PDO::PARAM_STR);
         $stmt->bindParam(':fecha_ingreso',$fecha_ingreso,PDO::PARAM_STR);
         $stmt->bindParam(':tiempo_trabajo',$tiempo_trabajo,PDO::PARAM_INT);
@@ -227,6 +227,29 @@ function actualizar_usuario($pdo,$id_usuarios,$cedula,$nombres,$apellidos,$usuar
         }
 
         return "Error de exepcion" .$e->getMessage();
+    }
+
+}
+
+
+//Recuperar contraseña de un usuario
+function recuperarClave($pdo,$id_usuarios,$clave){
+    try {
+
+        $nuevoPassword=password_hash($clave, PASSWORD_DEFAULT);
+        $act_user = "UPDATE usuarios SET contraseña=:clave WHERE id_usuarios =:id_usuarios";
+        //Preparamos la consulta
+        $stmt = $pdo->prepare($act_user);
+
+        //Parametros con sus valores
+        $stmt->bindParam(':id_usuarios',$id_usuarios,PDO::PARAM_INT);
+        $stmt->bindParam(':clave',$nuevoPassword,PDO::PARAM_STR);
+
+        //Ejecutamos la consulta con los parametros
+        $stmt->execute();
+        return "Datos Actualizados";
+    } catch (PDOException $e) {
+        return "Error de excepción" .$e->getMessage();
     }
 
 }
@@ -388,10 +411,8 @@ function soli_no_aceptadas($pdo){
 }
 function soli_aceptadas($pdo){
     try {
-        $soli_one = "SELECT registros_permisos.id_permisos,registros_permisos.id_usuarios,registros_permisos.fecha_permiso,registros_permisos.provincia,registros_permisos.regimen,usuarios.nombres,usuarios.apellidos,usuarios.cedula,registros_permisos.coordinacion_zonal,registros_permisos.direccion_unidad,registros_permisos.observaciones,registros_permisos.motivo_permiso,registros_permisos.tiempo_motivo,registros_permisos.fecha_permisos_desde,registros_permisos.fecha_permiso_hasta,registros_permisos.horas_permiso_desde,registros_permisos.horas_permiso_hasta,registros_permisos.dias_solicitados,registros_permisos.horas_solicitadas,registros_permisos.desc_motivo,registros_permisos.usuario_solicita,registros_permisos.usuario_aprueba,registros_permisos.usuario_registra,registros_permisos.desc_motivo,registros_permisos.permiso_aceptado FROM registros_permisos,usuarios WHERE usuarios.id_usuarios = registros_permisos.id_usuarios AND (registros_permisos.permiso_aceptado = 1 OR registros_permisos.permiso_aceptado = 3) ";
+        $soli_one = "SELECT registros_permisos.id_permisos,registros_permisos.id_usuarios,registros_permisos.fecha_permiso,registros_permisos.provincia,registros_permisos.regimen,usuarios.nombres,usuarios.apellidos,usuarios.cedula,registros_permisos.coordinacion_zonal,registros_permisos.direccion_unidad,registros_permisos.observaciones,registros_permisos.motivo_permiso,registros_permisos.tiempo_motivo,registros_permisos.fecha_permisos_desde,registros_permisos.fecha_permiso_hasta,registros_permisos.horas_permiso_desde,registros_permisos.horas_permiso_hasta,registros_permisos.dias_solicitados,registros_permisos.horas_solicitadas,registros_permisos.desc_motivo,registros_permisos.usuario_solicita,registros_permisos.usuario_aprueba,registros_permisos.usuario_registra,registros_permisos.desc_motivo,registros_permisos.permiso_aceptado FROM registros_permisos,usuarios WHERE usuarios.id_usuarios = registros_permisos.id_usuarios AND (registros_permisos.permiso_aceptado = 1) ";
         $stmt = $pdo->prepare($soli_one);
-        // $stmt->bindParam(':id_permisos',$id_permisos,PDO::PARAM_INT);
-        // $stmt->bindParam(':permiso_aceptado',$permiso_aceptado,PDO::PARAM_STR);
         $stmt->execute();
         $res_vista_permisos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $res_vista_permisos;
@@ -501,7 +522,7 @@ function sinAdmin($pdo){
     try {
 
         $rol = 'admin';
-        $cedulas = "SELECT id_usuarios,cedula,nombres,apellidos FROM usuarios WHERE rol !=:rol";
+        $cedulas = "SELECT id_usuarios,cedula,nombres,apellidos FROM usuarios WHERE rol !=:rol AND rol !='Funcionario'";
         $stmt = $pdo->prepare($cedulas);
         $stmt->bindParam(':rol',$rol, PDO::PARAM_STR);
         $stmt->execute();
@@ -510,7 +531,7 @@ function sinAdmin($pdo){
         return $resultado;
 
     } catch (PDOException $e) {
-        return "Error de exepcion" . $e->getMessage();
+        return null;
     }
 }
 
@@ -697,6 +718,44 @@ function archivos_individuales($pdo,$id){
         $stmt = $pdo->prepare($con);
 
         $stmt->bindParam(':id_usuarios',$id,PDO::PARAM_INT);
+        $stmt->execute();
+        $res_vista = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Cerrar la conexión
+        $pdo = null;
+        return $res_vista;
+
+    } catch (PDOException $e) {
+        return "Error de excepción: " . $e->getMessage();
+    }
+}
+
+function archivosJefe($pdo,$id_usuario,$id_aprueba){
+    try {
+        $con = "SELECT usuarios.id_usuarios,usuarios.nombres,usuarios.apellidos,usuarios.cedula,registros_permisos.id_permisos,archivos.id_archivo,archivos.ruta_solicita,archivos.ruta_aprueba,archivos.ruta_registra,registros_permisos.motivo_permiso FROM usuarios JOIN registros_permisos ON usuarios.id_usuarios = registros_permisos.id_usuarios JOIN archivos ON registros_permisos.id_permisos = archivos.id_permiso WHERE
+        usuarios.id_usuarios = :id_usuarios AND archivos.id_aprueba = :id_aprueba ";
+        $stmt = $pdo->prepare($con);
+
+        $stmt->bindParam(':id_usuarios',$id_usuario,PDO::PARAM_INT);
+        $stmt->bindParam(':id_aprueba',$id_aprueba,PDO::PARAM_INT);
+        $stmt->execute();
+        $res_vista = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Cerrar la conexión
+        $pdo = null;
+        return $res_vista;
+
+    } catch (PDOException $e) {
+        return "Error de excepción: " . $e->getMessage();
+    }
+}
+
+function archivos_talentoHumano($pdo,$id_usuario,$id_registra){
+    try {
+        $con = "SELECT usuarios.id_usuarios,usuarios.nombres,usuarios.apellidos,usuarios.cedula,registros_permisos.id_permisos,archivos.id_archivo,archivos.ruta_solicita,archivos.ruta_aprueba,archivos.ruta_registra,registros_permisos.motivo_permiso FROM usuarios JOIN registros_permisos ON usuarios.id_usuarios = registros_permisos.id_usuarios JOIN archivos ON registros_permisos.id_permisos = archivos.id_permiso WHERE
+        usuarios.id_usuarios = :id_usuarios AND archivos.id_registra = :id_registra ";
+        $stmt = $pdo->prepare($con);
+
+        $stmt->bindParam(':id_usuarios',$id_usuario,PDO::PARAM_INT);
+        $stmt->bindParam(':id_registra',$id_registra,PDO::PARAM_INT);
         $stmt->execute();
         $res_vista = $stmt->fetchAll(PDO::FETCH_ASSOC);
         // Cerrar la conexión

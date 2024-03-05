@@ -111,7 +111,7 @@ $respuesta = soli_registradas($pdo);
                 <p>¿Está seguro de que desea cancelar el registro de esta solicitud ?</p>
                 <br>
                 <div class="alert alert-danger" role="alert">
-                Si el permiso es cancelado se eliminara el archivo subido del usuario que registro el permiso se eliminara
+                Si el permiso es cancelado se eliminara el archivo subido del usuario que registro el permiso
                 </div>
                 <form id="cancelarS" action="<?php echo RUTA_ABSOLUTA ?>procesar" method="POST">
                     <input type="hidden" name="id_cancelar" id="id_cancelar" value ="" />
